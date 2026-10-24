@@ -61,3 +61,7 @@ replay_pid*.log
 # 8K PRO: secretos y datos locales, nunca en el repo
 tmdb_key.txt
 server_url.txt
+
+# Clave de firma (nunca en el repo)
+firma/
+*.keystore

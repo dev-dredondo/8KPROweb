@@ -134,7 +134,12 @@ android {
     productFlavors {
         create("standard") {
             dimension = "abi"
-            ndk { abiFilters += listOf("arm64-v8a", "armeabi-v7a") }
+            // 8K PRO: -Pbrand.abis=armeabi-v7a deja solo ARM de 32 bits (todos los Fire TV y casi todos
+            // los Android TV la ejecutan, también los de 64 bits) y quita ~24 MB del motor de vídeo
+            // duplicado. Sin la propiedad se incluyen las dos, como en OwnTV.
+            val brandAbis = providers.gradleProperty("brand.abis").orNull
+                ?.split(',')?.map { it.trim() }?.filter { it.isNotEmpty() }
+            ndk { abiFilters += brandAbis ?: listOf("arm64-v8a", "armeabi-v7a") }
         }
         create("x86_64") {
             dimension = "abi"

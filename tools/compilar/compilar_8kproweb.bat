@@ -37,7 +37,7 @@ set "SDKF=%SDK:\=/%"
 echo ANDROID_HOME=%SDK% >> "%LOG%"
 dir /b "%SDK%\platforms" >> "%LOG%" 2>&1
 
-echo == 4/4 Compilando APK (varios minutos la primera vez) ==
+echo == 4/4 Compilando APK release optimizado (10-15 minutos) ==
 pushd "%PROJ%"
 if not exist "%ROOT%server_url.txt" ( echo ERROR: falta server_url.txt con la DNS >> "%LOG%" & echo ERROR: falta server_url.txt con la DNS & goto :fin )
 set /p SERVERURL=<"%ROOT%server_url.txt"
@@ -51,6 +51,22 @@ if exist "%ROOT%panel_url.txt" if exist "%ROOT%panel_pin.txt" (
 ) else (
   echo AVISO: sin panel_url.txt/panel_pin.txt, solo login manual >> "%LOG%"
 )
+rem ---- Firma de la version release: clave propia, creada una sola vez y guardada en "firma\".
+rem      GUARDA UNA COPIA de la carpeta "firma": sin ella no podras publicar actualizaciones.
+set "FIRMA=%ROOT%firma"
+if not exist "%FIRMA%" mkdir "%FIRMA%"
+if not exist "%FIRMA%\8kpro.keystore" (
+  powershell -NoProfile -Command "[guid]::NewGuid().ToString('N') + [guid]::NewGuid().ToString('N')" > "%FIRMA%\clave.txt"
+  set /p SIGNPASS=<"%FIRMA%\clave.txt"
+  "%JAVA_HOME%\bin\keytool.exe" -genkeypair -noprompt -keystore "%FIRMA%\8kpro.keystore" -storetype PKCS12 -alias 8kpro -keyalg RSA -keysize 2048 -validity 10000 -storepass "!SIGNPASS!" -keypass "!SIGNPASS!" -dname "CN=8K PRO, O=8K PRO, C=ES" >> "%LOG%" 2>&1
+  echo Clave de firma creada en firma\8kpro.keystore >> "%LOG%"
+)
+if not exist "%FIRMA%\8kpro.keystore" ( echo ERROR: no se pudo crear la clave de firma >> "%LOG%" & echo ERROR: no se pudo crear la clave de firma & goto :fin )
+set /p SIGNPASS=<"%FIRMA%\clave.txt"
+set "KEYSTORE_FILE=%FIRMA%\8kpro.keystore"
+set "KEYSTORE_PASSWORD=!SIGNPASS!"
+set "KEY_ALIAS=8kpro"
+set "KEY_PASSWORD=!SIGNPASS!"
 set "TMDBARG="
 if exist "%ROOT%tmdb_key.txt" (
   set /p TMDBKEY=<"%ROOT%tmdb_key.txt"
@@ -59,14 +75,14 @@ if exist "%ROOT%tmdb_key.txt" (
 ) else (
   echo AVISO: sin tmdb_key.txt, los metadatos TMDB no funcionaran >> "%LOG%"
 )
-call gradlew.bat :app:assembleStandardDebug "-Pbrand.serverUrl=!SERVERURL!" !TMDBARG! !PANELARG! --stacktrace >> "%LOG%" 2>&1
+call gradlew.bat :app:assembleStandardRelease "-Pbrand.abis=armeabi-v7a" "-Pbrand.serverUrl=!SERVERURL!" !TMDBARG! !PANELARG! --stacktrace >> "%LOG%" 2>&1
 set "RC=%ERRORLEVEL%"
 popd
 echo GRADLE_EXIT=%RC% >> "%LOG%"
 if not "%RC%"=="0" ( echo ERROR: la compilacion fallo, ver compilacion.log & goto :fin )
 
 if not exist "%OUT%" mkdir "%OUT%"
-copy /y "%PROJ%\app\build\outputs\apk\standard\debug\app-standard-debug.apk" "%OUT%\8KPROweb.apk" >> "%LOG%" 2>&1
+copy /y "%PROJ%\app\build\outputs\apk\standard\release\app-standard-release.apk" "%OUT%\8KPROweb.apk" >> "%LOG%" 2>&1
 echo APK_OK >> "%LOG%"
 echo.
 echo LISTO: %OUT%\8KPROweb.apk
