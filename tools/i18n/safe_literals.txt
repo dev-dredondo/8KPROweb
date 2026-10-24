@@ -163,15 +163,67 @@
 1	log	app/src/main/java/tv/own/owntv/features/live/ZapTuneDelay.kt	(single-connection)
 1	log	app/src/main/java/tv/own/owntv/features/live/ZapTuneDelay.kt	isolated$panel
 1	log	app/src/main/java/tv/own/owntv/features/live/ZapTuneDelay.kt	rapid (previous press ${nowMs - (lastPressMs ?: nowMs)}ms ago)$panel
+2	empty	app/src/main/java/tv/own/owntv/features/login/BrandAccount.kt	\0
+1	uri	app/src/main/java/tv/own/owntv/features/login/BrandAccount.kt	&
+1	uri	app/src/main/java/tv/own/owntv/features/login/BrandAccount.kt	?$it
+1	log	app/src/main/java/tv/own/owntv/features/login/BrandAccount.kt	BrandAccount
+2	protocol	app/src/main/java/tv/own/owntv/features/login/BrandAccount.kt	UTF-8
+1	log	app/src/main/java/tv/own/owntv/features/login/BrandAccount.kt	brand_account_changed
+1	log	app/src/main/java/tv/own/owntv/features/login/BrandAccount.kt	guide feeds not updated
+1	json	app/src/main/java/tv/own/owntv/features/login/BrandAccount.kt	password
+1	json	app/src/main/java/tv/own/owntv/features/login/BrandAccount.kt	password=
+1	log	app/src/main/java/tv/own/owntv/features/login/BrandAccount.kt	playlists not updated
+1	json	app/src/main/java/tv/own/owntv/features/login/BrandAccount.kt	username
+1	json	app/src/main/java/tv/own/owntv/features/login/BrandAccount.kt	username=
+1	empty	app/src/main/java/tv/own/owntv/features/login/LoginScreen.kt	\0
+1	technical	app/src/main/java/tv/own/owntv/features/login/LoginScreen.kt	· · ·
 3	empty	app/src/main/java/tv/own/owntv/features/login/LoginViewModel.kt	\0
+1	url	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	${BrandConfig.panelUrl}/api/v1/config
+1	url	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	${BrandConfig.panelUrl}/api/v1/register
+1	log	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	PanelClient
+1	protocol	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	SHA-256
+1	protocol	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	TLS
+1	uri	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	X-App-Version
+1	uri	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	X-Device-Id
+1	uri	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	X-Device-Token
+1	protocol	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	active
+1	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	android
+1	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	app_version
+1	mime	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	application/json; charset=utf-8
+1	log	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	client certificates are not used
+2	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	code
+1	log	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	config failed: ${e.javaClass.simpleName}
+1	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	device_id
+1	protocol	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	disabled
+1	log	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	empty chain
+1	protocol	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	expired
+1	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	manufacturer
+1	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	model
+1	log	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	panel certificate does not match the pinned key
+1	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	password
+1	log	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	register failed: ${e.javaClass.simpleName}
+1	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	server_url
+1	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	status
+1	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	token
+1	protocol	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	unknown
+1	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	username
+1	log	app/src/main/java/tv/own/owntv/features/login/PanelSync.kt	PanelSync
+1	log	app/src/main/java/tv/own/owntv/features/login/PanelSync.kt	account changed on the panel, updating
+1	log	app/src/main/java/tv/own/owntv/features/login/PanelSync.kt	device no longer active on the panel, signing out
+1	preference-key	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	0
+2	preference-key	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	1
 1	technical	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	AES/GCM/NoPadding
 1	technical	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	AndroidKeyStore
 1	log	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	SessionStore
 1	file-path	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	brand_session
 1	technical	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	brand_session_key
+1	preference-key	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	device_id
+1	preference-key	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	device_token_enc
 1	preference-key	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	password_enc
+1	preference-key	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	server_url
 1	log	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	stored password unreadable, signing out
 1	preference-key	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	username
+1	preference-key	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	via_panel
 1	empty	app/src/main/java/tv/own/owntv/features/login/XtreamAuthenticator.kt	\0
 1	protocol	app/src/main/java/tv/own/owntv/features/login/XtreamAuthenticator.kt	Active
 1	protocol	app/src/main/java/tv/own/owntv/features/login/XtreamAuthenticator.kt	Expired

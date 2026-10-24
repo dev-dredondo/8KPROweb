@@ -17,4 +17,13 @@
     <string name="login_logout">Cerrar sesión</string>
     <string name="login_logout_message">Tendrás que volver a iniciar sesión para seguir viendo contenido.</string>
     <string name="login_account">Cuenta: %1$s</string>
+    <string name="activation_title">Activa este dispositivo</string>
+    <string name="activation_subtitle">Envía este código a tu proveedor. Esta pantalla avanzará sola en cuanto se active el dispositivo.</string>
+    <string name="activation_registering">Obteniendo tu código…</string>
+    <string name="activation_waiting">Esperando activación…</string>
+    <string name="activation_disabled">Este dispositivo está desactivado. Contacta con tu proveedor.</string>
+    <string name="activation_bad_account">La cuenta asignada a este dispositivo no funciona. Contacta con tu proveedor.</string>
+    <string name="activation_offline">No se puede conectar con el servidor de activación. Reintentando…</string>
+    <string name="activation_manual">Iniciar sesión manualmente</string>
+    <string name="activation_use_code">Usar código de activación</string>
 </resources>

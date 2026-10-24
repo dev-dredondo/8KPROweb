@@ -25,4 +25,14 @@
     <string name="login_logout">Sign out</string>
     <string name="login_logout_message">You will need to sign in again to keep watching.</string>
     <string name="login_account">Account: %1$s</string>
+    <!-- Activation by code (8KPROweb) -->
+    <string name="activation_title">Activate this device</string>
+    <string name="activation_subtitle">Send this code to your provider. This screen moves on by itself as soon as the device is activated.</string>
+    <string name="activation_registering">Getting your code…</string>
+    <string name="activation_waiting">Waiting for activation…</string>
+    <string name="activation_disabled">This device has been deactivated. Contact your provider.</string>
+    <string name="activation_bad_account">The account assigned to this device does not work. Contact your provider.</string>
+    <string name="activation_offline">Cannot reach the activation server. Retrying…</string>
+    <string name="activation_manual">Sign in manually</string>
+    <string name="activation_use_code">Use activation code</string>
 </resources>

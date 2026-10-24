@@ -59,7 +59,7 @@ class SetupViewModel(
                 brandProfileId = importer.createProfile(session.username, -1, false, null)
             }
             val existing = runCatching { sourceDao.getAllOnce() }.getOrDefault(emptyList())
-                .filter { it.type == tv.own.owntv.core.model.SourceType.XTREAM && tv.own.owntv.brand.BrandConfig.isBrandServer(it.url) }
+                .filter { it.type == tv.own.owntv.core.model.SourceType.XTREAM && tv.own.owntv.brand.BrandConfig.isOnBrandServer(it.url) }
                 .map { it.id }
                 .toSet()
             if (existing.isNotEmpty()) {
@@ -68,7 +68,7 @@ class SetupViewModel(
                 runImport {
                     importer.xtream(
                         name = playlistName,
-                        server = tv.own.owntv.brand.BrandConfig.serverUrl,
+                        server = session.serverUrl,
                         username = session.username,
                         password = session.password,
                     )

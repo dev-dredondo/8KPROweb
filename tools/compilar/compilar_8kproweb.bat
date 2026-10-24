@@ -43,6 +43,15 @@ pushd "%PROJ%"
 if not exist "%ROOT%server_url.txt" ( echo ERROR: falta server_url.txt con la DNS >> "%LOG%" & echo ERROR: falta server_url.txt con la DNS & goto :fin )
 set /p SERVERURL=<"%ROOT%server_url.txt"
 echo DNS: leida de server_url.txt >> "%LOG%"
+set "PANELARG="
+if exist "%ROOT%panel_url.txt" if exist "%ROOT%panel_pin.txt" (
+  set /p PANELURL=<"%ROOT%panel_url.txt"
+  set /p PANELPIN=<"%ROOT%panel_pin.txt"
+  set "PANELARG="-Pbrand.panelUrl=!PANELURL!" "-Pbrand.panelPin=!PANELPIN!""
+  echo Panel de activacion: configurado >> "%LOG%"
+) else (
+  echo AVISO: sin panel_url.txt/panel_pin.txt, solo login manual >> "%LOG%"
+)
 set "TMDBARG="
 if exist "%ROOT%tmdb_key.txt" (
   set /p TMDBKEY=<"%ROOT%tmdb_key.txt"
@@ -51,7 +60,7 @@ if exist "%ROOT%tmdb_key.txt" (
 ) else (
   echo AVISO: sin tmdb_key.txt, los metadatos TMDB no funcionaran >> "%LOG%"
 )
-call gradlew.bat :app:assembleStandardDebug "-Pbrand.serverUrl=!SERVERURL!" !TMDBARG! --stacktrace >> "%LOG%" 2>&1
+call gradlew.bat :app:assembleStandardDebug "-Pbrand.serverUrl=!SERVERURL!" !TMDBARG! !PANELARG! --stacktrace >> "%LOG%" 2>&1
 set "RC=%ERRORLEVEL%"
 popd
 echo GRADLE_EXIT=%RC% >> "%LOG%"

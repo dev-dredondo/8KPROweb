@@ -17,8 +17,19 @@ import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
 
-/** The signed-in Xtream account. */
-data class Session(val username: String, val password: String)
+/**
+ * The signed-in Xtream account. [serverUrl] is the server it belongs to (the panel can change it);
+ * [viaPanel] marks an account handed over by the activation panel, which the app re-checks at launch.
+ */
+data class Session(
+    val username: String,
+    val password: String,
+    val serverUrl: String = tv.own.owntv.brand.BrandConfig.serverUrl,
+    val viaPanel: Boolean = false,
+)
+
+/** This install's identity on the activation panel: a random id and a secret only this device knows. */
+data class DeviceIdentity(val deviceId: String, val token: String)
 
 /** What MainActivity routes on: still reading, nobody signed in, or signed in. */
 sealed interface SessionState {
@@ -50,7 +61,9 @@ class SessionStore(context: Context) {
             .onFailure { Log.w(TAG, "stored password unreadable, signing out", it) }
             .getOrNull()
             ?: return@map SessionState.LoggedOut
-        SessionState.LoggedIn(Session(user, password))
+        val server = prefs[KEY_SERVER]?.takeIf { it.isNotBlank() } ?: tv.own.owntv.brand.BrandConfig.serverUrl
+        tv.own.owntv.brand.BrandConfig.sessionServerUrl = server
+        SessionState.LoggedIn(Session(user, password, server, prefs[KEY_VIA_PANEL] == "1"))
     }
 
     suspend fun current(): Session? = (state.first() as? SessionState.LoggedIn)?.session
@@ -60,17 +73,56 @@ class SessionStore(context: Context) {
         store.edit {
             it[KEY_USERNAME] = session.username
             it[KEY_PASSWORD] = sealed
+            it[KEY_SERVER] = session.serverUrl
+            it[KEY_VIA_PANEL] = if (session.viaPanel) "1" else "0"
+        }
+        tv.own.owntv.brand.BrandConfig.sessionServerUrl = session.serverUrl
+    }
+
+    /**
+     * Signs out. The device identity is kept, so the TV keeps the same activation code, and so is the
+     * last server: the next sign-in still finds the playlists that pointed at it.
+     */
+    suspend fun clear() {
+        store.edit {
+            it.remove(KEY_USERNAME); it.remove(KEY_PASSWORD); it.remove(KEY_VIA_PANEL)
         }
     }
 
-    suspend fun clear() {
-        store.edit { it.clear() }
+    /** The server of the last account, signed in or not. */
+    suspend fun lastServer(): String? = store.data.first()[KEY_SERVER]?.takeIf { it.isNotBlank() }
+
+    /** The panel identity, created on first use. */
+    suspend fun identity(): DeviceIdentity {
+        val prefs = store.data.first()
+        val id = prefs[KEY_DEVICE_ID]
+        val token = prefs[KEY_DEVICE_TOKEN]?.let { runCatching { KeystoreCipher.decrypt(it) }.getOrNull() }
+        if (!id.isNullOrEmpty() && !token.isNullOrEmpty()) return DeviceIdentity(id, token)
+        return resetIdentity()
+    }
+
+    /** A brand-new identity (the panel forgot this device): a fresh id, token and, from it, code. */
+    suspend fun resetIdentity(): DeviceIdentity {
+        val rnd = java.security.SecureRandom()
+        fun randomB64(bytes: Int) = ByteArray(bytes).also(rnd::nextBytes)
+            .let { Base64.encodeToString(it, Base64.NO_WRAP or Base64.URL_SAFE or Base64.NO_PADDING) }
+        val identity = DeviceIdentity(deviceId = randomB64(18), token = randomB64(32))
+        val sealed = KeystoreCipher.encrypt(identity.token)
+        store.edit {
+            it[KEY_DEVICE_ID] = identity.deviceId
+            it[KEY_DEVICE_TOKEN] = sealed
+        }
+        return identity
     }
 
     private companion object {
         const val TAG = "SessionStore"
         val KEY_USERNAME = stringPreferencesKey("username")
         val KEY_PASSWORD = stringPreferencesKey("password_enc")
+        val KEY_SERVER = stringPreferencesKey("server_url")
+        val KEY_VIA_PANEL = stringPreferencesKey("via_panel")
+        val KEY_DEVICE_ID = stringPreferencesKey("device_id")
+        val KEY_DEVICE_TOKEN = stringPreferencesKey("device_token_enc")
     }
 }
 

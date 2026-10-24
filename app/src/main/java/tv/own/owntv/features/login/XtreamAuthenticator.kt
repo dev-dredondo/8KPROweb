@@ -29,11 +29,15 @@ sealed interface LoginResult {
  */
 class XtreamAuthenticator(private val xtream: XtreamClient) {
 
-    suspend fun login(username: String, password: String): LoginResult = withContext(Dispatchers.IO) {
+    suspend fun login(
+        username: String,
+        password: String,
+        serverUrl: String = BrandConfig.serverUrl,
+    ): LoginResult = withContext(Dispatchers.IO) {
         val probe = SourceEntity(
             name = "",
             type = SourceType.XTREAM,
-            url = BrandConfig.serverUrl,
+            url = serverUrl.trim().trimEnd('/'),
             username = username,
             password = password,
         )

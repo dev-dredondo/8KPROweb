@@ -73,6 +73,9 @@ val appModule = module {
     // 8K PRO login: saved session (DataStore + Keystore), the player_api.php check, and the screen's model.
     single { SessionStore(get()) }
     singleOf(::XtreamAuthenticator)
+    single { tv.own.owntv.features.login.PanelClient() }
+    single { tv.own.owntv.features.login.BrandAccount(get(), get(), get()) }
+    single { tv.own.owntv.features.login.PanelSync(get(), get(), get()) }
     viewModelOf(::LoginViewModel)
     viewModelOf(::DisplaySizeViewModel)
     // Takes a Context first; Koin resolves it from androidContext().

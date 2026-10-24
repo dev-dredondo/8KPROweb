@@ -144,6 +144,10 @@ class OwnTVApp : Application(), SingletonImageLoader.Factory, androidx.work.Conf
             settings = GlobalContext.get().get(),
             metadata = GlobalContext.get().get(),
         )
+        // 8K PRO: pick up a DNS/credentials change, or a deactivation, made on the activation panel.
+        appScope.launch {
+            runCatching { GlobalContext.get().get<tv.own.owntv.features.login.PanelSync>().refresh(force = true) }
+        }
         // Sports: core decides from Auto rebuild whether the stored board is due ("on every app start",
         // or older than the chosen hours). It reads one small file and touches no database.
         appScope.launch {

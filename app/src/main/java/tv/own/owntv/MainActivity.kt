@@ -32,6 +32,8 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 import org.koin.android.ext.android.inject
 import org.koin.androidx.compose.koinViewModel
@@ -97,6 +99,7 @@ open class MainActivity : ComponentActivity() {
     private val localeStore: tv.own.owntv.core.i18n.LocaleStore by inject()
     // 8K PRO: the saved Xtream login. Nothing past the login screen is shown without one.
     private val sessionStore: tv.own.owntv.features.login.SessionStore by inject()
+    private val panelSync: tv.own.owntv.features.login.PanelSync by inject()
     private var pendingDeepLink by mutableStateOf<LauncherDeepLink?>(null)
 
     /**
@@ -135,6 +138,8 @@ open class MainActivity : ComponentActivity() {
         // Staleness-based auto refresh on resume (interval modes only — STARTUP is cold-start only). The
         // ViewModel throttles this internally so a quick toggle doesn't re-run the check.
         shellViewModel.checkAutoRefresh(includeStartup = false)
+        // 8K PRO: back in the foreground → has the panel changed this TV's DNS or account?
+        lifecycleScope.launch { runCatching { panelSync.refresh() } }
     }
 
     /**

@@ -106,6 +106,13 @@ android {
         // actualizador desactivado (si no, descargaría los APK de OwnTV, que son otra app).
         val brandUpdateRepo = providers.gradleProperty("brand.updateRepo").orNull ?: ""
         buildConfigField("String", "BRAND_UPDATE_REPO", "\"$brandUpdateRepo\"")
+        // Panel de activación por código: URL (https://IP) y huella SHA-256 de la clave pública de su
+        // certificado (la imprime instalar_panel.sh). Vacíos = sin activación, solo login manual.
+        // Fuera del repo: compilar_8kproweb.bat los lee de panel_url.txt y panel_pin.txt.
+        val brandPanelUrl = (providers.gradleProperty("brand.panelUrl").orNull ?: "").trim().trimEnd('/')
+        val brandPanelPin = (providers.gradleProperty("brand.panelPin").orNull ?: "").trim()
+        buildConfigField("String", "BRAND_PANEL_URL", "\"$brandPanelUrl\"")
+        buildConfigField("String", "BRAND_PANEL_PIN", "\"$brandPanelPin\"")
         // Clave v3 de TMDB (metadatos y Tendencias). Mejor fuera del repo: -Pbrand.tmdbApiKey=… o en
         // ~/.gradle/gradle.properties. La de OwnTV no sirve: su servidor solo responde a sus builds firmadas.
         val brandTmdbKey = (providers.gradleProperty("brand.tmdbApiKey").orNull ?: "").trim()
