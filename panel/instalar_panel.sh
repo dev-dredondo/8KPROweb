@@ -37,7 +37,8 @@ install -d -m 700 -o "$SVC_USER" -g "$SVC_USER" "$DATA_DIR"
 install -d -m 700 "$TLS_DIR"
 
 say "3/7 Descargando el panel"
-curl -fsSL "$REPO_RAW/app/panel.py" -o "$APP_DIR/panel.py.new"
+# "?v=…" salta la caché de GitHub (hasta 5 min): siempre la última versión publicada.
+curl -fsSL -H 'Cache-Control: no-cache' "$REPO_RAW/app/panel.py?v=$(date +%s)" -o "$APP_DIR/panel.py.new"
 python3 -m py_compile "$APP_DIR/panel.py.new" || die "panel.py descargado no es válido"
 mv "$APP_DIR/panel.py.new" "$APP_DIR/panel.py"
 chmod 755 "$APP_DIR/panel.py"
