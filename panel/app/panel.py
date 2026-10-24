@@ -254,7 +254,9 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header("Cache-Control", "no-store")
         self.send_header("X-Content-Type-Options", "nosniff")
         self.send_header("X-Frame-Options", "DENY")
-        self.send_header("Referrer-Policy", "no-referrer")
+        # same-origin (no "no-referrer"): with no-referrer the browser sends "Origin: null" on our own
+        # form posts, which the CSRF check below would then refuse.
+        self.send_header("Referrer-Policy", "same-origin")
         for k, v in (extra or {}).items():
             self.send_header(k, v)
         self.end_headers()
@@ -340,7 +342,9 @@ class Handler(BaseHTTPRequestHandler):
             # CSRF: además de SameSite=Strict, exigir que el formulario venga de esta misma web.
             origin = self.headers.get("Origin")
             host = self.headers.get("Host", "")
-            if origin and urlparse(origin).netloc != host:
+            # Origin "null" (privacy settings, old pages cached with no-referrer) is let through: the
+            # session cookie is SameSite=Strict, so a foreign site cannot send it with a POST anyway.
+            if origin and origin != "null" and urlparse(origin).netloc != host:
                 return self.send(403, b"Origen no permitido", "text/plain; charset=utf-8")
             if path == "/admin/settings":
                 return self.save_settings()
