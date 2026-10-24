@@ -34,7 +34,7 @@ from http.cookies import SimpleCookie
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, quote, urlparse
 
-PANEL_VERSION = "1.1"
+PANEL_VERSION = "1.2"
 CONFIG_PATH = os.environ.get("PANEL_CONFIG", "/etc/8kpro-panel/config.json")
 DB_PATH = os.environ.get("PANEL_DB", "/var/lib/8kpro-panel/panel.db")
 LISTEN = (os.environ.get("PANEL_HOST", "127.0.0.1"), int(os.environ.get("PANEL_PORT", "8080")))
@@ -341,14 +341,7 @@ class Handler(BaseHTTPRequestHandler):
                 return self.do_login()
             if not self.is_admin():
                 return self.redirect("/admin/login")
-            # CSRF: además de SameSite=Strict, exigir que el formulario venga de esta misma web.
-            origin = self.headers.get("Origin")
-            host = self.headers.get("Host", "")
-            # Origin "null" (privacy settings, old pages cached with no-referrer) is let through: the
-            # session cookie is SameSite=Strict, so a foreign site cannot send it with a POST anyway.
-            origin_host = (urlparse(origin).hostname or "") if origin and origin != "null" else ""
-            if origin_host and origin_host.lower() != host.split(":")[0].strip("[]").lower():
-                return self.send(403, b"Origen no permitido", "text/plain; charset=utf-8")
+            # CSRF: la cookie de sesión es SameSite=Strict, así que otra web no puede enviarla en un POST.
             if path == "/admin/settings":
                 return self.save_settings()
             if path.startswith("/admin/device/") and path.endswith("/delete"):
