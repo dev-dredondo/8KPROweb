@@ -47,7 +47,7 @@ android {
         // 8K PRO: el identificador publicado. `namespace` (arriba) sigue siendo tv.own.owntv porque es el
         // paquete de las clases Kotlin y de R; cambiarlo obligaría a mover todo el código sin ningún efecto
         // para el usuario. Android identifica la app solo por applicationId.
-        applicationId = "com.tuempresa.tuapp.web"
+        applicationId = "com.app8k.web"
         minSdk = 26
         targetSdk = 36
         // CI injects these from the git tag (see .github/workflows/android.yml) so releases never
