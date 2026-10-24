@@ -8,9 +8,8 @@ set "OUT=%ROOT%APK"
 echo [%date% %time%] Inicio > "%LOG%"
 
 echo == 1/4 Descomprimiendo proyecto ==
-if not exist "%PROJ%\gradlew.bat" (
-  powershell -NoProfile -Command "Expand-Archive -Force -LiteralPath '%ROOT%8KPROweb_codigo.zip' -DestinationPath '%ROOT%codigo'" >> "%LOG%" 2>&1
-)
+rem Siempre se descomprime: asi se compila la ultima version del codigo, no la de la primera vez.
+powershell -NoProfile -Command "Expand-Archive -Force -LiteralPath '%ROOT%8KPROweb_codigo.zip' -DestinationPath '%ROOT%codigo'" >> "%LOG%" 2>&1
 if not exist "%PROJ%\gradlew.bat" ( echo ERROR: no se pudo descomprimir >> "%LOG%" & echo ERROR: no se pudo descomprimir & goto :fin )
 
 echo == 2/4 Buscando Java (JBR de Android Studio) ==
