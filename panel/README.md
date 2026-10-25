@@ -9,6 +9,10 @@ Solo usa Python 3 de serie (sin dependencias), Nginx (HTTPS con certificado prop
 curl -fsSL https://raw.githubusercontent.com/dev-dredondo/8KPROweb/main/panel/instalar_panel.sh | sudo DNS=http://TU-DNS-XTREAM bash
 ```
 
+Con dominio propio (registro A apuntando al VPS) añade `DOMAIN=panel.tudominio.com`: el panel usa un
+certificado de Let's Encrypt que se renueva solo **conservando la misma clave** (`--reuse-key`), así la
+huella que lleva la app no cambia. No renueves nunca ese certificado a mano sin `--reuse-key`.
+
 Volver a ejecutarlo actualiza el panel y conserva administrador, dispositivos, DNS y certificado.
 
 ## Actualizar un panel ya instalado (v1.3: «En directo» y «Mapa»)

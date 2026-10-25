@@ -3,9 +3,14 @@
 #
 # Uso (como root o con sudo):
 #   curl -fsSL https://raw.githubusercontent.com/dev-dredondo/8KPROweb/main/panel/instalar_panel.sh \
-#     | sudo DNS=http://tu-servidor-xtream bash
+#     | sudo DNS=http://tu-servidor-xtream DOMAIN=panel.tudominio.com bash
 #
-# Variables opcionales: DNS (DNS Xtream por defecto), PANEL_IP (IP pública; se detecta sola).
+# Variables opcionales:
+#   DNS     DNS Xtream por defecto.
+#   DOMAIN  dominio del panel (con un registro A apuntando a este VPS): certificado gratuito de
+#           Let's Encrypt que se renueva solo, conservando siempre la misma clave (la app la tiene fijada).
+#   EMAIL   correo para los avisos de Let's Encrypt (opcional).
+#   PANEL_IP  sin DOMAIN: IP pública (se detecta sola) y certificado propio para la IP.
 # Se puede volver a ejecutar para actualizar: conserva usuarios, dispositivos, certificado y ajustes.
 set -euo pipefail
 
@@ -88,6 +93,18 @@ else
 fi
 
 say "5/7 Certificado HTTPS"
+DOMAIN=$(printf '%s' "${DOMAIN:-}" | tr 'A-Z' 'a-z' | sed 's#^https\?://##; s#/.*$##')
+LE_DIR=/etc/letsencrypt/live/$DOMAIN
+if [ -n "$DOMAIN" ]; then
+  HOST=$DOMAIN
+  # Certificado provisional para arrancar Nginx; Let's Encrypt lo sustituye en el paso 7b.
+  if [ ! -f "$TLS_DIR/panel.crt" ] || ! openssl x509 -in "$TLS_DIR/panel.crt" -noout -text | grep -q "DNS:$DOMAIN"; then
+    openssl req -x509 -nodes -newkey ec -pkeyopt ec_paramgen_curve:prime256v1 -days 3650 \
+      -subj "/CN=$DOMAIN/O=8K PRO" -addext "subjectAltName=DNS:$DOMAIN" \
+      -keyout "$TLS_DIR/panel.key" -out "$TLS_DIR/panel.crt" 2>/dev/null
+    chmod 600 "$TLS_DIR/panel.key"
+  fi
+else
 if [ -z "${PANEL_IP:-}" ]; then
   PANEL_IP=$(curl -4 -fsS --max-time 5 https://api.ipify.org 2>/dev/null || true)
   [ -n "$PANEL_IP" ] || PANEL_IP=$(ip -4 route get 1.1.1.1 | awk '{for(i=1;i<=NF;i++) if($i=="src"){print $(i+1); exit}}')
@@ -102,7 +119,10 @@ if [ ! -f "$TLS_DIR/panel.crt" ] || ! openssl x509 -in "$TLS_DIR/panel.crt" -noo
 else
   echo "Certificado existente conservado."
 fi
-PIN=$(openssl x509 -in "$TLS_DIR/panel.crt" -pubkey -noout | openssl pkey -pubin -outform der | openssl dgst -sha256 -binary | base64)
+HOST=$PANEL_IP
+fi
+CERT=$TLS_DIR/panel.crt; KEY=$TLS_DIR/panel.key
+if [ -n "$DOMAIN" ] && [ -f "$LE_DIR/fullchain.pem" ]; then CERT=$LE_DIR/fullchain.pem; KEY=$LE_DIR/privkey.pem; fi
 
 say "6/7 Servicio y Nginx"
 cat > /etc/systemd/system/8kpro-panel.service <<EOF
@@ -135,14 +155,15 @@ limit_req_zone \$binary_remote_addr zone=panel_login:10m rate=10r/m;
 server {
     listen 80 default_server;
     server_name _;
-    return 301 https://\$host\$request_uri;
+    location /.well-known/acme-challenge/ { root /var/www/letsencrypt; }
+    location / { return 301 https://\$host\$request_uri; }
 }
 
 server {
     listen 443 ssl default_server;
     server_name _;
-    ssl_certificate     $TLS_DIR/panel.crt;
-    ssl_certificate_key $TLS_DIR/panel.key;
+    ssl_certificate     $CERT;
+    ssl_certificate_key $KEY;
     ssl_protocols TLSv1.2 TLSv1.3;
     server_tokens off;
     client_max_body_size 16k;
@@ -180,6 +201,25 @@ ufw allow 443/tcp >/dev/null
 ufw --force enable >/dev/null
 ufw status | sed -n '1,10p'
 
+if [ -n "$DOMAIN" ] && [ ! -f "$LE_DIR/fullchain.pem" ]; then
+  say "7b Certificado Let's Encrypt para $DOMAIN"
+  install -d -m 755 /var/www/letsencrypt
+  apt-get install -y -qq certbot >/dev/null </dev/null || true
+  MAILARG="--register-unsafely-without-email"; [ -n "${EMAIL:-}" ] && MAILARG="-m $EMAIL"
+  # --reuse-key: las renovaciones automáticas mantienen la misma clave, así la huella (PIN) de la app no cambia.
+  if certbot certonly --webroot -w /var/www/letsencrypt -d "$DOMAIN" --key-type ecdsa --reuse-key \
+       --non-interactive --agree-tos $MAILARG --deploy-hook "systemctl reload nginx" </dev/null; then
+    CERT=$LE_DIR/fullchain.pem; KEY=$LE_DIR/privkey.pem
+    sed -i "s#^    ssl_certificate .*#    ssl_certificate     $CERT;#; s#^    ssl_certificate_key .*#    ssl_certificate_key $KEY;#" /etc/nginx/sites-available/8kpro-panel
+    nginx -t && systemctl reload nginx
+    echo "Certificado de Let's Encrypt instalado (se renueva solo)."
+  else
+    echo "AVISO: Let's Encrypt falló (¿el dominio $DOMAIN apunta ya a este VPS?). Se usa un certificado propio;"
+    echo "       vuelve a ejecutar el instalador cuando el dominio apunte aquí."
+  fi
+fi
+PIN=$(openssl x509 -in "$CERT" -pubkey -noout | openssl pkey -pubin -outform der | openssl dgst -sha256 -binary | base64)
+
 say "Extras: mapa y geolocalización por IP"
 curl -fsSL -H 'Cache-Control: no-cache' "$REPO_RAW/actualizar_panel.sh?v=$(date +%s)" -o /tmp/8kpro-actualizar.sh \
   && bash /tmp/8kpro-actualizar.sh </dev/null || echo "AVISO: no se pudieron instalar el mapa y la geolocalización (ejecuta actualizar_panel.sh más tarde)."
@@ -193,11 +233,11 @@ cat <<EOF
 =====================================================================
   Panel 8K PRO: $OK
 
-  Abre en el navegador:   https://$PANEL_IP/admin
-  (la primera vez el navegador avisará del certificado: "Avanzado" -> "Continuar")
+  Abre en el navegador:   https://$HOST/admin
+$( [ "$CERT" = "$TLS_DIR/panel.crt" ] && echo '  (el navegador avisará del certificado propio: "Avanzado" -> "Continuar")' )
 
   Para compilar la app, pasa estas DOS líneas a Claude:
-    PANEL_URL=https://$PANEL_IP
+    PANEL_URL=https://$HOST
     PANEL_PIN=$PIN
 =====================================================================
 EOF
