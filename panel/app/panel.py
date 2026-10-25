@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
-"""8KPROweb — panel de activación de dispositivos (solo biblioteca estándar de Python 3.12).
+"""8KPROweb — panel de activación de dispositivos (Python 3.12; biblioteca estándar + python3-maxminddb opcional).
 
 Un único proceso con:
-  * API para la app:   POST /api/v1/register   GET /api/v1/config
-  * Web de administración en /admin (login, lista, activar por código, editar, ajustes)
+  * API para la app:   POST /api/v1/register   GET /api/v1/config   POST /api/v1/stats
+  * Web de administración en /admin (login, lista, activar por código, editar, ajustes,
+    "En directo" con lo que ve cada dispositivo y "Mapa" con su ubicación aproximada por IP)
 
 Escucha en 127.0.0.1:8080 detrás de Nginx, que pone el HTTPS. Datos en SQLite.
 
 Archivos:
   /etc/8kpro-panel/config.json   {"admin_user", "admin_hash", "secret"}   (lo crea el instalador)
-  /var/lib/8kpro-panel/panel.db  dispositivos + ajustes (DNS global)
+  /var/lib/8kpro-panel/panel.db  dispositivos + ajustes (DNS global) + sesiones de reproducción
+  /var/lib/8kpro-panel/geo/dbip-city-lite.mmdb   geolocalización por IP (DB-IP Lite, CC BY 4.0; opcional)
+  /opt/8kpro-panel/static/leaflet/               Leaflet (mapa), servido en /static/leaflet/
 
 Utilidades (las usa el instalador):
   python3 panel.py hash            < contraseña por stdin   -> imprime el hash
@@ -28,18 +31,29 @@ import sqlite3
 import sys
 import threading
 import time
+import ipaddress
+import mimetypes
 from datetime import datetime
 from http import HTTPStatus
 from http.cookies import SimpleCookie
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, quote, urlparse
 
-PANEL_VERSION = "1.2"
+PANEL_VERSION = "1.3"
 CONFIG_PATH = os.environ.get("PANEL_CONFIG", "/etc/8kpro-panel/config.json")
 DB_PATH = os.environ.get("PANEL_DB", "/var/lib/8kpro-panel/panel.db")
 LISTEN = (os.environ.get("PANEL_HOST", "127.0.0.1"), int(os.environ.get("PANEL_PORT", "8080")))
 # Detrás de Nginx la cookie va con Secure; en pruebas locales sin TLS se puede desactivar.
 COOKIE_SECURE = os.environ.get("PANEL_INSECURE_COOKIE") != "1"
+GEO_DB = os.environ.get("PANEL_GEO_DB", "/var/lib/8kpro-panel/geo/dbip-city-lite.mmdb")
+STATIC_DIR = os.environ.get("PANEL_STATIC", os.path.join(os.path.dirname(os.path.abspath(__file__)), "static"))
+
+# Estadísticas de reproducción: la app manda un latido cada 30 s; sin noticias en LIVE_WINDOW se da por parado.
+LIVE_WINDOW = 75
+PLAYS_KEEP_DAYS = 30
+PLAY_STATES = ("playing", "buffering", "paused", "error", "stopped")
+GEO_CREDIT = '<p style="text-align:center"><small><a href="https://db-ip.com">IP Geolocation by DB-IP</a></small></p>'
+STATE_LABEL = {"playing": "Reproduciendo", "buffering": "Cargando", "paused": "En pausa", "error": "Error", "stopped": "Parado"}
 
 SESSION_COOKIE = "panel_session"
 SESSION_TTL = 12 * 3600
@@ -103,6 +117,105 @@ def fmt_time(ts) -> str:
     return datetime.fromtimestamp(int(ts)).strftime("%d/%m/%Y %H:%M")
 
 
+def fmt_dur(seconds) -> str:
+    s = max(0, int(seconds or 0))
+    h, m, sec = s // 3600, s % 3600 // 60, s % 60
+    if h:
+        return f"{h} h {m:02d} min"
+    if m:
+        return f"{m} min {sec:02d} s"
+    return f"{sec} s"
+
+
+def as_int(value, lo: int = 0, hi: int = 10**9):
+    try:
+        return max(lo, min(hi, int(value)))
+    except (TypeError, ValueError):
+        return None
+
+
+# ------------------------------------------------------------------ geolocalización por IP
+
+_geo_lock = threading.Lock()
+_geo_reader = None
+_geo_mtime = 0.0
+_geo_cache: dict[str, dict | None] = {}
+
+
+def _reader():
+    """El lector de la base de datos MMDB; se reabre solo cuando el archivo cambia (actualización mensual)."""
+    global _geo_reader, _geo_mtime
+    try:
+        mtime = os.path.getmtime(GEO_DB)
+    except OSError:
+        return None
+    if _geo_reader is None or mtime != _geo_mtime:
+        try:
+            import maxminddb  # python3-maxminddb
+        except ImportError:
+            return None
+        try:
+            if _geo_reader is not None:
+                _geo_reader.close()
+            _geo_reader = maxminddb.open_database(GEO_DB)
+            _geo_mtime = mtime
+            _geo_cache.clear()
+        except Exception as exc:
+            sys.stderr.write(f"geo: no se pudo abrir {GEO_DB}: {exc!r}\n")
+            _geo_reader = None
+    return _geo_reader
+
+
+def _name(node) -> str:
+    names = (node or {}).get("names") or {}
+    return names.get("es") or names.get("en") or ""
+
+
+def geo(ip: str | None) -> dict | None:
+    """Ubicación aproximada de una IP pública: {city, region, country, cc, lat, lon}; None si no se sabe."""
+    if not ip:
+        return None
+    try:
+        addr = ipaddress.ip_address(ip)
+    except ValueError:
+        return None
+    if not addr.is_global:
+        return None
+    with _geo_lock:
+        if ip in _geo_cache:
+            return _geo_cache[ip]
+        reader = _reader()
+        if reader is None:
+            return None
+        try:
+            rec = reader.get(ip) or {}
+        except Exception:
+            rec = {}
+        loc = rec.get("location") or {}
+        out = None
+        if loc.get("latitude") is not None and loc.get("longitude") is not None:
+            subs = rec.get("subdivisions") or [{}]
+            out = {"city": _name(rec.get("city")), "region": _name(subs[0]), "country": _name(rec.get("country")),
+                   "cc": (rec.get("country") or {}).get("iso_code", ""),
+                   "lat": round(float(loc["latitude"]), 4), "lon": round(float(loc["longitude"]), 4)}
+        if len(_geo_cache) > 20000:
+            _geo_cache.clear()
+        _geo_cache[ip] = out
+        return out
+
+
+def geo_label(ip: str | None) -> str:
+    g = geo(ip)
+    if not g:
+        return ""
+    return ", ".join(x for x in (g["city"], g["country"]) if x)
+
+
+def geo_available() -> bool:
+    with _geo_lock:
+        return _reader() is not None
+
+
 # ------------------------------------------------------------------ base de datos
 
 SCHEMA = """
@@ -123,6 +236,23 @@ CREATE TABLE IF NOT EXISTS devices (
 );
 CREATE INDEX IF NOT EXISTS idx_devices_status ON devices(status);
 CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT);
+-- Una fila por "sesión de visionado" (un canal, película o episodio) que manda la app.
+CREATE TABLE IF NOT EXISTS plays (
+    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    device_id       INTEGER NOT NULL,                  -- devices.id
+    session_id      TEXT NOT NULL UNIQUE,
+    title           TEXT, kind TEXT,                   -- kind: live | vod
+    state           TEXT,                              -- playing | buffering | paused | error | stopped
+    started_at      INTEGER NOT NULL,
+    updated_at      INTEGER NOT NULL,
+    watch_s         INTEGER DEFAULT 0,
+    buffering_count INTEGER DEFAULT 0,
+    buffering_s     INTEGER DEFAULT 0,
+    startup_ms      INTEGER,
+    video TEXT, engine TEXT, ip TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_plays_device ON plays(device_id, updated_at);
+CREATE INDEX IF NOT EXISTS idx_plays_updated ON plays(updated_at);
 """
 
 _db_lock = threading.Lock()
@@ -139,6 +269,28 @@ def init_db() -> None:
     with db() as conn:
         conn.executescript(SCHEMA)
         conn.execute("PRAGMA journal_mode=WAL")
+
+
+_last_prune = 0.0
+
+
+def prune_plays(conn) -> None:
+    """Borra el historial de más de PLAYS_KEEP_DAYS días (como mucho una vez por hora)."""
+    global _last_prune
+    if time.time() - _last_prune < 3600:
+        return
+    _last_prune = time.time()
+    conn.execute("DELETE FROM plays WHERE updated_at < ?", (now() - PLAYS_KEEP_DAYS * 86400,))
+
+
+def live_plays(conn):
+    """Lo que se está viendo ahora: la última sesión no parada de cada dispositivo con latido reciente."""
+    return conn.execute(
+        "SELECT p.*, d.code, d.username, d.notes, d.model, d.manufacturer, d.ip AS dev_ip FROM plays p "
+        "JOIN devices d ON d.id = p.device_id "
+        "WHERE p.updated_at >= ? AND p.state != 'stopped' AND p.id = ("
+        "  SELECT p2.id FROM plays p2 WHERE p2.device_id = p.device_id ORDER BY p2.updated_at DESC LIMIT 1) "
+        "ORDER BY p.started_at", (now() - LIVE_WINDOW,)).fetchall()
 
 
 def get_setting(conn, key: str, default: str = "") -> str:
@@ -223,15 +375,23 @@ th{color:var(--muted);font-weight:600;font-size:13px}small{color:var(--muted)}
 .pending{background:#3d3418;color:var(--warn)}.active{background:#173a26;color:var(--ok)}.disabled,.expired{background:#3c1c1f;color:var(--bad)}
 .row{display:flex;gap:12px;flex-wrap:wrap}.row>*{flex:1;min-width:200px}.err{color:var(--bad)}.flash{color:var(--ok)}
 .table-wrap{overflow-x:auto}.check{display:flex;gap:8px;align-items:center;margin-top:12px;color:var(--text)}
+.playing{background:#173a26;color:var(--ok)}.buffering{background:#3d3418;color:var(--warn)}.paused,.stopped{background:#2a2738;color:var(--muted)}.error{background:#3c1c1f;color:var(--bad)}
+.stats{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px}.stat{flex:1;min-width:150px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px}
+.stat b{display:block;font-size:28px}.stat small{font-size:13px}.bad{color:var(--bad)}.warn{color:var(--warn)}
+#map{height:68vh;min-height:380px;border-radius:12px;border:1px solid var(--line)}
+.leaflet-tile-pane{filter:invert(1) hue-rotate(200deg) brightness(.85) contrast(.9) saturate(.4)}
+.leaflet-popup-content{font:14px/1.45 system-ui,sans-serif;color:#1b1820}.leaflet-popup-content a{color:#9a5b00}
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin:10px 0 0}.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
 """
 
 
-def layout(title: str, body: str, logged: bool = True) -> str:
-    nav = ('<nav><a class="btn ghost" href="/admin">Dispositivos</a><a class="btn ghost" href="/admin/settings">Ajustes</a>'
+def layout(title: str, body: str, logged: bool = True, head: str = "") -> str:
+    nav = ('<nav><a class="btn ghost" href="/admin">Dispositivos</a><a class="btn ghost" href="/admin/live">En directo</a>'
+           '<a class="btn ghost" href="/admin/map">Mapa</a><a class="btn ghost" href="/admin/settings">Ajustes</a>'
            '<a class="btn ghost" href="/admin/logout">Salir</a></nav>') if logged else ""
     return (f'<!doctype html><html lang="es"><head><meta charset="utf-8">'
             f'<meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">'
-            f'<title>{e(title)} · 8K PRO</title><style>{CSS}</style></head><body>'
+            f'<title>{e(title)} · 8K PRO</title><style>{CSS}</style>{head}</head><body>'
             f'<header><b>8K <span>PRO</span> · Panel</b>{nav}</header><main>{body}'
             f'<p style="text-align:center"><small>Panel v{PANEL_VERSION}</small></p></main></body></html>')
 
@@ -309,6 +469,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self.api_config()
             if path == "/api/v1/ping":
                 return self.json(200, {"ok": True})
+            if path.startswith("/static/"):
+                return self.static(path)
             if path == "/":
                 return self.redirect("/admin")
             if path == "/admin/login":
@@ -325,6 +487,12 @@ class Handler(BaseHTTPRequestHandler):
                 return self.find_code(q.get("code", ""))
             if path == "/admin/settings":
                 return self.page_settings(q.get("msg", ""))
+            if path == "/admin/live":
+                return self.page_live()
+            if path == "/admin/map":
+                return self.page_map()
+            if path == "/admin/api/map":
+                return self.json(200, {"points": self.map_points()})
             if path.startswith("/admin/device/"):
                 return self.page_device(path.rsplit("/", 1)[-1])
             return self.send(404, b"Not found", "text/plain")
@@ -337,6 +505,8 @@ class Handler(BaseHTTPRequestHandler):
         try:
             if path == "/api/v1/register":
                 return self.api_register()
+            if path == "/api/v1/stats":
+                return self.api_stats()
             if path == "/admin/login":
                 return self.do_login()
             if not self.is_admin():
@@ -401,6 +571,171 @@ class Handler(BaseHTTPRequestHandler):
                 out.update(server_url=server, username=row["username"], password=row["password"])
             return self.json(200, out)
 
+    def api_stats(self):
+        """Latido de reproducción de la app: qué ve, si hay cortes y cuánto lleva. Ver PlaybackStats.kt."""
+        device_id = self.headers.get("X-Device-Id", "")
+        token = self.headers.get("X-Device-Token", "")
+        try:
+            data = json.loads(self.body_bytes() or b"{}")
+        except json.JSONDecodeError:
+            return self.json(400, {"error": "json"})
+        if not isinstance(data, dict):
+            return self.json(400, {"error": "json"})
+        sid = str(data.get("session_id") or "")
+        if not (8 <= len(sid) <= 64):
+            return self.json(400, {"error": "invalid"})
+        state = data.get("state") if data.get("state") in PLAY_STATES else "playing"
+        kind = "vod" if data.get("kind") == "vod" else "live"
+        watch_s = as_int(data.get("watch_s"), 0, 7 * 86400) or 0
+        values = (clip(data.get("title"), 160), kind, state, watch_s,
+                  as_int(data.get("buffering_count"), 0, 100000) or 0, as_int(data.get("buffering_s"), 0, 7 * 86400) or 0,
+                  as_int(data.get("startup_ms"), 0, 600000), clip(data.get("video"), 40), clip(data.get("engine"), 40))
+        ip = self.client_ip()
+        with _db_lock, db() as conn:
+            row = conn.execute("SELECT id, token_hash FROM devices WHERE device_id = ?", (device_id,)).fetchone()
+            if not row or not hmac.compare_digest(row["token_hash"], sha256(token)):
+                return self.json(401, {"status": "unknown"})
+            t = now()
+            existing = conn.execute("SELECT device_id FROM plays WHERE session_id = ?", (sid,)).fetchone()
+            if existing and existing["device_id"] != row["id"]:
+                return self.json(409, {"error": "session"})
+            if existing:
+                conn.execute("UPDATE plays SET title=?, kind=?, state=?, watch_s=?, buffering_count=?, buffering_s=?,"
+                             " startup_ms=COALESCE(?, startup_ms), video=COALESCE(?, video), engine=COALESCE(?, engine),"
+                             " updated_at=?, ip=? WHERE session_id=?", (*values, t, ip, sid))
+            else:
+                conn.execute("INSERT INTO plays (title, kind, state, watch_s, buffering_count, buffering_s, startup_ms, video, engine,"
+                             " device_id, session_id, started_at, updated_at, ip) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                             (*values, row["id"], sid, t - watch_s, t, ip))
+            conn.execute("UPDATE devices SET last_seen=?, ip=? WHERE id=?", (t, ip, row["id"]))
+            prune_plays(conn)
+        return self.json(200, {"ok": True})
+
+    # ---- estáticos (Leaflet)
+    def static(self, path: str):
+        rel = os.path.normpath(path[len("/static/"):]).lstrip("/\\")
+        full = os.path.join(STATIC_DIR, rel)
+        full = os.path.abspath(full)
+        if rel.startswith("..") or not os.path.isfile(full) or not full.startswith(os.path.abspath(STATIC_DIR) + os.sep):
+            return self.send(404, b"Not found", "text/plain")
+        ctype = mimetypes.guess_type(full)[0] or "application/octet-stream"
+        if ctype.startswith("text/") or ctype.endswith("javascript"):
+            ctype += "; charset=utf-8"
+        with open(full, "rb") as f:
+            body = f.read()
+        self.send_response(200)
+        self.send_header("Content-Type", ctype)
+        self.send_header("Content-Length", str(len(body)))
+        self.send_header("Cache-Control", "public, max-age=604800")
+        self.send_header("X-Content-Type-Options", "nosniff")
+        self.end_headers()
+        if self.command != "HEAD":
+            self.wfile.write(body)
+
+    # ---- admin: en directo
+    def page_live(self):
+        with db() as conn:
+            live = live_plays(conn)
+            history = conn.execute(
+                "SELECT p.*, d.code, d.username FROM plays p JOIN devices d ON d.id = p.device_id "
+                "ORDER BY p.updated_at DESC LIMIT 60").fetchall()
+            active = conn.execute("SELECT COUNT(*) FROM devices WHERE status='active'").fetchone()[0]
+            online = conn.execute("SELECT COUNT(*) FROM devices WHERE last_seen >= ?", (now() - 600,)).fetchone()[0]
+        cutting = sum(1 for r in live if r["state"] == "buffering")
+        trs = []
+        for r in live:
+            cuts = f'{r["buffering_count"]} <small>({fmt_dur(r["buffering_s"])})</small>' if r["buffering_count"] else "0"
+            cls = "bad" if r["buffering_count"] >= 5 else ("warn" if r["buffering_count"] else "")
+            trs.append(f"""<tr><td><a class="code" href="/admin/device/{r['device_id']}">{e(r['code'])}</a><br><small>{e(r['username']) or '—'}</small></td>
+<td>{e(r['title']) or '—'}<br><small>{'Directo' if r['kind'] == 'live' else 'Película/serie'}{(' · ' + e(r['video'])) if r['video'] else ''}</small></td>
+<td><span class="pill {e(r['state'])}">{STATE_LABEL.get(r['state'], e(r['state']))}</span></td>
+<td>{fmt_dur(r['watch_s'] + max(0, now() - r['updated_at']))}</td>
+<td class="{cls}">{cuts}</td>
+<td>{(str(r['startup_ms'] // 100 / 10) + ' s') if r['startup_ms'] is not None else '—'}</td>
+<td>{e(geo_label(r['ip'])) or '—'}<br><small>{e(r['ip'])}</small></td></tr>""")
+        table = "".join(trs) or '<tr><td colspan="7"><small>Nadie está viendo nada ahora mismo.</small></td></tr>'
+        hrs = []
+        for r in history:
+            hrs.append(f"""<tr><td>{fmt_time(r['started_at'])}</td><td><a class="code" href="/admin/device/{r['device_id']}">{e(r['code'])}</a> <small>{e(r['username'])}</small></td>
+<td>{e(r['title'])}</td><td>{fmt_dur(r['watch_s'])}</td><td>{r['buffering_count']} <small>({fmt_dur(r['buffering_s'])})</small></td>
+<td><span class="pill {e(r['state'])}">{STATE_LABEL.get(r['state'], e(r['state']))}</span></td></tr>""")
+        hist = "".join(hrs) or '<tr><td colspan="6"><small>Sin historial todavía.</small></td></tr>'
+        return self.html(layout("En directo", f"""<div class="stats">
+<div class="stat"><b>{len(live)}</b><small>viendo ahora</small></div>
+<div class="stat"><b class="{'warn' if cutting else ''}">{cutting}</b><small>cargando (buffering) ahora</small></div>
+<div class="stat"><b>{online}</b><small>conectados en los últimos 10 min</small></div>
+<div class="stat"><b>{active}</b><small>dispositivos activos</small></div></div>
+<div class="card"><h2 style="margin-top:0">Viendo ahora</h2><p><small>Se actualiza sola cada 15 s. «Cortes» = veces que se ha parado a cargar después de empezar (y tiempo total cargando).</small></p>
+<div class="table-wrap"><table><tr><th>Dispositivo</th><th>Contenido</th><th>Estado</th><th>Tiempo viendo</th><th>Cortes</th><th>Arranque</th><th>Ubicación</th></tr>
+{table}</table></div></div>
+<div class="card"><h2 style="margin-top:0">Últimas sesiones</h2><div class="table-wrap"><table>
+<tr><th>Inicio</th><th>Dispositivo</th><th>Contenido</th><th>Duración</th><th>Cortes</th><th>Estado</th></tr>{hist}</table></div></div>
+{GEO_CREDIT if geo_available() else ''}""", head='<meta http-equiv="refresh" content="15">'))
+
+    # ---- admin: mapa
+    def map_points(self) -> list:
+        with db() as conn:
+            devices = conn.execute("SELECT id, code, username, notes, status, expires_at, ip, last_seen, model, manufacturer "
+                                   "FROM devices WHERE ip IS NOT NULL").fetchall()
+            watching = {r["device_id"]: r for r in live_plays(conn)}
+        points = []
+        for d in devices:
+            g = geo(d["ip"])
+            if not g:
+                continue
+            w = watching.get(d["id"])
+            points.append({"id": d["id"], "code": d["code"], "user": d["username"] or "", "notes": d["notes"] or "",
+                           "status": effective_status(d), "ip": d["ip"], "seen": fmt_time(d["last_seen"]),
+                           "device": f'{d["manufacturer"] or ""} {d["model"] or ""}'.strip(),
+                           "place": ", ".join(x for x in (g["city"], g["region"], g["country"]) if x),
+                           "lat": g["lat"], "lon": g["lon"],
+                           "watching": (w["title"] or "") if w else None,
+                           "state": w["state"] if w else None})
+        return points
+
+    def page_map(self):
+        points = self.map_points()
+        if not geo_available():
+            warn = ('<div class="card"><p class="err">Falta la base de datos de geolocalización o python3-maxminddb. '
+                    'Ejecuta en el VPS el script de actualización del panel.</p></div>')
+        else:
+            warn = ""
+        data = json.dumps(points).replace("</", "<\\/")
+        return self.html(layout("Mapa", f"""{warn}<div class="card"><h2 style="margin-top:0">Mapa de clientes</h2>
+<p><small>Ubicación aproximada según la IP de la última conexión de cada dispositivo (normalmente la ciudad, a veces la del operador). {len(points)} dispositivo(s) en el mapa. Se actualiza solo cada 30 s.</small></p>
+<div id="map"></div>
+<div class="legend"><small><span class="dot" style="background:#5cd18a"></span>Viendo ahora</small>
+<small><span class="dot" style="background:#ffb95c"></span>Activo</small><small><span class="dot" style="background:#8a86a0"></span>Pendiente / desactivado / caducado</small></div></div>
+<script src="/static/leaflet/leaflet.js"></script>
+<script>
+const STATUS={{active:"Activo",pending:"Pendiente",disabled:"Desactivado",expired:"Caducado"}};
+const STATE={{playing:"Reproduciendo",buffering:"Cargando",paused:"En pausa",error:"Error"}};
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}})[c]);
+const map=L.map("map",{{worldCopyJump:true}}).setView([40.4,-3.7],5);
+L.tileLayer("https://tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png",{{maxZoom:18,referrerPolicy:"strict-origin-when-cross-origin",
+  attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> · <a href="https://db-ip.com">IP Geolocation by DB-IP</a>'}}).addTo(map);
+const layer=L.layerGroup().addTo(map);let first=true;
+function draw(points){{
+  layer.clearLayers();const groups={{}};
+  for(const p of points){{(groups[p.lat+","+p.lon]??=[]).push(p);}}
+  const bounds=[];
+  for(const k in groups){{
+    const g=groups[k],live=g.some(p=>p.watching!==null),act=g.some(p=>p.status==="active");
+    const color=live?"#5cd18a":act?"#ffb95c":"#8a86a0";
+    const html="<b>"+esc(g[0].place)+"</b> · "+g.length+" dispositivo(s)<hr style='border:0;border-top:1px solid #ddd'>"+g.map(p=>
+      "<a href='/admin/device/"+p.id+"'><b>"+esc(p.code)+"</b></a> "+esc(p.user)+" <small>("+(STATUS[p.status]||p.status)+")</small><br>"+
+      (p.watching!==null?"&#9654; "+esc(p.watching)+" <small>"+(STATE[p.state]||"")+"</small><br>":"")+
+      "<small>"+esc(p.device)+" · "+esc(p.ip)+" · "+esc(p.seen)+(p.notes?" · "+esc(p.notes):"")+"</small>").join("<br><br>");
+    L.circleMarker([g[0].lat,g[0].lon],{{radius:Math.min(7+3*Math.sqrt(g.length),24),color:color,fillColor:color,fillOpacity:.55,weight:2}})
+      .bindPopup(html,{{maxHeight:320}}).addTo(layer);
+    bounds.push([g[0].lat,g[0].lon]);
+  }}
+  if(first&&bounds.length){{map.fitBounds(bounds,{{padding:[40,40],maxZoom:10}});first=false;}}
+}}
+draw({data});
+setInterval(()=>fetch("/admin/api/map",{{credentials:"same-origin"}}).then(r=>r.ok?r.json():null).then(j=>j&&draw(j.points)).catch(()=>{{}}),30000);
+</script>""", head='<link rel="stylesheet" href="/static/leaflet/leaflet.css">'))
+
     # ---- admin: login
     def page_login(self, error: str):
         msg = f'<p class="err">{e(error)}</p>' if error else ""
@@ -445,7 +780,7 @@ class Handler(BaseHTTPRequestHandler):
 <td><span class="pill {st}">{STATUS_LABEL[st]}</span></td>
 <td>{e(r['manufacturer'])} {e(r['model'])}<br><small>Android {e(r['android'])} · app {e(r['app_version'])}</small></td>
 <td>{e(r['username']) or '—'}<br><small>{e(r['notes'])}</small></td>
-<td>{fmt_time(r['last_seen'])}<br><small>{e(r['ip'])}</small></td>
+<td>{fmt_time(r['last_seen'])}<br><small>{e(r['ip'])}{(' · ' + e(geo_label(r['ip']))) if r['ip'] else ''}</small></td>
 <td>{fmt_time(r['expires_at'])}</td></tr>""")
         table = "".join(trs) or '<tr><td colspan="6"><small>No hay dispositivos.</small></td></tr>'
         flash = f'<p class="flash">{e(msg)}</p>' if msg else ""
@@ -480,15 +815,28 @@ class Handler(BaseHTTPRequestHandler):
             default_dns = get_setting(conn, "default_server_url")
         if not r:
             return self.redirect("/admin")
+        with db() as conn:
+            plays = conn.execute("SELECT * FROM plays WHERE device_id = ? ORDER BY updated_at DESC LIMIT 20", (r["id"],)).fetchall()
         st = effective_status(r)
         own_dns = r["server_url"] or ""
+        place = geo_label(r["ip"])
+        now_watching = ""
+        if plays and plays[0]["state"] != "stopped" and plays[0]["updated_at"] >= now() - LIVE_WINDOW:
+            p0 = plays[0]
+            now_watching = (f'<p>&#9654; Viendo ahora: <b>{e(p0["title"])}</b> <span class="pill {e(p0["state"])}">'
+                            f'{STATE_LABEL.get(p0["state"], "")}</span> · {fmt_dur(p0["watch_s"])} · cortes: {p0["buffering_count"]}</p>')
+        prow = "".join(f"""<tr><td>{fmt_time(p['started_at'])}</td><td>{e(p['title'])}</td><td>{fmt_dur(p['watch_s'])}</td>
+<td>{p['buffering_count']} <small>({fmt_dur(p['buffering_s'])})</small></td><td>{e(geo_label(p['ip'])) or e(p['ip'])}</td></tr>""" for p in plays)
+        history = (f'<div class="card"><h3 style="margin-top:0">Últimas reproducciones</h3><div class="table-wrap"><table>'
+                   f'<tr><th>Inicio</th><th>Contenido</th><th>Duración</th><th>Cortes</th><th>Ubicación</th></tr>{prow}</table></div></div>') if plays else ""
         exp = datetime.fromtimestamp(int(r["expires_at"])).strftime("%Y-%m-%d") if r["expires_at"] else ""
         status_opts = "".join(f'<option value="{k}"{" selected" if r["status"] == k else ""}>{v}</option>'
                               for k, v in [("active", "Activo"), ("pending", "Pendiente"), ("disabled", "Desactivado")])
         return self.html(layout(r["code"], f"""<p><a href="/admin">← Dispositivos</a></p>
 <div class="card"><h2 style="margin-top:0">Dispositivo <span class="code">{e(r['code'])}</span> <span class="pill {st}">{STATUS_LABEL[st]}</span></h2>
 <p><small>{e(r['manufacturer'])} {e(r['model'])} · Android {e(r['android'])} · app {e(r['app_version'])}<br>
-Registrado {fmt_time(r['created_at'])} · Última conexión {fmt_time(r['last_seen'])} desde {e(r['ip'])}</small></p>
+Registrado {fmt_time(r['created_at'])} · Última conexión {fmt_time(r['last_seen'])} desde {e(r['ip'])}{(' (' + e(place) + ')') if place else ''}</small></p>
+{now_watching}
 <form method="post" action="/admin/device/{r['id']}">
 <label>Estado</label><select name="status">{status_opts}</select>
 <div class="row"><div><label>Usuario</label><input name="username" value="{e(r['username'])}" required autocomplete="off"></div>
@@ -498,7 +846,7 @@ Registrado {fmt_time(r['created_at'])} · Última conexión {fmt_time(r['last_se
 <div class="row"><div><label>Caduca (vacío = nunca)</label><input name="expires" type="date" value="{exp}"></div>
 <div><label>Notas (cliente, teléfono…)</label><input name="notes" value="{e(r['notes'])}"></div></div>
 <p><button type="submit">Guardar</button></p></form></div>
-<div class="card"><form method="post" action="/admin/device/{r['id']}/delete" onsubmit="return confirm('¿Borrar este dispositivo? La TV mostrará un código nuevo.')">
+{history}<div class="card"><form method="post" action="/admin/device/{r['id']}/delete" onsubmit="return confirm('¿Borrar este dispositivo? La TV mostrará un código nuevo.')">
 <button class="btn danger" type="submit">Borrar dispositivo</button></form></div>"""))
 
     def save_device(self, dev_id: str):
@@ -521,6 +869,7 @@ Registrado {fmt_time(r['created_at'])} · Última conexión {fmt_time(r['last_se
     def delete_device(self, dev_id: str):
         if dev_id.isdigit():
             with _db_lock, db() as conn:
+                conn.execute("DELETE FROM plays WHERE device_id = ?", (int(dev_id),))
                 conn.execute("DELETE FROM devices WHERE id = ?", (int(dev_id),))
         return self.redirect("/admin?msg=" + quote("Dispositivo borrado"))
 

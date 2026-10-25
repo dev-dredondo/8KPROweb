@@ -331,15 +331,17 @@ fun OwnTVShell(
     // is closed — an inactive session must not keep answering the TV's transport keys or the Assistant.
     // During Multiview that is the tile with the sound; the preview engine it used to stay on is stopped.
     val multiviewAudibleEngine = multiview?.let { it.pool.peek(it.audible) }
+    val brandStats = koinInject<tv.own.owntv.features.login.PlaybackStats>()
     LaunchedEffect(liveOnExo, playerMode, multiviewAudibleEngine) {
-        playbackSession.attach(
-            when {
-                multiview != null -> multiviewAudibleEngine
-                playerMode == PlayerMode.NONE -> null
-                liveOnExo -> liveVm.previewEngine
-                else -> mpvEngine
-            },
-        )
+        val playing = when {
+            multiview != null -> multiviewAudibleEngine
+            playerMode == PlayerMode.NONE -> null
+            liveOnExo -> liveVm.previewEngine
+            else -> mpvEngine
+        }
+        playbackSession.attach(playing)
+        // 8K PRO: the same engine feeds the activation panel's live statistics.
+        brandStats.attach(playing)
     }
     // The pool outlives this composable (it is app-wide), the grid state does not. If the shell is torn
     // down with the grid up, release its engines and stream claims, or they play on as ghosts that

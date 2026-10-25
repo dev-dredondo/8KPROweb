@@ -76,6 +76,8 @@ val appModule = module {
     single { tv.own.owntv.features.login.PanelClient() }
     single { tv.own.owntv.features.login.BrandAccount(get(), get(), get()) }
     single { tv.own.owntv.features.login.PanelSync(get(), get(), get()) }
+    // 8K PRO: what this device is watching, for the panel's live view.
+    single { tv.own.owntv.features.login.PlaybackStats(get(), get()) }
     viewModelOf(::LoginViewModel)
     viewModelOf(::DisplaySizeViewModel)
     // Takes a Context first; Koin resolves it from androidContext().

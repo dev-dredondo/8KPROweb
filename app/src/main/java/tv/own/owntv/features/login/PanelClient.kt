@@ -112,6 +112,26 @@ class PanelClient {
         }
     }
 
+    /**
+     * Sends what this device is playing (see [PlaybackStats]). Returns false when the panel does not
+     * know the device (401) — no point sending more until the next launch.
+     */
+    suspend fun stats(identity: DeviceIdentity, payload: JSONObject): Boolean = withContext(Dispatchers.IO) {
+        val request = Request.Builder()
+            .url("${BrandConfig.panelUrl}/api/v1/stats")
+            .header("X-Device-Id", identity.deviceId)
+            .header("X-Device-Token", identity.token)
+            .header("X-App-Version", BuildConfig.VERSION_NAME)
+            .post(payload.toString().toRequestBody(JSON))
+            .build()
+        try {
+            client.newCall(request).execute().use { resp -> resp.code != 401 }
+        } catch (e: Exception) {
+            Log.w(TAG, "stats failed: ${e.javaClass.simpleName}")
+            true
+        }
+    }
+
     sealed interface RegisterResult {
         data class Ok(val code: String) : RegisterResult
         /** Another install already uses this id (vanishingly rare): make a new identity. */

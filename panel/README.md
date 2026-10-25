@@ -11,6 +11,25 @@ curl -fsSL https://raw.githubusercontent.com/dev-dredondo/8KPROweb/main/panel/in
 
 Volver a ejecutarlo actualiza el panel y conserva administrador, dispositivos, DNS y certificado.
 
+## Actualizar un panel ya instalado (v1.3: «En directo» y «Mapa»)
+
+```
+curl -fsSL "https://raw.githubusercontent.com/dev-dredondo/8KPROweb/main/panel/actualizar_panel.sh?v=$(date +%s)" | sudo bash
+```
+
+Instala `python3-maxminddb`, descarga el último `panel.py`, Leaflet (mapa) y la base de datos de
+geolocalización **DB-IP City Lite** (CC BY 4.0, se actualiza sola cada mes con `8kpro-geo-update.timer`),
+y reinicia el panel.
+
+## Estadísticas y mapa
+
+- La app (8KPROweb ≥ esta versión) envía `POST /api/v1/stats` al empezar cada canal/película, al
+  empezar a cargar (buffering) y cada 30 s: qué ve, estado, tiempo viendo, nº de cortes y tiempo
+  cargando, tiempo de arranque y resolución. Nunca la URL del stream.
+- **En directo**: quién está viendo qué ahora mismo y las últimas 60 sesiones (se guardan 30 días).
+- **Mapa**: cada dispositivo según la IP de su última conexión. Es aproximado (ciudad o, a veces,
+  la ubicación del operador). Mapa de © OpenStreetMap, geolocalización de [DB-IP](https://db-ip.com).
+
 ## Funcionamiento
 
 1. La app, sin activar, se registra (`POST /api/v1/register`) con un id y un token propios y muestra un código de 6 caracteres.
@@ -25,7 +44,9 @@ Volver a ejecutarlo actualiza el panel y conserva administrador, dispositivos, D
 | `/opt/8kpro-panel/panel.py` | el panel |
 | `/etc/8kpro-panel/config.json` | administrador (hash scrypt) y secreto de sesión |
 | `/etc/8kpro-panel/tls/` | certificado y clave |
-| `/var/lib/8kpro-panel/panel.db` | dispositivos y ajustes (haz copia de este archivo) |
+| `/var/lib/8kpro-panel/panel.db` | dispositivos, ajustes y sesiones (haz copia de este archivo) |
+| `/var/lib/8kpro-panel/geo/` | base de datos de geolocalización por IP |
+| `/opt/8kpro-panel/static/leaflet/` | librería del mapa |
 
 Logs: `journalctl -u 8kpro-panel -f`. Reiniciar: `systemctl restart 8kpro-panel`.
 

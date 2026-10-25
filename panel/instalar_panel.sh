@@ -27,7 +27,7 @@ ask()  { local __v; read -r -p "$1" __v </dev/tty; printf '%s' "$__v"; }
 say "1/7 Paquetes del sistema"
 export DEBIAN_FRONTEND=noninteractive
 apt-get update -qq
-apt-get install -y -qq nginx openssl ufw python3 curl ca-certificates >/dev/null
+apt-get install -y -qq nginx openssl ufw python3 python3-maxminddb curl ca-certificates gzip >/dev/null
 
 say "2/7 Usuario y carpetas"
 id "$SVC_USER" >/dev/null 2>&1 || useradd --system --home "$DATA_DIR" --shell /usr/sbin/nologin "$SVC_USER"
@@ -179,6 +179,11 @@ ufw allow 80/tcp >/dev/null
 ufw allow 443/tcp >/dev/null
 ufw --force enable >/dev/null
 ufw status | sed -n '1,10p'
+
+say "Extras: mapa y geolocalización por IP"
+curl -fsSL -H 'Cache-Control: no-cache' "$REPO_RAW/actualizar_panel.sh?v=$(date +%s)" -o /tmp/8kpro-actualizar.sh \
+  && bash /tmp/8kpro-actualizar.sh </dev/null || echo "AVISO: no se pudieron instalar el mapa y la geolocalización (ejecuta actualizar_panel.sh más tarde)."
+rm -f /tmp/8kpro-actualizar.sh
 
 sleep 1
 if curl -fsSk --max-time 5 "https://127.0.0.1/api/v1/ping" | grep -q '"ok"'; then OK="funcionando"; else OK="NO responde (mira: journalctl -u 8kpro-panel -n 50)"; fi
