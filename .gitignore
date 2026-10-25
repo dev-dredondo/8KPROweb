@@ -65,3 +65,6 @@ server_url.txt
 # Clave de firma (nunca en el repo)
 firma/
 *.keystore
+
+__pycache__/
+*.pyc
