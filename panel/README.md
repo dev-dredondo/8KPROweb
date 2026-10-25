@@ -30,7 +30,8 @@ y reinicia el panel.
 - La app (8KPROweb ≥ esta versión) envía `POST /api/v1/stats` al empezar cada canal/película, al
   empezar a cargar (buffering) y cada 30 s: qué ve, estado, tiempo viendo, nº de cortes y tiempo
   cargando, tiempo de arranque y resolución. Nunca la URL del stream.
-- **En directo**: quién está viendo qué ahora mismo y las últimas 60 sesiones (se guardan 30 días).
+- **En directo**: quién está viendo qué ahora mismo y las últimas 60 sesiones (se guardan 7 días).
+- **Estadísticas** (v1.4): cortes por hora, gráfico en el tiempo, canales y dispositivos que más se cortan; periodo de 1 h a 7 días y filtro directo/VOD.
 - **Mapa**: cada dispositivo según la IP de su última conexión. Es aproximado (ciudad o, a veces,
   la ubicación del operador). Mapa de © OpenStreetMap, geolocalización de [DB-IP](https://db-ip.com).
 

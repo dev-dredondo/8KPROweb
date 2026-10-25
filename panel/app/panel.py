@@ -34,12 +34,13 @@ import time
 import ipaddress
 import mimetypes
 from datetime import datetime
+from zoneinfo import ZoneInfo
 from http import HTTPStatus
 from http.cookies import SimpleCookie
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, quote, urlparse
 
-PANEL_VERSION = "1.3"
+PANEL_VERSION = "1.4"
 CONFIG_PATH = os.environ.get("PANEL_CONFIG", "/etc/8kpro-panel/config.json")
 DB_PATH = os.environ.get("PANEL_DB", "/var/lib/8kpro-panel/panel.db")
 LISTEN = (os.environ.get("PANEL_HOST", "127.0.0.1"), int(os.environ.get("PANEL_PORT", "8080")))
@@ -50,7 +51,16 @@ STATIC_DIR = os.environ.get("PANEL_STATIC", os.path.join(os.path.dirname(os.path
 
 # Estadísticas de reproducción: la app manda un latido cada 30 s; sin noticias en LIVE_WINDOW se da por parado.
 LIVE_WINDOW = 75
-PLAYS_KEEP_DAYS = 30
+PLAYS_KEEP_DAYS = 7
+# Horas y fechas del panel en la zona del administrador (el VPS suele estar en UTC).
+try:
+    TZ = ZoneInfo(os.environ.get("PANEL_TZ", "Europe/Madrid"))
+except Exception:
+    TZ = None
+# Periodos de «Estadísticas»: clave -> (segundos, etiqueta, tamaño de cada barra del gráfico en segundos)
+STAT_RANGES = {"1h": (3600, "Última hora", 300), "6h": (6 * 3600, "6 horas", 1800), "24h": (86400, "24 horas", 3600),
+               "3d": (3 * 86400, "3 días", 6 * 3600), "7d": (7 * 86400, "7 días", 12 * 3600)}
+MIN_WATCH_FOR_RANKING = 120  # un canal entra en el ranking con al menos 2 min vistos en el periodo
 PLAY_STATES = ("playing", "buffering", "paused", "error", "stopped")
 GEO_CREDIT = '<p style="text-align:center"><small><a href="https://db-ip.com">IP Geolocation by DB-IP</a></small></p>'
 STATE_LABEL = {"playing": "Reproduciendo", "buffering": "Cargando", "paused": "En pausa", "error": "Error", "stopped": "Parado"}
@@ -114,7 +124,7 @@ def e(value) -> str:
 def fmt_time(ts) -> str:
     if not ts:
         return "—"
-    return datetime.fromtimestamp(int(ts)).strftime("%d/%m/%Y %H:%M")
+    return datetime.fromtimestamp(int(ts), TZ).strftime("%d/%m/%Y %H:%M")
 
 
 def fmt_dur(seconds) -> str:
@@ -387,6 +397,7 @@ th{color:var(--muted);font-weight:600;font-size:13px}small{color:var(--muted)}
 
 def layout(title: str, body: str, logged: bool = True, head: str = "") -> str:
     nav = ('<nav><a class="btn ghost" href="/admin">Dispositivos</a><a class="btn ghost" href="/admin/live">En directo</a>'
+           '<a class="btn ghost" href="/admin/stats">Estadísticas</a>'
            '<a class="btn ghost" href="/admin/map">Mapa</a><a class="btn ghost" href="/admin/settings">Ajustes</a>'
            '<a class="btn ghost" href="/admin/logout">Salir</a></nav>') if logged else ""
     return (f'<!doctype html><html lang="es"><head><meta charset="utf-8">'
@@ -489,6 +500,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self.page_settings(q.get("msg", ""))
             if path == "/admin/live":
                 return self.page_live()
+            if path == "/admin/stats":
+                return self.page_stats(q)
             if path == "/admin/map":
                 return self.page_map()
             if path == "/admin/api/map":
@@ -665,12 +678,118 @@ class Handler(BaseHTTPRequestHandler):
 <div class="stat"><b class="{'warn' if cutting else ''}">{cutting}</b><small>cargando (buffering) ahora</small></div>
 <div class="stat"><b>{online}</b><small>conectados en los últimos 10 min</small></div>
 <div class="stat"><b>{active}</b><small>dispositivos activos</small></div></div>
-<div class="card"><h2 style="margin-top:0">Viendo ahora</h2><p><small>Se actualiza sola cada 15 s. «Cortes» = veces que se ha parado a cargar después de empezar (y tiempo total cargando).</small></p>
+<div class="card"><h2 style="margin-top:0">Viendo ahora</h2><p><small>Se actualiza sola cada 15 s. «Cortes» = veces que se ha parado a cargar después de empezar (y tiempo total cargando). Historial de 7 días; resumen en <a href="/admin/stats">Estadísticas</a>.</small></p>
 <div class="table-wrap"><table><tr><th>Dispositivo</th><th>Contenido</th><th>Estado</th><th>Tiempo viendo</th><th>Cortes</th><th>Arranque</th><th>Ubicación</th></tr>
 {table}</table></div></div>
 <div class="card"><h2 style="margin-top:0">Últimas sesiones</h2><div class="table-wrap"><table>
 <tr><th>Inicio</th><th>Dispositivo</th><th>Contenido</th><th>Duración</th><th>Cortes</th><th>Estado</th></tr>{hist}</table></div></div>
 {GEO_CREDIT if geo_available() else ''}""", head='<meta http-equiv="refresh" content="15">'))
+
+    # ---- admin: estadísticas de cortes
+    def page_stats(self, q: dict):
+        rng = q.get("r") if q.get("r") in STAT_RANGES else "24h"
+        kind = q.get("k") if q.get("k") in ("live", "vod", "all") else "live"
+        span, label, bucket = STAT_RANGES[rng]
+        since = now() - span
+        where, args = "p.updated_at >= ?", [since]
+        if kind != "all":
+            where += " AND p.kind = ?"
+            args.append(kind)
+        with db() as conn:
+            tot = conn.execute(f"SELECT COUNT(*) n, COUNT(DISTINCT p.device_id) devs, COALESCE(SUM(p.watch_s),0) w, "
+                               f"COALESCE(SUM(p.buffering_count),0) c, COALESCE(SUM(p.buffering_s),0) b, "
+                               f"SUM(CASE WHEN p.buffering_count > 0 THEN 1 ELSE 0 END) withcuts, AVG(p.startup_ms) st, "
+                               f"SUM(CASE WHEN p.state='error' THEN 1 ELSE 0 END) errs FROM plays p WHERE {where}", args).fetchone()
+            channels = conn.execute(f"SELECT p.title, COUNT(*) n, COUNT(DISTINCT p.device_id) devs, SUM(p.watch_s) w, "
+                                    f"SUM(p.buffering_count) c, SUM(p.buffering_s) b, AVG(p.startup_ms) st, "
+                                    f"SUM(CASE WHEN p.state='error' THEN 1 ELSE 0 END) errs FROM plays p WHERE {where} "
+                                    f"GROUP BY p.title HAVING SUM(p.watch_s) >= ? ORDER BY (SUM(p.buffering_count) * 3600.0 / SUM(p.watch_s)) DESC, "
+                                    f"SUM(p.buffering_count) DESC LIMIT 40", args + [MIN_WATCH_FOR_RANKING]).fetchall()
+            devices = conn.execute(f"SELECT p.device_id, d.code, d.username, d.ip, COUNT(*) n, SUM(p.watch_s) w, SUM(p.buffering_count) c, "
+                                   f"SUM(p.buffering_s) b FROM plays p JOIN devices d ON d.id = p.device_id WHERE {where} "
+                                   f"GROUP BY p.device_id HAVING SUM(p.watch_s) >= ? AND SUM(p.buffering_count) > 0 "
+                                   f"ORDER BY (SUM(p.buffering_count) * 3600.0 / SUM(p.watch_s)) DESC LIMIT 15",
+                                   args + [MIN_WATCH_FOR_RANKING]).fetchall()
+            rows = conn.execute(f"SELECT p.updated_at, p.started_at, p.buffering_count FROM plays p WHERE {where}", args).fetchall()
+
+        def per_hour(c, w):
+            return (c or 0) * 3600.0 / w if w else 0.0
+
+        def level(rate):
+            return "bad" if rate >= 6 else ("warn" if rate >= 2 else "")
+
+        # Gráfico: cortes por intervalo (cada sesión cuenta en el intervalo de su último latido) y sesiones activas.
+        start = since - since % bucket
+        nb = (now() - start) // bucket + 1
+        cuts_b, sess_b = [0] * nb, [0] * nb
+        for r in rows:
+            i = min(nb - 1, max(0, (r["updated_at"] - start) // bucket))
+            cuts_b[i] += r["buffering_count"] or 0
+            sess_b[i] += 1
+        peak = max(cuts_b) or 1
+        W, H, pad = 900, 180, 24
+        bw = (W - 2 * pad) / nb
+        bars = []
+        for i, c in enumerate(cuts_b):
+            h = (H - 40) * c / peak
+            x = pad + i * bw
+            t0 = datetime.fromtimestamp(start + i * bucket, TZ)
+            tip = t0.strftime("%d/%m %H:%M") + f" · {c} cortes · {sess_b[i]} sesiones"
+            bars.append(f'<rect x="{x + 1:.1f}" y="{H - 20 - h:.1f}" width="{max(bw - 2, 1):.1f}" height="{h:.1f}" rx="2" '
+                        f'fill="{"#ff6b6b" if c and c >= peak * .7 else "#ffb95c"}"><title>{e(tip)}</title></rect>')
+        step = max(1, nb // 8)
+        for i in range(0, nb, step):
+            t0 = datetime.fromtimestamp(start + i * bucket, TZ)
+            fmt = "%H:%M" if span <= 86400 else "%d/%m %Hh"
+            bars.append(f'<text x="{pad + i * bw:.1f}" y="{H - 4}" fill="#a49fb8" font-size="11">{t0.strftime(fmt)}</text>')
+        bars.append(f'<text x="{pad}" y="12" fill="#a49fb8" font-size="11">máx. {peak if any(cuts_b) else 0} cortes</text>')
+        chart = f'<svg viewBox="0 0 {W} {H}" width="100%" role="img" aria-label="Cortes en el tiempo">{"".join(bars)}</svg>'
+
+        rate_all = per_hour(tot["c"], tot["w"])
+        pct_cut = round(100 * (tot["withcuts"] or 0) / tot["n"]) if tot["n"] else 0
+        buf_pct = round(100 * (tot["b"] or 0) / tot["w"], 1) if tot["w"] else 0
+
+        def btn(key, text, param, current):
+            other = f"&k={kind}" if param == "r" else f"&r={rng}"
+            cls = "btn" if key == current else "btn ghost"
+            return f'<a class="{cls}" href="/admin/stats?{param}={key}{other}" style="padding:6px 14px">{text}</a>'
+
+        ranges = " ".join(btn(k, v[1], "r", rng) for k, v in STAT_RANGES.items())
+        kinds = " ".join(btn(k, t, "k", kind) for k, t in (("live", "Directo"), ("vod", "Películas/series"), ("all", "Todo")))
+
+        ch_rows = []
+        for i, r in enumerate(channels, 1):
+            rate = per_hour(r["c"], r["w"])
+            bp = round(100 * (r["b"] or 0) / r["w"], 1) if r["w"] else 0
+            ch_rows.append(f"""<tr><td>{i}</td><td><b>{e(r['title']) or '—'}</b></td><td class="{level(rate)}"><b>{rate:.1f}</b></td>
+<td>{r['c'] or 0}</td><td>{fmt_dur(r['b'])} <small>({bp}%)</small></td><td>{fmt_dur(r['w'])}</td><td>{r['n']} <small>/ {r['devs']} disp.</small></td>
+<td>{(str(round((r['st'] or 0) / 1000, 1)) + ' s') if r['st'] is not None else '—'}</td><td>{r['errs'] or 0}</td></tr>""")
+        ch_table = "".join(ch_rows) or '<tr><td colspan="9"><small>Sin datos suficientes en este periodo.</small></td></tr>'
+        dev_rows = "".join(f"""<tr><td><a class="code" href="/admin/device/{r['device_id']}">{e(r['code'])}</a> <small>{e(r['username'])}</small></td>
+<td class="{level(per_hour(r['c'], r['w']))}"><b>{per_hour(r['c'], r['w']):.1f}</b></td><td>{r['c']}</td><td>{fmt_dur(r['w'])}</td>
+<td>{e(geo_label(r['ip'])) or '—'} <small>{e(r['ip'])}</small></td></tr>""" for r in devices) \
+            or '<tr><td colspan="5"><small>Ningún dispositivo con cortes en este periodo.</small></td></tr>'
+
+        return self.html(layout("Estadísticas", f"""<div class="card" style="display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;justify-content:space-between">
+<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center"><b>Periodo:</b> {ranges}</div>
+<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center"><b>Tipo:</b> {kinds}</div></div>
+<div class="stats">
+<div class="stat"><b class="{level(rate_all)}">{rate_all:.1f}</b><small>cortes por hora de visionado</small></div>
+<div class="stat"><b>{tot['c']}</b><small>cortes en total ({fmt_dur(tot['b'])} cargando, {buf_pct}% del tiempo)</small></div>
+<div class="stat"><b>{pct_cut}%</b><small>de sesiones con algún corte ({tot['n']} sesiones)</small></div>
+<div class="stat"><b>{fmt_dur(tot['w'])}</b><small>vistas por {tot['devs']} dispositivo(s)</small></div>
+<div class="stat"><b>{(str(round((tot['st'] or 0) / 1000, 1)) + ' s') if tot['st'] is not None else '—'}</b><small>arranque medio · {tot['errs'] or 0} errores</small></div></div>
+<div class="card"><h2 style="margin-top:0">Cortes en el tiempo · {label}</h2>{chart}
+<p><small>Pasa el ratón por una barra para ver el detalle. En rojo, los picos.</small></p></div>
+<div class="card"><h2 style="margin-top:0">Canales que más se cortan</h2>
+<p><small>Ordenados por <b>cortes por hora</b> de visionado (así un canal muy visto no sale primero solo por eso). Solo canales con al menos {MIN_WATCH_FOR_RANKING // 60} min vistos.
+<span class="warn">Amarillo</span> ≥ 2/h · <span class="bad">rojo</span> ≥ 6/h.</small></p>
+<div class="table-wrap"><table><tr><th>#</th><th>Canal / contenido</th><th>Cortes/h</th><th>Cortes</th><th>Tiempo cargando</th><th>Tiempo visto</th><th>Sesiones</th><th>Arranque medio</th><th>Errores</th></tr>
+{ch_table}</table></div></div>
+<div class="card"><h2 style="margin-top:0">Dispositivos con más cortes</h2>
+<p><small>Si un dispositivo se corta en todos los canales, suele ser su conexión (WiFi, operador), no el canal.</small></p>
+<div class="table-wrap"><table><tr><th>Dispositivo</th><th>Cortes/h</th><th>Cortes</th><th>Tiempo visto</th><th>Ubicación</th></tr>{dev_rows}</table></div></div>
+<p style="text-align:center"><small>Se guardan los últimos {PLAYS_KEEP_DAYS} días.</small></p>"""))
 
     # ---- admin: mapa
     def map_points(self) -> list:
@@ -829,7 +948,7 @@ setInterval(()=>fetch("/admin/api/map",{{credentials:"same-origin"}}).then(r=>r.
 <td>{p['buffering_count']} <small>({fmt_dur(p['buffering_s'])})</small></td><td>{e(geo_label(p['ip'])) or e(p['ip'])}</td></tr>""" for p in plays)
         history = (f'<div class="card"><h3 style="margin-top:0">Últimas reproducciones</h3><div class="table-wrap"><table>'
                    f'<tr><th>Inicio</th><th>Contenido</th><th>Duración</th><th>Cortes</th><th>Ubicación</th></tr>{prow}</table></div></div>') if plays else ""
-        exp = datetime.fromtimestamp(int(r["expires_at"])).strftime("%Y-%m-%d") if r["expires_at"] else ""
+        exp = datetime.fromtimestamp(int(r["expires_at"]), TZ).strftime("%Y-%m-%d") if r["expires_at"] else ""
         status_opts = "".join(f'<option value="{k}"{" selected" if r["status"] == k else ""}>{v}</option>'
                               for k, v in [("active", "Activo"), ("pending", "Pendiente"), ("disabled", "Desactivado")])
         return self.html(layout(r["code"], f"""<p><a href="/admin">← Dispositivos</a></p>
@@ -857,7 +976,7 @@ Registrado {fmt_time(r['created_at'])} · Última conexión {fmt_time(r['last_se
         exp_ts = None
         if f.get("expires", "").strip():
             try:
-                exp_ts = int(datetime.strptime(f["expires"].strip(), "%Y-%m-%d").replace(hour=23, minute=59).timestamp())
+                exp_ts = int(datetime.strptime(f["expires"].strip(), "%Y-%m-%d").replace(hour=23, minute=59, tzinfo=TZ).timestamp())
             except ValueError:
                 exp_ts = None
         with _db_lock, db() as conn:
