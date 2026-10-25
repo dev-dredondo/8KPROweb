@@ -71,6 +71,7 @@ class SetupViewModel(
                         server = session.serverUrl,
                         username = session.username,
                         password = session.password,
+                        autoRefresh = tv.own.owntv.brand.BrandDefaults.PLAYLIST_REFRESH,
                     )
                 }
             }

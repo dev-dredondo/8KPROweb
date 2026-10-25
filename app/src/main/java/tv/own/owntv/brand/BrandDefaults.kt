@@ -22,13 +22,21 @@ object BrandDefaults {
     private const val TAG = "BrandDefaults"
     private const val PREFS = "brand_defaults"
     private const val KEY_VERSION = "applied_version"
-    private const val VERSION = 2
+    private const val VERSION = 3
 
     const val ACCENT_HEX = "#FFB95C"
     /** TMDB language code as offered in Settings › Metadata (plain "es" = Spanish, Spain). */
     const val METADATA_LANGUAGE = "es"
+    /** Every playlist on the account's server re-syncs (channels, films, series) at least every 3 days. */
+    val PLAYLIST_REFRESH = tv.own.owntv.core.settings.PlaylistRefresh(tv.own.owntv.core.settings.PlaylistAutoRefresh.MANUAL, 3)
 
-    fun apply(context: Context, scope: CoroutineScope, settings: SettingsRepository, metadata: MetadataRepository) {
+    fun apply(
+        context: Context,
+        scope: CoroutineScope,
+        settings: SettingsRepository,
+        metadata: MetadataRepository,
+        sourceDao: tv.own.owntv.core.database.dao.SourceDao,
+    ) {
         val prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
         val applied = prefs.getInt(KEY_VERSION, 0)
         scope.launch {
@@ -42,6 +50,14 @@ object BrandDefaults {
                 }
                 if (applied < 2) {
                     settings.setLivePreviewEnabled(false)
+                }
+                if (applied < 3) {
+                    // Live TV › "Give up on a channel after": Never.
+                    settings.setLiveTuneTimeoutSecs(0)
+                    // Playlists added before this version: refresh every 3 days (new ones get it at import).
+                    sourceDao.getAllOnce()
+                        .filter { it.type == tv.own.owntv.core.model.SourceType.XTREAM && BrandConfig.isOnBrandServer(it.url) }
+                        .forEach { settings.setPlaylistAutoRefresh(it.id, PLAYLIST_REFRESH) }
                 }
                 if (applied < VERSION) prefs.edit().putInt(KEY_VERSION, VERSION).apply()
 
