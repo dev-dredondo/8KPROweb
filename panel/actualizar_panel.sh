@@ -27,19 +27,24 @@ die()  { printf '\n\033[1;31mERROR: %s\033[0m\n' "$*" >&2; exit 1; }
 [ "$(id -u)" -eq 0 ] || die "Ejecútalo como root (con sudo)."
 [ -d "$APP_DIR" ] && id "$SVC_USER" >/dev/null 2>&1 || die "No encuentro el panel instalado. Instálalo primero con instalar_panel.sh."
 
-say "1/5 Paquetes"
-export DEBIAN_FRONTEND=noninteractive
-apt-get update -qq </dev/null
-if ! apt-get install -y -qq python3-maxminddb curl ca-certificates gzip >/dev/null </dev/null; then
-  warn "No se pudo instalar python3-maxminddb: el panel funcionará, pero sin mapa ni ubicaciones."
-fi
-
-say "2/5 Panel"
-curl -fsSL -H 'Cache-Control: no-cache' "$REPO_RAW/app/panel.py?v=$(date +%s)" -o "$APP_DIR/panel.py.new"
+say "1/5 Panel"
+# Lo primero: aunque luego falle algo opcional, el panel ya queda actualizado.
+curl -fsSL -H 'Cache-Control: no-cache' "$REPO_RAW/app/panel.py?v=$(date +%s)" -o "$APP_DIR/panel.py.new" </dev/null \
+  || die "No se pudo descargar panel.py desde GitHub (¿hay internet en el VPS?)"
 python3 -m py_compile "$APP_DIR/panel.py.new" || die "panel.py descargado no es válido"
 mv "$APP_DIR/panel.py.new" "$APP_DIR/panel.py"
 chmod 755 "$APP_DIR/panel.py"
+rm -rf "$APP_DIR/__pycache__"
 grep -m1 '^PANEL_VERSION' "$APP_DIR/panel.py"
+systemctl restart 8kpro-panel || warn "No se pudo reiniciar el panel"
+
+say "2/5 Paquetes"
+export DEBIAN_FRONTEND=noninteractive
+# Un repositorio roto en el VPS no debe parar la actualización: estos pasos son opcionales.
+apt-get update -qq </dev/null || warn "apt-get update dio errores; se intenta instalar igualmente."
+if ! apt-get install -y -qq python3-maxminddb curl ca-certificates gzip >/dev/null </dev/null; then
+  warn "No se pudo instalar python3-maxminddb: el panel funcionará, pero sin mapa ni ubicaciones."
+fi
 
 say "3/5 Leaflet $LEAFLET_VERSION (mapa)"
 install -d -m 755 "$APP_DIR/static/leaflet"
