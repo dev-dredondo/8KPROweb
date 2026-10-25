@@ -44,6 +44,32 @@
 1	log	app/src/main/java/tv/own/owntv/brand/BrandDefaults.kt	brand defaults not applied
 1	file-path	app/src/main/java/tv/own/owntv/brand/BrandDefaults.kt	brand_defaults
 1	locale	app/src/main/java/tv/own/owntv/brand/BrandDefaults.kt	es
+1	empty	app/src/main/java/tv/own/owntv/brand/BrandUpdateDialog.kt	\0
+1	empty	app/src/main/java/tv/own/owntv/brand/BrandUpdater.kt	\0
+1	technical	app/src/main/java/tv/own/owntv/brand/BrandUpdater.kt	%02x
+1	file-path	app/src/main/java/tv/own/owntv/brand/BrandUpdater.kt	8kpro-update.apk
+1	url	app/src/main/java/tv/own/owntv/brand/BrandUpdater.kt	?t=
+1	log	app/src/main/java/tv/own/owntv/brand/BrandUpdater.kt	BrandUpdater
+1	protocol	app/src/main/java/tv/own/owntv/brand/BrandUpdater.kt	Cache-Control
+1	technical	app/src/main/java/tv/own/owntv/brand/BrandUpdater.kt	DEPRECATION
+1	technical	app/src/main/java/tv/own/owntv/brand/BrandUpdater.kt	SHA-256
+1	json	app/src/main/java/tv/own/owntv/brand/BrandUpdater.kt	apk
+1	log	app/src/main/java/tv/own/owntv/brand/BrandUpdater.kt	check failed: ${it.javaClass.simpleName}
+1	log	app/src/main/java/tv/own/owntv/brand/BrandUpdater.kt	download failed: ${e.javaClass.simpleName}
+1	url	app/src/main/java/tv/own/owntv/brand/BrandUpdater.kt	https://
+1	log	app/src/main/java/tv/own/owntv/brand/BrandUpdater.kt	install failed: ${e.javaClass.simpleName}
+1	log	app/src/main/java/tv/own/owntv/brand/BrandUpdater.kt	install refused status=$status
+1	protocol	app/src/main/java/tv/own/owntv/brand/BrandUpdater.kt	no-cache
+1	json	app/src/main/java/tv/own/owntv/brand/BrandUpdater.kt	notes
+1	json	app/src/main/java/tv/own/owntv/brand/BrandUpdater.kt	sha256
+1	log	app/src/main/java/tv/own/owntv/brand/BrandUpdater.kt	sha256 mismatch
+1	json	app/src/main/java/tv/own/owntv/brand/BrandUpdater.kt	size
+1	technical	app/src/main/java/tv/own/owntv/brand/BrandUpdater.kt	tv.own.owntv.brand.UPDATE_STATUS
+1	log	app/src/main/java/tv/own/owntv/brand/BrandUpdater.kt	update installed
+1	file-path	app/src/main/java/tv/own/owntv/brand/BrandUpdater.kt	update.apk
+1	file-path	app/src/main/java/tv/own/owntv/brand/BrandUpdater.kt	updates
+1	json	app/src/main/java/tv/own/owntv/brand/BrandUpdater.kt	versionCode
+1	json	app/src/main/java/tv/own/owntv/brand/BrandUpdater.kt	versionName
 3	empty	app/src/main/java/tv/own/owntv/core/i18n/LocalizedContent.kt	\0
 1	empty	app/src/main/java/tv/own/owntv/features/customize/CustomizeItemsScreen.kt	\0
 1	assertion	app/src/main/java/tv/own/owntv/features/customize/CustomizeItemsViewModel.kt	EPISODE not applicable

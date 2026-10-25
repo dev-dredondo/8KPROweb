@@ -68,3 +68,4 @@ firma/
 
 __pycache__/
 *.pyc
+!/version.txt

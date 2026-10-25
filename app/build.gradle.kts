@@ -29,6 +29,18 @@ plugins {
     alias(libs.plugins.baselineprofile)
 }
 
+
+// 8K PRO: la versión sale de version.txt (p. ej. 1.0.1). versionCode = 1000000 + mayor*10000 + menor*100 + parche,
+// siempre por encima del 99999 de las primeras compilaciones, para que la actualización se instale encima.
+val brandVersionName: String = (System.getenv("VERSION_NAME")
+    ?: providers.fileContents(rootProject.layout.projectDirectory.file("version.txt")).asText.orNull?.trim()
+    ?: "1.0.0")
+val brandVersionCode: Int = System.getenv("VERSION_CODE")?.toInt() ?: run {
+    val p = brandVersionName.split('.').map { it.takeWhile(Char::isDigit).toIntOrNull() ?: 0 } + listOf(0, 0, 0)
+    require(p[1] < 100 && p[2] < 100) { "version.txt: menor y parche deben ser < 100 ($brandVersionName)" }
+    1_000_000 + p[0] * 10_000 + p[1] * 100 + p[2]
+}
+
 android {
     namespace = "tv.own.owntv"
     compileSdk {
@@ -54,11 +66,11 @@ android {
         // need a manual edit here. The fallbacks are only used for local/debug builds — pinned HIGH
         // (99999, mirroring versionName 99.99.99) so a local/debug APK is always "newer" than any
         // published release and installs straight over it (no INSTALL_FAILED_VERSION_DOWNGRADE).
-        versionCode = (System.getenv("VERSION_CODE") ?: "99999").toInt()
+        versionCode = brandVersionCode
         // CI injects VERSION_NAME from the git tag for releases. The fallback is only ever used by
         // LOCAL builds (i.e. debug), so we pin it to 99.99.99 — that way a dev build is always "newer"
         // than any published release and the in-app updater never offers an "update" while developing.
-        versionName = System.getenv("VERSION_NAME") ?: "99.99.99"
+        versionName = brandVersionName
 
         // Opt-in local diagnostic APKs keep the rolling playback trace enabled even when they are
         // release-signed (so they can update an installed production build without changing its data).
@@ -113,6 +125,11 @@ android {
         val brandPanelPin = (providers.gradleProperty("brand.panelPin").orNull ?: "").trim()
         buildConfigField("String", "BRAND_PANEL_URL", "\"$brandPanelUrl\"")
         buildConfigField("String", "BRAND_PANEL_PIN", "\"$brandPanelPin\"")
+        // Actualización automática: version.json publicado junto al APK en la rama "apk" de este repositorio.
+        // -Pbrand.updateUrl= (vacío) la desactiva.
+        val brandUpdateUrl = (providers.gradleProperty("brand.updateUrl").orNull
+            ?: "https://raw.githubusercontent.com/dev-dredondo/8KPROweb/apk/version.json").trim()
+        buildConfigField("String", "BRAND_UPDATE_URL", "\"$brandUpdateUrl\"")
         // Clave v3 de TMDB (metadatos y Tendencias). Mejor fuera del repo: -Pbrand.tmdbApiKey=… o en
         // ~/.gradle/gradle.properties. La de OwnTV no sirve: su servidor solo responde a sus builds firmadas.
         val brandTmdbKey = (providers.gradleProperty("brand.tmdbApiKey").orNull ?: "").trim()

@@ -140,6 +140,8 @@ open class MainActivity : ComponentActivity() {
         shellViewModel.checkAutoRefresh(includeStartup = false)
         // 8K PRO: back in the foreground → has the panel changed this TV's DNS or account?
         lifecycleScope.launch { runCatching { panelSync.refresh() } }
+        // 8K PRO: a new version of the app? (at most every 30 min; downloads and installs by itself)
+        runCatching { get<tv.own.owntv.brand.BrandUpdater>().checkAndUpdate() }
     }
 
     /**
@@ -475,6 +477,8 @@ open class MainActivity : ComponentActivity() {
                             // frame is safer than rendering protected content if a new state is added.
                             else -> Unit
                         }
+                        // 8K PRO: a newer version found at launch downloads and installs itself, over any screen.
+                        tv.own.owntv.brand.BrandUpdateDialog()
                         } // end foreground Box (above the background layer)
                     }
                     } // end LocalizedContent
