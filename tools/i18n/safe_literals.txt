@@ -1523,3 +1523,10 @@
 1	technical	app/src/main/java/tv/own/owntv/ui/theme/Glass.kt	glassPosition
 2	empty	app/src/main/java/tv/own/owntv/ui/theme/OwnTVColors.kt	\0
 2	empty	app/src/main/java/tv/own/owntv/ui/theme/Theme.kt	\0
+2	empty	app/src/main/java/tv/own/owntv/brand/BrandDns.kt	\0
+1	technical	app/src/main/java/tv/own/owntv/brand/BrandDns.kt	51.170.52.10
+1	technical	app/src/main/java/tv/own/owntv/brand/BrandDns.kt	85.208.114.51
+1	log	app/src/main/java/tv/own/owntv/brand/BrandDns.kt	BrandDns
+1	log	app/src/main/java/tv/own/owntv/brand/BrandDns.kt	DNS check failed: ${it.javaClass.simpleName}
+1	log	app/src/main/java/tv/own/owntv/brand/BrandDns.kt	DNS server not answering, switching to the other brand server
+1	technical	app/src/main/java/tv/own/owntv/brand/BrandDns.kt	google.com

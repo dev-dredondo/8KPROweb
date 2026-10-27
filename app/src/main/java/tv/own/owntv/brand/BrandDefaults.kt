@@ -22,7 +22,7 @@ object BrandDefaults {
     private const val TAG = "BrandDefaults"
     private const val PREFS = "brand_defaults"
     private const val KEY_VERSION = "applied_version"
-    private const val VERSION = 3
+    private const val VERSION = 4
 
     const val ACCENT_HEX = "#FFB95C"
     /** TMDB language code as offered in Settings › Metadata (plain "es" = Spanish, Spain). */
@@ -59,12 +59,18 @@ object BrandDefaults {
                         .filter { it.type == tv.own.owntv.core.model.SourceType.XTREAM && BrandConfig.isOnBrandServer(it.url) }
                         .forEach { settings.setPlaylistAutoRefresh(it.id, PLAYLIST_REFRESH) }
                 }
+                if (applied < 4) {
+                    // 1.0.3: the brand's own DNS servers switched on (Settings › Network › DNS).
+                    BrandDns.enableDefault(settings)
+                }
                 if (applied < VERSION) prefs.edit().putInt(KEY_VERSION, VERSION).apply()
 
                 val key = BrandConfig.tmdbApiKey
                 if (key.isNotEmpty() && settings.currentTmdbApiKey().isBlank()) {
                     settings.setTmdbApiKey(key)
                 }
+                // Every launch: if the brand DNS in use does not answer and the other one does, switch.
+                BrandDns.ensureWorking(settings)
             }.onFailure { Log.w(TAG, "brand defaults not applied", it) }
         }
     }
