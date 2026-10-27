@@ -32,7 +32,7 @@ y reinicia el panel.
   cargando, tiempo de arranque y resolución. Nunca la URL del stream.
 - **En directo**: quién está viendo qué ahora mismo y las últimas 60 sesiones (se guardan 7 días).
 - **Estadísticas** (v1.4): cortes por hora, gráfico en el tiempo, canales y dispositivos que más se cortan; periodo de 1 h a 7 días y filtro directo/VOD.
-- **Proveedor de backup** (v1.5, Ajustes y ficha de cada dispositivo): DNS, usuario y contraseña de un segundo proveedor.
+- **Proveedor de backup** (v1.6, en la ficha de cada dispositivo): DNS, usuario y contraseña de un segundo proveedor.
   Cuando un canal se cae, la app (8KPROmovil ≥ 1.0.3) ofrece los canales de nombre parecido de ese proveedor; nunca aparecen en las listas.
 - **Mapa**: cada dispositivo según la IP de su última conexión. Es aproximado (ciudad o, a veces,
   la ubicación del operador). Mapa de © OpenStreetMap, geolocalización de [DB-IP](https://db-ip.com).

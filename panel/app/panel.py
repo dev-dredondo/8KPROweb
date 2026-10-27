@@ -40,7 +40,7 @@ from http.cookies import SimpleCookie
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, quote, urlparse
 
-PANEL_VERSION = "1.5"
+PANEL_VERSION = "1.6"
 CONFIG_PATH = os.environ.get("PANEL_CONFIG", "/etc/8kpro-panel/config.json")
 DB_PATH = os.environ.get("PANEL_DB", "/var/lib/8kpro-panel/panel.db")
 LISTEN = (os.environ.get("PANEL_HOST", "127.0.0.1"), int(os.environ.get("PANEL_PORT", "8080")))
@@ -279,7 +279,7 @@ def init_db() -> None:
     with db() as conn:
         conn.executescript(SCHEMA)
         conn.execute("PRAGMA journal_mode=WAL")
-        # v1.5: proveedor de backup propio de un dispositivo (vacío = el global de Ajustes).
+        # v1.5+: proveedor de backup de cada dispositivo (DNS, usuario y contraseña propios).
         cols = {r[1] for r in conn.execute("PRAGMA table_info(devices)")}
         for col in ("backup_server_url", "backup_username", "backup_password"):
             if col not in cols:
@@ -287,13 +287,8 @@ def init_db() -> None:
 
 
 def backup_for(conn, row) -> dict | None:
-    """El proveedor de backup de un dispositivo: el suyo si tiene usuario propio, si no el global."""
-    g_url = get_setting(conn, "backup_server_url")
-    if row["backup_username"]:
-        url = row["backup_server_url"] or g_url
-        user, pw = row["backup_username"], row["backup_password"] or ""
-    else:
-        url, user, pw = g_url, get_setting(conn, "backup_username"), get_setting(conn, "backup_password")
+    """El proveedor de backup del dispositivo; None si le falta la DNS, el usuario o la contraseña."""
+    url, user, pw = row["backup_server_url"], row["backup_username"], row["backup_password"]
     if url and user and pw:
         return {"server_url": url, "username": user, "password": pw}
     return None
@@ -545,8 +540,6 @@ class Handler(BaseHTTPRequestHandler):
             # CSRF: la cookie de sesión es SameSite=Strict, así que otra web no puede enviarla en un POST.
             if path == "/admin/settings":
                 return self.save_settings()
-            if path == "/admin/settings/backup":
-                return self.save_backup_settings()
             if path.startswith("/admin/device/") and path.endswith("/delete"):
                 return self.delete_device(path.split("/")[-2])
             if path.startswith("/admin/device/"):
@@ -921,7 +914,7 @@ setInterval(()=>fetch("/admin/api/map",{{credentials:"same-origin"}}).then(r=>r.
             trs.append(f"""<tr><td><a class="code" href="/admin/device/{r['id']}">{e(r['code'])}</a></td>
 <td><span class="pill {st}">{STATUS_LABEL[st]}</span></td>
 <td>{e(r['manufacturer'])} {e(r['model'])}<br><small>Android {e(r['android'])} · app {e(r['app_version'])}</small></td>
-<td>{e(r['username']) or '—'}<br><small>{e(r['notes'])}</small></td>
+<td>{e(r['username']) or '—'}{' <span class="pill paused" title="Tiene proveedor de backup">backup</span>' if (r['backup_server_url'] and r['backup_username'] and r['backup_password']) else ''}<br><small>{e(r['notes'])}</small></td>
 <td>{fmt_time(r['last_seen'])}<br><small>{e(r['ip'])}{(' · ' + e(geo_label(r['ip']))) if r['ip'] else ''}</small></td>
 <td>{fmt_time(r['expires_at'])}</td></tr>""")
         table = "".join(trs) or '<tr><td colspan="6"><small>No hay dispositivos.</small></td></tr>'
@@ -985,10 +978,13 @@ Registrado {fmt_time(r['created_at'])} · Última conexión {fmt_time(r['last_se
 <div><label>Contraseña</label><input name="password" value="{e(r['password'])}" required autocomplete="off"></div></div>
 <label>DNS propia de este dispositivo (vacío = DNS global: {e(default_dns) or 'sin configurar'})</label>
 <input name="server_url" value="{e(own_dns)}" placeholder="vacío = usar la DNS global">
-<details style="margin-top:12px"{' open' if r['backup_username'] else ''}><summary style="cursor:pointer;color:var(--muted)">Cuenta de backup propia (opcional)</summary>
-<div class="row"><div><label>Usuario backup (vacío = el global de Ajustes)</label><input name="backup_username" value="{e(r['backup_username'])}" autocomplete="off"></div>
+<h3 style="margin:22px 0 0">Proveedor de backup <small style="font-weight:400">(opcional)</small></h3>
+<p style="margin:4px 0 0"><small>Si un canal se corta y no vuelve, la app ofrece canales de nombre parecido de este proveedor.
+Sus canales no aparecen nunca en las listas de la app. Déjalo vacío para no usar backup.</small></p>
+<label>DNS del backup (http://host:puerto)</label><input name="backup_server_url" value="{e(r['backup_server_url'])}" placeholder="vacío = sin backup">
+<div class="row"><div><label>Usuario backup</label><input name="backup_username" value="{e(r['backup_username'])}" autocomplete="off"></div>
 <div><label>Contraseña backup</label><input name="backup_password" value="{e(r['backup_password'])}" autocomplete="off"></div></div>
-<label>DNS backup (vacío = la DNS de backup global)</label><input name="backup_server_url" value="{e(r['backup_server_url'])}"></details>
+<h3 style="margin:22px 0 0">Otros datos</h3>
 <div class="row"><div><label>Caduca (vacío = nunca)</label><input name="expires" type="date" value="{exp}"></div>
 <div><label>Notas (cliente, teléfono…)</label><input name="notes" value="{e(r['notes'])}"></div></div>
 <p><button type="submit">Guardar</button></p></form></div>
@@ -1007,13 +1003,14 @@ Registrado {fmt_time(r['created_at'])} · Última conexión {fmt_time(r['last_se
             except ValueError:
                 exp_ts = None
         with _db_lock, db() as conn:
-            bk_user = f.get("backup_username", "").strip()
+            bk_url = normalize_url(f.get("backup_server_url", ""))
+            bk_user = f.get("backup_username", "").strip() if bk_url else ""
             conn.execute("UPDATE devices SET status=?, server_url=?, username=?, password=?, expires_at=?, notes=?,"
                          " backup_username=?, backup_password=?, backup_server_url=? WHERE id=?",
                          (status, normalize_url(f.get("server_url", "")) or None, f.get("username", "").strip(),
                           f.get("password", ""), exp_ts, clip(f.get("notes", "").strip(), 300),
                           bk_user or None, (f.get("backup_password", "") or None) if bk_user else None,
-                          (normalize_url(f.get("backup_server_url", "")) or None) if bk_user else None, int(dev_id)))
+                          bk_url or None, int(dev_id)))
         return self.redirect("/admin?msg=" + quote("Dispositivo guardado"))
 
     def delete_device(self, dev_id: str):
@@ -1028,8 +1025,6 @@ Registrado {fmt_time(r['created_at'])} · Última conexión {fmt_time(r['last_se
         with db() as conn:
             dns = get_setting(conn, "default_server_url")
             own = conn.execute("SELECT COUNT(*) FROM devices WHERE server_url IS NOT NULL AND server_url != ''").fetchone()[0]
-            bk_url, bk_user, bk_pass = (get_setting(conn, k) for k in ("backup_server_url", "backup_username", "backup_password"))
-            own_bk = conn.execute("SELECT COUNT(*) FROM devices WHERE backup_username IS NOT NULL AND backup_username != ''").fetchone()[0]
         flash = f'<p class="flash">{e(msg)}</p>' if msg else ""
         return self.html(layout("Ajustes", f"""{flash}<div class="card"><h2 style="margin-top:0">DNS global</h2>
 <p><small>La reciben todos los dispositivos sin DNS propia la próxima vez que se conecten (al abrir la app).
@@ -1038,15 +1033,7 @@ Ahora mismo {own} dispositivo(s) tienen una DNS propia y no se ven afectados.</s
 <input name="default_server_url" value="{e(dns)}" required>
 <label class="check"><input type="checkbox" name="reset_own" value="1"> Quitar también la DNS propia de todos los dispositivos</label>
 <p><button type="submit">Guardar</button></p></form></div>
-<div class="card"><h2 style="margin-top:0">Proveedor de backup</h2>
-<p><small>Cuando un canal se corta y no vuelve, la app ofrece canales con nombre parecido de este proveedor. Sus canales nunca
-aparecen en las listas de la app, solo en ese aviso. Vacío = sin backup. Un dispositivo puede tener su propia cuenta de backup (en su ficha).
-Ahora mismo {own_bk} dispositivo(s) tienen cuenta de backup propia.</small></p>
-<form method="post" action="/admin/settings/backup">
-<label>DNS del proveedor de backup (http://host:puerto)</label><input name="backup_server_url" value="{e(bk_url)}" placeholder="vacío = sin backup">
-<div class="row"><div><label>Usuario</label><input name="backup_username" value="{e(bk_user)}" autocomplete="off"></div>
-<div><label>Contraseña</label><input name="backup_password" value="{e(bk_pass)}" autocomplete="off"></div></div>
-<p><button type="submit">Guardar backup</button></p></form></div>"""))
+"""))
 
     def save_settings(self):
         f = self.form()
@@ -1059,15 +1046,6 @@ Ahora mismo {own_bk} dispositivo(s) tienen cuenta de backup propia.</small></p>
                 conn.execute("UPDATE devices SET server_url = NULL")
         return self.redirect("/admin/settings?msg=" + quote("DNS global guardada"))
 
-    def save_backup_settings(self):
-        f = self.form()
-        url = normalize_url(f.get("backup_server_url", ""))
-        with _db_lock, db() as conn:
-            set_setting(conn, "backup_server_url", url)
-            set_setting(conn, "backup_username", f.get("backup_username", "").strip() if url else "")
-            set_setting(conn, "backup_password", f.get("backup_password", "") if url else "")
-        msg = "Proveedor de backup guardado" if url else "Proveedor de backup desactivado"
-        return self.redirect("/admin/settings?msg=" + quote(msg + " (llega a la app al abrirla)"))
 
 
 def main() -> None:
