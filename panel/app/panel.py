@@ -40,7 +40,7 @@ from http.cookies import SimpleCookie
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, quote, urlparse
 
-PANEL_VERSION = "1.6"
+PANEL_VERSION = "1.7"
 CONFIG_PATH = os.environ.get("PANEL_CONFIG", "/etc/8kpro-panel/config.json")
 DB_PATH = os.environ.get("PANEL_DB", "/var/lib/8kpro-panel/panel.db")
 LISTEN = (os.environ.get("PANEL_HOST", "127.0.0.1"), int(os.environ.get("PANEL_PORT", "8080")))
@@ -284,10 +284,14 @@ def init_db() -> None:
         for col in ("backup_server_url", "backup_username", "backup_password"):
             if col not in cols:
                 conn.execute(f"ALTER TABLE devices ADD COLUMN {col} TEXT")
+        if "backup_enabled" not in cols:  # v1.7: el tick que activa o desactiva el backup del dispositivo
+            conn.execute("ALTER TABLE devices ADD COLUMN backup_enabled INTEGER NOT NULL DEFAULT 1")
 
 
 def backup_for(conn, row) -> dict | None:
-    """El proveedor de backup del dispositivo; None si le falta la DNS, el usuario o la contraseña."""
+    """El proveedor de backup del dispositivo; None si está desactivado o le falta la DNS, el usuario o la contraseña."""
+    if not row["backup_enabled"]:
+        return None
     url, user, pw = row["backup_server_url"], row["backup_username"], row["backup_password"]
     if url and user and pw:
         return {"server_url": url, "username": user, "password": pw}
@@ -914,7 +918,7 @@ setInterval(()=>fetch("/admin/api/map",{{credentials:"same-origin"}}).then(r=>r.
             trs.append(f"""<tr><td><a class="code" href="/admin/device/{r['id']}">{e(r['code'])}</a></td>
 <td><span class="pill {st}">{STATUS_LABEL[st]}</span></td>
 <td>{e(r['manufacturer'])} {e(r['model'])}<br><small>Android {e(r['android'])} · app {e(r['app_version'])}</small></td>
-<td>{e(r['username']) or '—'}{' <span class="pill paused" title="Tiene proveedor de backup">backup</span>' if (r['backup_server_url'] and r['backup_username'] and r['backup_password']) else ''}<br><small>{e(r['notes'])}</small></td>
+<td>{e(r['username']) or '—'}{((' <span class="pill active" title="Backup activado">backup</span>' if r['backup_enabled'] else ' <span class="pill disabled" title="Backup configurado pero desactivado">backup off</span>') if (r['backup_server_url'] and r['backup_username'] and r['backup_password']) else '')}<br><small>{e(r['notes'])}</small></td>
 <td>{fmt_time(r['last_seen'])}<br><small>{e(r['ip'])}{(' · ' + e(geo_label(r['ip']))) if r['ip'] else ''}</small></td>
 <td>{fmt_time(r['expires_at'])}</td></tr>""")
         table = "".join(trs) or '<tr><td colspan="6"><small>No hay dispositivos.</small></td></tr>'
@@ -981,6 +985,7 @@ Registrado {fmt_time(r['created_at'])} · Última conexión {fmt_time(r['last_se
 <h3 style="margin:22px 0 0">Proveedor de backup <small style="font-weight:400">(opcional)</small></h3>
 <p style="margin:4px 0 0"><small>Si un canal se corta y no vuelve, la app ofrece canales de nombre parecido de este proveedor.
 Sus canales no aparecen nunca en las listas de la app. Déjalo vacío para no usar backup.</small></p>
+<label class="check"><input type="checkbox" name="backup_enabled" value="1"{' checked' if r['backup_enabled'] else ''}> Backup activado para este dispositivo</label>
 <label>DNS del backup (http://host:puerto)</label><input name="backup_server_url" value="{e(r['backup_server_url'])}" placeholder="vacío = sin backup">
 <div class="row"><div><label>Usuario backup</label><input name="backup_username" value="{e(r['backup_username'])}" autocomplete="off"></div>
 <div><label>Contraseña backup</label><input name="backup_password" value="{e(r['backup_password'])}" autocomplete="off"></div></div>
@@ -1006,11 +1011,11 @@ Sus canales no aparecen nunca en las listas de la app. Déjalo vacío para no us
             bk_url = normalize_url(f.get("backup_server_url", ""))
             bk_user = f.get("backup_username", "").strip() if bk_url else ""
             conn.execute("UPDATE devices SET status=?, server_url=?, username=?, password=?, expires_at=?, notes=?,"
-                         " backup_username=?, backup_password=?, backup_server_url=? WHERE id=?",
+                         " backup_username=?, backup_password=?, backup_server_url=?, backup_enabled=? WHERE id=?",
                          (status, normalize_url(f.get("server_url", "")) or None, f.get("username", "").strip(),
                           f.get("password", ""), exp_ts, clip(f.get("notes", "").strip(), 300),
                           bk_user or None, (f.get("backup_password", "") or None) if bk_user else None,
-                          bk_url or None, int(dev_id)))
+                          bk_url or None, 1 if f.get("backup_enabled") == "1" else 0, int(dev_id)))
         return self.redirect("/admin?msg=" + quote("Dispositivo guardado"))
 
     def delete_device(self, dev_id: str):
