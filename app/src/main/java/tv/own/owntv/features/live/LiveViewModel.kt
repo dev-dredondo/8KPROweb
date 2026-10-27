@@ -1591,6 +1591,16 @@ class LiveViewModel(
         }
     }
 
+    /**
+     * 8K PRO: open the playing channel again from the start of the ladder (ExoPlayer first), after the
+     * engines gave up on it. No history entry, no zap state: the same channel, tried once more.
+     */
+    fun retryLive() {
+        val channel = _previewChannel.value ?: return
+        if (channel.id <= BACKUP_ID_BASE || _catchupActive.value) return
+        live.launch { live.start(channel, getSource(channel.sourceId)) }
+    }
+
     /** Back from a backup channel to the real one it stood in for (the backup failed too). */
     fun returnFromBackup() {
         val id = backupOf ?: return

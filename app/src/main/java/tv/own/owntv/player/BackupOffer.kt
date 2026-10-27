@@ -234,6 +234,41 @@ fun BackupOffer(liveVm: LiveViewModel, engine: PlaybackEngine, channel: ChannelE
     }
 }
 
+/** First wait before a channel the engines gave up on is opened again; each retry waits longer, up to [RETRY_MAX_MS]. */
+private const val RETRY_FIRST_MS = 5_000L
+private const val RETRY_MAX_MS = 30_000L
+
+/**
+ * 8K PRO: a device with no backup provider never gives up on a live channel. When the engines have
+ * given up (ExoPlayer, then mpv, and an error on screen), the channel is opened again from the start
+ * after [RETRY_FIRST_MS], then a little later each time, until it plays — so a channel that comes back
+ * after a long outage is playing again without anyone touching the remote.
+ */
+@Composable
+fun KeepTrying(liveVm: LiveViewModel, engine: PlaybackEngine, channel: ChannelEntity?) {
+    val catalog: BackupCatalog = koinInject()
+    if (channel == null || catalog.configured || liveVm.playingBackup) return
+    LaunchedEffect(channel.id, engine) {
+        var failedSince: Long? = null
+        var attempts = 0
+        while (true) {
+            delay(1_000)
+            val now = SystemClock.elapsedRealtime()
+            if (engine.error.value != null) {
+                val since = failedSince ?: now.also { failedSince = it }
+                if (now - since >= (RETRY_FIRST_MS * (attempts + 1)).coerceAtMost(RETRY_MAX_MS)) {
+                    attempts++
+                    failedSince = null
+                    liveVm.retryLive()
+                }
+            } else {
+                failedSince = null
+                if (engine.isPlaying.value && !engine.buffering.value) attempts = 0
+            }
+        }
+    }
+}
+
 private sealed interface Offer {
     data class Found(val alternatives: List<BackupCatalog.Alternative>) : Offer
     data object Unavailable : Offer

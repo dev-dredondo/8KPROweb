@@ -1744,6 +1744,12 @@ fun OwnTVShell(
                         engine = if (liveOnExo) liveVm.previewEngine else mpvEngine,
                         channel = previewChannel,
                     )
+                    // 8K PRO: with no backup, a channel the engines gave up on is retried until it plays.
+                    tv.own.owntv.player.KeepTrying(
+                        liveVm = liveVm,
+                        engine = if (liveOnExo) liveVm.previewEngine else mpvEngine,
+                        channel = previewChannel,
+                    )
                 }
                 if (showOtherChannels) {
                     val s = matchSession
