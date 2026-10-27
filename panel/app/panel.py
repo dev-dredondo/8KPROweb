@@ -40,7 +40,7 @@ from http.cookies import SimpleCookie
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, quote, urlparse
 
-PANEL_VERSION = "1.7"
+PANEL_VERSION = "1.8"
 CONFIG_PATH = os.environ.get("PANEL_CONFIG", "/etc/8kpro-panel/config.json")
 DB_PATH = os.environ.get("PANEL_DB", "/var/lib/8kpro-panel/panel.db")
 LISTEN = (os.environ.get("PANEL_HOST", "127.0.0.1"), int(os.environ.get("PANEL_PORT", "8080")))
@@ -286,6 +286,15 @@ def init_db() -> None:
                 conn.execute(f"ALTER TABLE devices ADD COLUMN {col} TEXT")
         if "backup_enabled" not in cols:  # v1.7: el tick que activa o desactiva el backup del dispositivo
             conn.execute("ALTER TABLE devices ADD COLUMN backup_enabled INTEGER NOT NULL DEFAULT 1")
+        if "hw_id" not in cols:  # v1.8: id del aparato que sobrevive a desinstalar la app (mismo código al reinstalar)
+            conn.execute("ALTER TABLE devices ADD COLUMN hw_id TEXT")
+        conn.execute("CREATE INDEX IF NOT EXISTS idx_devices_hw ON devices(hw_id)")
+
+
+def valid_hw(value) -> str | None:
+    """El id de aparato que manda la app (hash hexadecimal); None si no viene o no tiene buena pinta."""
+    v = str(value or "").strip().lower()
+    return v if 16 <= len(v) <= 64 and all(c in "0123456789abcdef" for c in v) else None
 
 
 def backup_for(conn, row) -> dict | None:
@@ -567,18 +576,28 @@ class Handler(BaseHTTPRequestHandler):
             return self.json(400, {"error": "invalid"})
         info = (clip(data.get("model")), clip(data.get("manufacturer")), clip(data.get("android"), 20),
                 clip(data.get("app_version"), 40))
+        hw = valid_hw(data.get("hardware_id"))
         with _db_lock, db() as conn:
             row = conn.execute("SELECT * FROM devices WHERE device_id = ?", (device_id,)).fetchone()
             if row:
                 if not hmac.compare_digest(row["token_hash"], sha256(token)):
                     return self.json(409, {"error": "device_id in use"})
-                conn.execute("UPDATE devices SET model=?, manufacturer=?, android=?, app_version=?, ip=?, last_seen=? WHERE id=?",
-                             (*info, self.client_ip(), now(), row["id"]))
+                conn.execute("UPDATE devices SET model=?, manufacturer=?, android=?, app_version=?, ip=?, last_seen=?,"
+                             " hw_id=COALESCE(?, hw_id) WHERE id=?", (*info, self.client_ip(), now(), hw, row["id"]))
                 return self.json(200, {"code": row["code"]})
+            # Reinstalada en el mismo aparato: el mismo dispositivo de siempre (código, cuenta, backup…)
+            # con el id y el token nuevos de esta instalación.
+            same = conn.execute("SELECT * FROM devices WHERE hw_id = ? ORDER BY COALESCE(last_seen, created_at) DESC LIMIT 1",
+                                (hw,)).fetchone() if hw else None
+            if same:
+                conn.execute("UPDATE devices SET device_id=?, token_hash=?, model=?, manufacturer=?, android=?, app_version=?,"
+                             " ip=?, last_seen=? WHERE id=?",
+                             (device_id, sha256(token), *info, self.client_ip(), now(), same["id"]))
+                return self.json(200, {"code": same["code"]})
             code = new_code(conn)
-            conn.execute("INSERT INTO devices (device_id, token_hash, code, model, manufacturer, android, app_version, ip, created_at, last_seen)"
-                         " VALUES (?,?,?,?,?,?,?,?,?,?)",
-                         (device_id, sha256(token), code, *info, self.client_ip(), now(), now()))
+            conn.execute("INSERT INTO devices (device_id, token_hash, code, model, manufacturer, android, app_version, ip, created_at, last_seen, hw_id)"
+                         " VALUES (?,?,?,?,?,?,?,?,?,?,?)",
+                         (device_id, sha256(token), code, *info, self.client_ip(), now(), now(), hw))
             return self.json(200, {"code": code})
 
     def api_config(self):
@@ -590,8 +609,9 @@ class Handler(BaseHTTPRequestHandler):
             if not row or not hmac.compare_digest(row["token_hash"], sha256(token)):
                 # La app vuelve a registrarse al recibir 401 (p. ej. si borraste el dispositivo).
                 return self.json(401, {"status": "unknown"})
-            conn.execute("UPDATE devices SET last_seen=?, ip=?, app_version=COALESCE(NULLIF(?, ''), app_version) WHERE id=?",
-                         (now(), self.client_ip(), version, row["id"]))
+            conn.execute("UPDATE devices SET last_seen=?, ip=?, app_version=COALESCE(NULLIF(?, ''), app_version),"
+                         " hw_id=COALESCE(?, hw_id) WHERE id=?",
+                         (now(), self.client_ip(), version, valid_hw(self.headers.get("X-Hardware-Id")), row["id"]))
             status = effective_status(row)
             server = row["server_url"] or get_setting(conn, "default_server_url")
             if status == "active" and not (server and row["username"] and row["password"]):

@@ -34,6 +34,7 @@ y reinicia el panel.
 - **Estadísticas** (v1.4): cortes por hora, gráfico en el tiempo, canales y dispositivos que más se cortan; periodo de 1 h a 7 días y filtro directo/VOD.
 - **Proveedor de backup** (v1.7, en la ficha de cada dispositivo): DNS, usuario y contraseña de un segundo proveedor, con un tick para activarlo o desactivarlo.
   Cuando un canal se cae, la app (8KPROmovil ≥ 1.0.3) ofrece los canales de nombre parecido de ese proveedor; nunca aparecen en las listas.
+- **Mismo código al reinstalar** (v1.8): la app manda un id del aparato que no cambia al desinstalar (ANDROID_ID cifrado con SHA-256; Android no deja leer la MAC desde la versión 6). Si el mismo aparato se vuelve a registrar, recupera su código, su cuenta y su backup.
 - **Mapa**: cada dispositivo según la IP de su última conexión. Es aproximado (ciudad o, a veces,
   la ubicación del operador). Mapa de © OpenStreetMap, geolocalización de [DB-IP](https://db-ip.com).
 
