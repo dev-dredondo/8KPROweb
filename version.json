@@ -1,8 +1,8 @@
 {
-  "versionCode": 1010002,
-  "versionName": "1.0.2",
-  "apk": "https://raw.githubusercontent.com/dev-dredondo/8KPROweb/apk/8KPROweb-1.0.2.apk",
-  "sha256": "42866b666a870635401bac289d5b25c5f0b5ce3989b1984c45de893b81686166",
-  "size": 86075724,
-  "notes": "- El contenido (canales, películas y series) se actualiza solo como mínimo cada 3 días\n- «Abandonar un canal tras» pasa a Nunca por defecto"
+  "versionCode": 1010003,
+  "versionName": "1.0.3",
+  "apk": "https://raw.githubusercontent.com/dev-dredondo/8KPROweb/apk/8KPROweb-1.0.3.apk",
+  "sha256": "0d61fe0ddc07b3d96560072b6911dcb9728a509b9eb3d1f6366aa33a9fb991f3",
+  "size": 86095096,
+  "notes": "- Canales de reserva: si un canal se cae (o se corta mucho), la app ofrece el mismo canal en el servidor de reserva y puede cambiar sola\n- DNS propias activadas por defecto\n- Al reinstalar la app se conserva el mismo código de dispositivo"
 }
