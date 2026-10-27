@@ -69,6 +69,14 @@ class BackupCatalog(private val store: BackupStore) {
     }
 
     /**
+     * Fetches the backup's channel list ahead of time (kept for [CACHE_MS]), so that when a channel
+     * fails the alternatives are ready at once instead of after a download from the backup server.
+     */
+    suspend fun warmUp() {
+        withContext(Dispatchers.IO) { store.current()?.let { load(it) } }
+    }
+
+    /**
      * The user's own search in the backup's channels: every word typed must appear in the name (in any
      * order, accents and case ignored). Null when there is no backup or it could not be reached.
      */
