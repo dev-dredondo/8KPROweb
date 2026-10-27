@@ -2537,7 +2537,11 @@ class OwnTVPlayer(
         playerBudget = budget
         android.util.Log.i(TAG, "PlayerBudget: $budget")
         val subtitleFontsDir = prepareSubtitleFontsDir()
-        mpv = MPVLib.create(context)?.apply {
+        // 8K PRO Fire TV: libmpv is built for Android 8; if its native code cannot load on 7.1 the player
+        // goes on without mpv (ExoPlayer plays live TV) instead of taking the app down.
+        mpv = runCatching { MPVLib.create(context) }
+            .onFailure { android.util.Log.w(TAG, "libmpv unavailable: ${it.javaClass.simpleName}") }
+            .getOrNull()?.apply {
             subtitleFontsDir?.let { setOptionString("sub-fonts-dir", it.absolutePath) }
             setOptionString("vo", if (useDirect()) "mediacodec_embed" else "gpu")
             setOptionString("gpu-context", "android")

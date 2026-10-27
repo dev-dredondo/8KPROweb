@@ -44,6 +44,8 @@ class MatchNotifications(private val context: Context, private val localeStore: 
 
     /** (Re)creates the channels in the app's language; Android keeps the user's per-channel choices. */
     fun ensureChannels(l: Context = localized()) {
+        // 8K PRO Fire TV: Android 7.1 has no notification channels (notifications work without one).
+        if (android.os.Build.VERSION.SDK_INT < 26) return
         val manager = context.getSystemService(NotificationManager::class.java) ?: return
         manager.createNotificationChannels(
             listOf(

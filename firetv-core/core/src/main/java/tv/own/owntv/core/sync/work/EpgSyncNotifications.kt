@@ -92,6 +92,8 @@ internal object EpgSyncNotifications {
     }
 
     private fun ensureChannel(context: Context, localized: Context) {
+        // 8K PRO Fire TV: Android 7.1 has no notification channels (notifications work without one).
+        if (android.os.Build.VERSION.SDK_INT < 26) return
         val manager = context.getSystemService(NotificationManager::class.java) ?: return
         val effectiveLocale = localized.resources.configuration.locales[0]?.toLanguageTag().orEmpty()
         val key = "$effectiveLocale:${localized.getString(R.string.common_nav_guide)}"
