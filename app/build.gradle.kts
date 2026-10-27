@@ -41,6 +41,10 @@ val brandVersionCode: Int = System.getenv("VERSION_CODE")?.toInt() ?: run {
     1_000_000 + p[0] * 10_000 + p[1] * 100 + p[2]
 }
 
+
+/** 8K PRO: the build for older Fire TV (Android 7.1), see minSdk below. */
+val brandFireTv = providers.gradleProperty("brand.firetv").orNull == "true"
+
 android {
     namespace = "tv.own.owntv"
     compileSdk {
@@ -60,7 +64,9 @@ android {
         // paquete de las clases Kotlin y de R; cambiarlo obligaría a mover todo el código sin ningún efecto
         // para el usuario. Android identifica la app solo por applicationId.
         applicationId = "com.app8k.web"
-        minSdk = 26
+        // 8K PRO: -Pbrand.firetv=true builds the copy for older Fire TV (Fire OS 6 = Android 7.1) against
+        // the core source in firetv-core/ (see settings.gradle.kts). The normal build is unchanged.
+        minSdk = if (brandFireTv) 25 else 26
         targetSdk = 36
         // CI injects these from the git tag (see .github/workflows/android.yml) so releases never
         // need a manual edit here. The fallbacks are only used for local/debug builds — pinned HIGH
@@ -244,7 +250,13 @@ android {
 
     lint {
         // CI gates on this (see .github/workflows/android.yml), so an error must mean something.
-        abortOnError = true
+        abortOnError = !brandFireTv
+        if (brandFireTv) {
+            // Fire TV copy: only the calls Android 7.1 lacks, into a report read by hand.
+            checkOnly += "NewApi"
+            textReport = true
+            textOutput = rootProject.file("lint-newapi-app.txt")
+        }
         warningsAsErrors = false
         // A counted sentence must use Android plural resources; keep this invariant fatal so a new
         // extraction cannot reintroduce English-only quantity wording.
@@ -279,6 +291,8 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+        // Fire TV copy: java.time, java.nio.file and other Java 8+ APIs Android 7.1 lacks.
+        isCoreLibraryDesugaringEnabled = brandFireTv
     }
 }
 
@@ -392,6 +406,7 @@ val verifyI18nLiterals = tasks.register<VerifyI18nLiterals>("verifyI18nLiterals"
 tasks.named("preBuild") { dependsOn(verifyI18nLiterals) }
 
 dependencies {
+    if (brandFireTv) coreLibraryDesugaring("com.android.tools:desugar_jdk_libs_nio:2.1.5")
     // The shared data/settings/sync module. It lives in its own repository now — see
     // https://github.com/ahXN00/OwnTV_Core. Set owntv.corePath in ~/.gradle/gradle.properties to
     // build against its source instead of this pinned version.

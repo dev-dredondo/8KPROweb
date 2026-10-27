@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <plurals name="content_downloading_items">
+        <item quantity="one">Laddar ned <xliff:g id="count">%1$d</xliff:g> objekt</item>
+        <item quantity="other">Laddar ned <xliff:g id="count">%1$d</xliff:g> objekt</item>
+    </plurals>
+    <plurals name="content_queued_items">
+        <item quantity="one"><xliff:g id="count">%1$d</xliff:g> objekt i kö</item>
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g> objekt i kö</item>
+    </plurals>
+    <plurals name="content_paused_items">
+        <item quantity="one"><xliff:g id="count">%1$d</xliff:g> pausat objekt</item>
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g> pausade objekt</item>
+    </plurals>
+    <string name="content_genre_action">Action</string>
+    <string name="content_genre_adult">Vuxet</string>
+    <string name="content_genre_anime">Anime</string>
+    <string name="content_genre_comedy">Komedi</string>
+    <string name="content_genre_documentary">Dokumentär</string>
+    <string name="content_genre_drama">Drama</string>
+    <string name="content_genre_entertainment">Underhållning</string>
+    <string name="content_genre_horror">Skräck</string>
+    <string name="content_genre_kids">Barn</string>
+    <string name="content_genre_movies">Filmer</string>
+    <string name="content_genre_music">Musik</string>
+    <string name="content_genre_news">Nyheter</string>
+    <string name="content_genre_other">Övrigt</string>
+    <string name="content_genre_religious">Religion</string>
+    <string name="content_genre_romance">Romantik</string>
+    <string name="content_genre_scifi">Science fiction</string>
+    <string name="content_genre_series">Serier</string>
+    <string name="content_genre_sport">Sport</string>
+    <string name="content_exit_owntv">Avsluta OwnTV?</string>
+    <string name="content_exit_confirmation">Är du säker på att du vill stänga appen?</string>
+    <string name="content_restore_incomplete_title">En återställning slutfördes inte</string>
+    <string name="content_restore_incomplete_message">Appen stängdes medan <xliff:g id="description">%1$s</xliff:g> återställdes, så en del kan saknas. Inget raderades — kör samma återställning igen via Inställningar → Säkerhetskopiering och återställning för att fylla i resten.</string>
+    <string name="content_playlist_picker_title">Visa spellista</string>
+    <string name="content_avatar_picker_title">Välj din avatar</string>
+    <string name="content_category_browser_title">Kategorier</string>
+    <string name="content_channel_overlay_title">Kanaler</string>
+    <string name="content_live_now">Live nu</string>
+    <string name="content_live_next">Live härnäst</string>
+    <string name="content_archive_playing">Spelas upp</string>
+    <string name="content_archive_then">Därefter</string>
+    <string name="content_clock_programme">Programtid</string>
+    <string name="content_clock_current">Aktuell tid</string>
+    <string name="content_media_overview">Översikt</string>
+    <string name="content_media_cast">Medverkande</string>
+    <string name="content_media_press_back">Tryck på Tillbaka för att stänga</string>
+    <string name="content_add_favourite">Lägg till som favorit</string>
+    <string name="content_remove_favourite">Ta bort från favoriter</string>
+    <string name="content_mark_watched">Markera som sedd</string>
+    <string name="content_mark_unwatched">Markera som osedd</string>
+    <string name="content_move">Flytta</string>
+    <string name="content_category_restore_playlist">Återställ standard</string>
+    <string name="content_category_restore_custom">Återställ standard</string>
+    <string name="content_category_restore_question">Detta kommer att:</string>
+    <plurals name="content_category_restore_hidden">
+        <item quantity="one">visa <xliff:g id="count">%1$d</xliff:g> dolt objekt igen</item>
+        <item quantity="other">visa <xliff:g id="count">%1$d</xliff:g> dolda objekt igen</item>
+    </plurals>
+    <plurals name="content_category_restore_moved">
+        <item quantity="one">återföra <xliff:g id="count">%1$d</xliff:g> flyttat objekt</item>
+        <item quantity="other">återföra <xliff:g id="count">%1$d</xliff:g> flyttade objekt</item>
+    </plurals>
+    <string name="content_category_restore_order">rensa din egen ordning</string>
+    <string name="content_category_restore_nothing">Kategorin har redan spellistans standard</string>
+    <string name="content_move_to_category">Flytta till kategori…</string>
+    <string name="content_remove_from_category">Ta bort från den här kategorin</string>
+    <string name="content_download">Ladda ned</string>
+    <string name="content_download_all_episodes">Ladda ned alla avsnitt</string>
+    <string name="content_play">Spela upp</string>
+    <string name="content_favorited">Favoritmarkerad</string>
+    <string name="content_favorite">Favoritmarkera</string>
+    <string name="content_seasons">Säsonger</string>
+    <string name="content_episodes">Avsnitt</string>
+    <string name="content_oldest_first">Äldsta först</string>
+    <string name="content_newest_first">Nyaste först</string>
+    <string name="content_play_external">Spela upp med extern spelare</string>
+    <string name="content_delete_subtitles">Ta bort OpenSub-undertexter</string>
+    <string name="content_tmdb_details">TMDB-detaljer</string>
+    <string name="content_play_trailer">Spela upp trailer</string>
+    <string name="content_refetch_tmdb">Hämta TMDB-detaljer igen</string>
+    <string name="content_set_tmdb_name">Ange TMDB-namn</string>
+    <string name="content_close">Stäng</string>
+    <string name="content_rename_hint">Gäller endast den här profilen. Lämna tomt för att återställa det ursprungliga namnet.</string>
+    <string name="content_no_movies_here">Inga filmer här.</string>
+    <string name="content_no_series_here">Inga serier här.</string>
+    <string name="content_no_episodes">Inga avsnitt är tillgängliga.</string>
+    <string name="content_episodes_load_failed">Det gick inte att hämta avsnitten från leverantören (<xliff:g id="reason">%1$s</xliff:g>).</string>
+    <string name="content_no_movies_found">Inga filmer hittades för ”<xliff:g id="query">%1$s</xliff:g>”</string>
+    <plurals name="content_count_movies">
+        <item quantity="one"><xliff:g id="category">%1$s</xliff:g> (<xliff:g id="count">%2$d</xliff:g> film)</item>
+        <item quantity="other"><xliff:g id="category">%1$s</xliff:g> (<xliff:g id="count">%2$d</xliff:g> filmer)</item>
+    </plurals>
+    <string name="content_provider">Leverantör</string>
+    <string name="content_provider_name">Leverantör: %1$s</string>
+    <string name="content_no_series_found">Inga serier hittades för ”<xliff:g id="query">%1$s</xliff:g>”</string>
+    <string name="content_reorder_movie">Ändra filmens ordning</string>
+    <string name="content_reorder_series">Ändra seriens ordning</string>
+    <string name="content_already_downloaded">Redan nedladdad — kontrollera menyn Nedladdningar.</string>
+    <string name="content_refetching_tmdb">Hämtar TMDB-detaljer igen…</string>
+    <string name="content_researching_tmdb">Söker på TMDB igen…</string>
+    <string name="content_duration_hours"><xliff:g id="hours">%1$d</xliff:g> h <xliff:g id="minutes">%2$d</xliff:g> min</string>
+    <string name="content_duration_minutes"><xliff:g id="minutes">%1$d</xliff:g> min</string>
+    <string name="content_rating">★ <xliff:g id="rating">%1$.1f</xliff:g></string>
+    <string name="content_metadata_separator">"  •  "</string>
+    <string name="content_season_episode">S<xliff:g id="season">%1$d</xliff:g> · A<xliff:g id="episode">%2$d</xliff:g></string>
+    <string name="content_season_episode_title">S<xliff:g id="season">%1$d</xliff:g> · A<xliff:g id="episode">%2$d</xliff:g> <xliff:g id="title">%3$s</xliff:g></string>
+    <string name="content_season">Säsong <xliff:g id="season">%1$d</xliff:g></string>
+    <string name="content_no_epg">Ingen EPG</string>
+    <string name="content_live_day_time_range"><xliff:g id="day">%1$s</xliff:g> <xliff:g id="start">%2$s</xliff:g> – <xliff:g id="stop">%3$s</xliff:g></string>
+    <string name="content_catchup">Tv-arkiv</string>
+    <string name="content_play_external_short">Spela upp i extern spelare</string>
+    <string name="content_rename">Byt namn</string>
+    <string name="content_rename_channel">Byt namn på kanal</string>
+    <string name="content_reorder_channel">Ändra kanalens ordning</string>
+    <string name="content_hide_channel">Dölj kanal</string>
+    <string name="content_remove_history">Ta bort från visningshistoriken</string>
+    <string name="content_no_channels_here">Inga kanaler här.</string>
+    <string name="content_no_channels_found">Inga kanaler hittades för ”<xliff:g id="query">%1$s</xliff:g>”</string>
+    <string name="content_match_epg">Matcha EPG</string>
+    <string name="content_catchup_title">Tv-arkiv · <xliff:g id="channel">%1$s</xliff:g></string>
+    <string name="content_rewind_at">Spola tillbaka · <xliff:g id="time">%1$s</xliff:g></string>
+    <string name="content_catchup_prompt">Välj ett nyligen sänt program för att spela upp det från början.</string>
+    <string name="content_catchup_empty">Det finns ännu inga aktuella programguidedata för den här kanalen — kontrollera att dess EPG är matchad (håll ned på den eller använd Matcha EPG).</string>
+    <string name="content_catchup_jump">Gå tillbaka till…</string>
+    <string name="content_catchup_jump_prompt">Välj en tid att börja titta från. Ingen tablå behövs.</string>
+    <string name="content_catchup_jump_exact">Välj exakt tid…</string>
+    <string name="content_catchup_jump_hint">Tryck på OK på dagen, timmen eller minuten, ändra med upp och ner och tryck på OK igen.</string>
+    <string name="content_epg_match_prompt">Välj kanalen i programguiden för ”<xliff:g id="channel">%1$s</xliff:g>”.</string>
+    <string name="content_epg_match_prompt_current">Välj kanalen i programguiden för ”<xliff:g id="channel">%1$s</xliff:g>”. Nuvarande: <xliff:g id="match">%2$s</xliff:g></string>
+    <string name="content_search_guide_channels">Sök bland kanaler i programguiden…</string>
+    <string name="content_no_epg_data">Inga EPG-data ännu — lägg till en EPG-källa i Inställningar.</string>
+    <string name="content_no_guide_channels">Inga kanaler i programguiden matchar ”<xliff:g id="query">%1$s</xliff:g>”.</string>
+    <string name="content_clear_match">Rensa matchning</string>
+    <string name="content_live_time_range_plain"><xliff:g id="start">%1$s</xliff:g> – <xliff:g id="stop">%2$s</xliff:g></string>
+    <string name="content_category_favorites">Favoriter</string>
+    <string name="content_category_history">Visningshistorik</string>
+    <string name="content_category_all_channels">Alla kanaler</string>
+    <string name="content_category_all_movies">Alla filmer</string>
+    <string name="content_category_all_series">Alla serier</string>
+    <string name="content_add_source">Lägg till en källa</string>
+    <string name="content_preview_select_channel">Välj en kanal för att förhandsvisa den här.</string>
+    <string name="content_offline_banner">Du är offline — uppspelning och uppdateringar fungerar inte förrän du ansluter igen.</string>
+    <string name="content_subtitle_select_file">Välj lokal undertextfil</string>
+    <string name="content_subtitle_load_failed">Det gick inte att läsa in undertextfilen.</string>
+    <string name="content_all_playlists">Alla spellistor</string>
+    <string name="content_search_categories">Sök kategorier…</string>
+    <string name="content_action_resume">Återuppta</string>
+    <string name="content_action_play">Spela upp</string>
+    <string name="content_action_last_channel">Senaste kanalen</string>
+    <string name="content_progress_percent"><xliff:g id="percent">%1$d</xliff:g>%%</string>
+    <string name="content_live_time_range"><xliff:g id="start">%1$s</xliff:g> – <xliff:g id="end">%2$s</xliff:g></string>
+    <string name="content_live_time_remaining"><xliff:g id="end">%1$s</xliff:g> · <xliff:g id="minutes">%2$d</xliff:g> min kvar</string>
+    <string name="content_downloads_title">Nedladdningar</string>
+    <string name="content_downloads_empty">Inga nedladdningar ännu. Öppna en film eller ett avsnitt och tryck på Ladda ned.</string>
+    <string name="content_downloads_options">Nedladdningsalternativ</string>
+    <string name="content_downloads_storage_free"><xliff:g id="free">%1$s</xliff:g> GB ledigt av <xliff:g id="total">%2$s</xliff:g> GB</string>
+    <string name="content_storage_internal">Intern lagring</string>
+    <string name="content_storage_removable">Flyttbar lagring</string>
+    <string name="content_storage_app">Applagring (ingen behörighet krävs)</string>
+    <string name="content_storage_choose_folder">Välj en annan mapp…</string>
+    <string name="content_storage_chosen_folder">Vald mapp</string>
+    <string name="content_storage_folder_lost">Den mappen är inte längre tillgänglig. Välj den igen eller välj en annan.</string>
+    <string name="content_storage_folder_fallback">Nedladdningsmappen är inte tillgänglig just nu, så nedladdningar sparas i OwnTV:s egen mapp tills den är tillbaka.</string>
+    <string name="content_downloads_queued">I kö…</string>
+    <string name="content_downloads_failed_group">Misslyckade</string>
+    <string name="content_downloads_play">Spela upp</string>
+    <string name="content_downloads_external">Extern</string>
+    <string name="content_downloads_pause">Pausa</string>
+    <string name="content_downloads_group_downloading">Laddar ned</string>
+    <string name="content_downloads_group_on_tv">På den här tv:n</string>
+    <string name="content_downloads_group_on_phone">På den här telefonen</string>
+    <string name="content_downloads_ready_short">Klar</string>
+    <string name="content_downloads_ready">Klar att titta</string>
+    <string name="content_downloads_paused">Pausad</string>
+    <string name="content_downloads_file_missing">Filen saknas: den finns inte längre på enheten</string>
+    <string name="content_downloads_reason_account_busy">Kontot är upptaget: en annan ström använder anslutningen</string>
+    <string name="content_downloads_reason_refused">Servern nekade länken</string>
+    <string name="content_downloads_reason_not_found">Servern har inte längre den här filen</string>
+    <string name="content_downloads_reason_server_error">Serverfel</string>
+    <string name="content_downloads_reason_http">Servern skickade inte filen</string>
+    <string name="content_downloads_reason_connection_lost">Anslutningen bröts</string>
+    <string name="content_downloads_reason_folder">Nedladdningsmappen är inte tillgänglig</string>
+    <string name="content_downloads_reason_no_space">Inte tillräckligt med utrymme</string>
+    <string name="content_downloads_reason_too_large">För stor för den här enheten: den kan inte lagra filer över 4 GB. Välj en annan nedladdningsmapp eller formatera enheten som exFAT</string>
+    <string name="content_downloads_reason_waiting_watching">Väntar: startar när du slutar titta</string>
+    <string name="content_downloads_reason_paused_watching">Pausad medan du tittar</string>
+    <string name="content_downloads_reason_with_code"><xliff:g id="reason">%1$s</xliff:g> (HTTP <xliff:g id="code">%2$d</xliff:g>)</string>
+    <string name="content_download_watch_title">Den här spellistan tillåter bara en ström</string>
+    <string name="content_download_watch_body">En nedladdning från <xliff:g id="playlist">%1$s</xliff:g> använde den och är nu pausad. Vill du titta, eller stänga spelaren och fortsätta ladda ner?</string>
+    <string name="content_download_watch_watch">Pausa nedladdningen och titta</string>
+    <string name="content_download_watch_keep">Fortsätt ladda ner</string>
+    <string name="content_download_watch_remember">Fråga inte igen</string>
+    <string name="content_download_watch_setting">Titta under nedladdning</string>
+    <string name="content_download_watch_setting_description">För spellistor som bara tillåter en ström: vad som händer med en nedladdning när du börjar spela upp.</string>
+    <string name="content_download_watch_ask">Fråga varje gång</string>
+    <string name="content_download_watch_pause">Pausa nedladdningen</string>
+    <string name="content_downloads_starts_after">I kö · startar efter <xliff:g id="title">%1$s</xliff:g></string>
+    <string name="content_downloads_speed"><xliff:g id="size">%1$s</xliff:g> MB/s</string>
+    <string name="content_epg_create_profile">Skapa en profil för att se programguiden.</string>
+    <string name="content_epg_filter_hides_all">Det aktuella filtret döljer alla kanaler. Ändra sorteringen för att se guiden.</string>
+    <string name="content_epg_add_playlist">Lägg till en spellista för att se programguiden.</string>
+    <string name="content_epg_no_channels_query">Inga kanaler i programguiden hittades för ”<xliff:g id="query">%1$s</xliff:g>”.</string>
+    <string name="content_epg_mismatched_ids">Programguidedata har sparats, men kanal-id:na matchar inte kanalernas EPG-id:n — det här EPG-flödet kan tillhöra en annan leverantörs kanalutbud.</string>
+    <string name="content_epg_catchup_unavailable">Tv-arkiv är inte tillgängligt för den här kanalen.</string>
+    <string name="content_epg_matched_no_programmes">Matchad — men den här kanalen i programguiden har ännu inga aktuella program i EPG-flödet.</string>
+    <string name="content_epg_add_playlist_first">Lägg till en spellista först.</string>
+    <string name="content_epg_no_match_data">Det finns ännu inga EPG-data att matcha mot.</string>
+    <string name="content_epg_all_matched">Allt är redan matchat.</string>
+    <string name="content_epg_no_match">Ingen EPG-matchning hittades för ”<xliff:g id="channel">%1$s</xliff:g>” — försök välja manuellt.</string>
+    <plurals name="content_epg_auto_matched_applied">
+        <item quantity="one"><xliff:g id="applied">%1$d</xliff:g> kanal matchades automatiskt.</item>
+        <item quantity="other"><xliff:g id="applied">%1$d</xliff:g> kanaler matchades automatiskt.</item>
+    </plurals>
+    <plurals name="content_epg_auto_matched_review">
+        <item quantity="one"><xliff:g id="review">%1$d</xliff:g> kanal behöver granskas.</item>
+        <item quantity="other"><xliff:g id="review">%1$d</xliff:g> kanaler behöver granskas.</item>
+    </plurals>
+    <string name="content_epg_auto_matched"><xliff:g id="applied">%1$s</xliff:g> <xliff:g id="review">%2$s</xliff:g></string>
+    <plurals name="content_epg_auto_matched_no_review">
+        <item quantity="one"><xliff:g id="applied">%1$d</xliff:g> kanal matchades automatiskt.</item>
+        <item quantity="other"><xliff:g id="applied">%1$d</xliff:g> kanaler matchades automatiskt.</item>
+    </plurals>
+    <string name="content_epg_title">TV-guide</string>
+    <string name="content_epg_matching">Matchar…</string>
+    <string name="content_epg_empty">Ingen EPG har lagts till.</string>
+    <string name="content_epg_no_guide">Ingen programguide.</string>
+    <string name="content_epg_no_programme">Inget program vid den här tiden.</string>
+    <string name="content_epg_add_description">Lägg till en EPG-källa (XMLTV) för att fylla programguiden med program.</string>
+    <string name="content_epg_guide_category">Programguidekategori</string>
+    <string name="content_epg_search_hint">Sök bland kanaler i programguiden…</string>
+    <string name="content_epg_add">Lägg till EPG</string>
+    <string name="content_epg_add_favourite">Lägg till som favorit</string>
+    <string name="content_epg_remove_favourite">Ta bort från favoriter</string>
+    <string name="content_epg_jump_now">Gå till nu</string>
+    <string name="content_epg_include_logos">Ta med guidens logotyper</string>
+    <string name="content_epg_review_description">De här kanalerna matchades efter namn, men matchningen var osäker. Godkänn de rätta och hoppa över resten.</string>
+    <string name="content_epg_accept">Godkänn</string>
+    <string name="content_epg_accept_all">Godkänn alla</string>
+    <string name="content_epg_skip">Hoppa över</string>
+    <string name="content_epg_skip_all">Hoppa över alla</string>
+    <string name="content_epg_pick_manually">Välj EPG manuellt</string>
+    <string name="content_epg_time_range"><xliff:g id="start">%1$s</xliff:g> – <xliff:g id="end">%2$s</xliff:g></string>
+    <string name="content_epg_all">Alla</string>
+    <string name="content_epg_sort_alpha">A–Ö</string>
+    <string name="content_epg_sort_provider">Leverantör</string>
+    <string name="content_epg_sort_catchup">Tv-arkiv</string>
+    <string name="content_epg_sort_favorites">Favoriter</string>
+    <string name="content_epg_sort_button">Sortering: <xliff:g id="label">%1$s</xliff:g></string>
+    <string name="content_epg_match_button">Matcha EPG automatiskt</string>
+    <string name="content_epg_channel_score">→ <xliff:g id="name">%1$s</xliff:g> · <xliff:g id="percent">%2$d</xliff:g>%%</string>
+    <string name="content_epg_bits_separator">" · "</string>
+    <string name="content_epg_watch_start">Titta från början</string>
+    <string name="content_epg_watch_channel">Titta på kanal</string>
+    <string name="content_epg_favourite">Favoritmarkera</string>
+    <string name="content_epg_unfavourite">Ta bort som favorit</string>
+    <string name="content_epg_player_choice_description">Ange ett permanent val i Inställningar › Tv-arkiv.</string>
+    <string name="content_epg_own_player">OwnTV-spelare</string>
+    <string name="content_epg_external_player">Extern spelare</string>
+    <string name="content_epg_time_offset">EPG-tidsförskjutning</string>
+    <string name="content_epg_shift_minutes"><xliff:g id="sign">%1$s</xliff:g><xliff:g id="minutes">%2$s</xliff:g>m</string>
+    <string name="content_epg_shift_hours"><xliff:g id="sign">%1$s</xliff:g><xliff:g id="hours">%2$s</xliff:g>h</string>
+    <string name="content_epg_shift_hours_minutes"><xliff:g id="sign">%1$s</xliff:g><xliff:g id="hours">%2$s</xliff:g>h <xliff:g id="minutes">%3$s</xliff:g>m</string>
+    <string name="content_epg_offset_channel_description">Flytta guiden för ”<xliff:g id="channel">%1$s</xliff:g>”. Använd detta när en East/West-feed delar sin guide med den andra versionen — en negativ förskjutning drar guiden tidigare.</string>
+    <string name="content_epg_offset_following_global">Följer den globala förskjutningen (<xliff:g id="offset">%1$s</xliff:g>)</string>
+    <string name="content_epg_offset_channel_only">Bara den här kanalen · global är <xliff:g id="offset">%1$s</xliff:g></string>
+    <string name="content_epg_offset_use_global">Använd global</string>
+    <string name="content_preview_single_stream">Förhandsvisning av — din leverantör tillåter bara en ström i taget.</string>
+    <string name="content_playlist_picker_subtitle">Gäller överallt och sparas</string>
+    <string name="content_playlist_marks_note">Med ”Alla spellistor” visar varje rad märket för spellistan den kommer från.</string>
+    <string name="content_action_next_episode">Nästa avsnitt</string>
+    <string name="content_search_in">Sök i <xliff:g id="name">%1$s</xliff:g></string>
+    <string name="content_live_guide_view">Guidevy</string>
+    <string name="content_key_watch">Titta</string>
+    <string name="content_key_schedule">Tablå</string>
+    <string name="content_key_options">Alternativ</string>
+    <string name="content_live_groups">Grupper</string>
+    <string name="content_menu_group_watch">Titta</string>
+    <string name="content_menu_group_channel">Kanal</string>
+    <string name="content_menu_group_guide_data">Guidedata</string>
+    <string name="content_menu_group_organise">Ordna</string>
+    <string name="content_epg_offset_global_short">Global</string>
+    <string name="content_live_groups_country">Grupper · <xliff:g id="country">%1$s</xliff:g></string>
+    <plurals name="content_live_channel_count">
+        <item quantity="one"><xliff:g id="count">%1$d</xliff:g> kanal</item>
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g> kanaler</item>
+    </plurals>
+    <string name="content_category_recently_watched">Nyligen sedda</string>
+    <string name="content_remind_me">Påminn mig</string>
+    <string name="content_remind_before"><xliff:g id="duration">%1$s</xliff:g> innan</string>
+    <string name="content_key_hold_ok">Håll OK</string>
+    <string name="content_epg_starts_in">Börjar om <xliff:g id="duration">%1$s</xliff:g></string>
+    <string name="content_epg_today">I dag</string>
+    <string name="content_epg_tomorrow">I morgon</string>
+    <string name="content_epg_yesterday">I går</string>
+    <string name="content_epg_now_short">Nu</string>
+    <string name="content_epg_sort_catchup_first">Tv-arkiv först</string>
+    <string name="content_epg_sort_favorites_first">Favoriter först</string>
+    <string name="content_epg_order_title">Sortera kanaler efter</string>
+    <string name="content_epg_order_hint">Öppnas så här nästa gång</string>
+    <string name="content_epg_category_hint">Samma lista som i Live-tv</string>
+    <string name="content_menu_group_new">Nytt</string>
+    <string name="content_menu_group_record">Inspelning</string>
+    <string name="content_epg_after_time">efter <xliff:g id="time">%1$s</xliff:g></string>
+    <string name="content_reminder_set">Påminnelse inställd</string>
+    <string name="content_live_list_view">Listvy</string>
+    <plurals name="content_epg_channels_matched">
+        <item quantity="one"><xliff:g id="count">%1$d</xliff:g> kanal matchad</item>
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g> kanaler matchade</item>
+    </plurals>
+    <plurals name="content_epg_review_count">
+        <item quantity="one">Granska <xliff:g id="count">%1$d</xliff:g> matchning</item>
+        <item quantity="other">Granska <xliff:g id="count">%1$d</xliff:g> matchningar</item>
+    </plurals>
+    <string name="content_key_browse">Bläddra</string>
+    <string name="content_key_channels">Kanaler</string>
+    <string name="content_key_programmes">Program</string>
+    <string name="content_key_menu">Meny</string>
+    <string name="content_key_enter">Öppna</string>
+    <string name="content_key_select">Välj</string>
+    <string name="content_key_unselect">Avmarkera</string>
+    <string name="content_key_page">Sida</string>
+    <string name="content_history_overlay_hint">Kanalerna du såg senast, nyaste först</string>
+    <string name="content_watched_duration"><xliff:g id="value">%1$s</xliff:g> sedda</string>
+    <string name="content_menu_group_show">Visa</string>
+    <string name="content_epg_show_empty">Kanaler utan guide</string>
+    <string name="content_epg_show_preview">Förhandsvisning av video</string>
+    <string name="content_epg_view_timeline">Tidslinje</string>
+    <string name="content_menu_group_view">Vy</string>
+    <string name="content_vod_providers">Leverantörer</string>
+    <string name="content_sort_movies_title">Sortera filmer</string>
+    <string name="content_sort_series_title">Sortera serier</string>
+    <string name="content_sort_applies_hint">Gäller alla kategorier i det här avsnittet</string>
+    <string name="content_sort_provider_order">Leverantörens ordning</string>
+    <string name="content_sort_provider_order_hint">Ordningen i din spellista</string>
+    <string name="content_sort_rating_hint">Högst först</string>
+    <string name="content_sort_date_added_hint">Nyast först</string>
+    <string name="content_menu_group_library">Bibliotek</string>
+    <string name="content_menu_group_details">Detaljer</string>
+    <string name="content_movie_details">Filminformation</string>
+    <string name="content_series_details">Serieinformation</string>
+    <plurals name="content_vod_title_count">
+        <item quantity="one"><xliff:g id="count">%1$d</xliff:g> titel</item>
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g> titlar</item>
+    </plurals>
+    <plurals name="content_vod_series_count">
+        <item quantity="one"><xliff:g id="count">%1$d</xliff:g> serie</item>
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g> serier</item>
+    </plurals>
+    <string name="content_resume_episode">Återuppta <xliff:g id="episode">%1$s</xliff:g></string>
+    <string name="content_play_episode">Spela <xliff:g id="episode">%1$s</xliff:g></string>
+    <string name="content_download_season">Ladda ned säsong</string>
+    <string name="content_episode_order">Avsnittsordning</string>
+    <string name="content_episode_order_hint">Sparas för den här serien</string>
+    <string name="content_hide_watched_episodes">Dölj sedda avsnitt</string>
+    <string name="content_episode_watched">Sedd</string>
+    <string name="content_play_from_start">Spela från början</string>
+    <string name="content_episode_details">Avsnittsdetaljer</string>
+    <string name="content_season_specials">Specialavsnitt</string>
+    <string name="content_poster_size">Storlek på omslagsbilder</string>
+    <string name="content_vod_more_in">Mer i <xliff:g id="category">%1$s</xliff:g></string>
+</resources>

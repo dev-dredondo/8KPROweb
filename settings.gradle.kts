@@ -45,6 +45,11 @@ dependencyResolutionManagement {
 // because OwnTV_Core publishes under the same group and artifact ids this app asks for. CI leaves
 // owntv.corePath unset and resolves the pinned version instead.
 // Set it in ~/.gradle/gradle.properties, never here:  owntv.corePath=E:/MEGA/CODE/AI/OwnTV_Core
+// 8K PRO: the older-Fire-TV build (-Pbrand.firetv=true) compiles core from firetv-core/, a copy of
+// OwnTV_Core 1.0.69 set to Android 7.1, in place of the published core (which needs Android 8).
+if (providers.gradleProperty("brand.firetv").orNull == "true") {
+    includeBuild("firetv-core") { name = "firetvcore" }
+}
 providers.gradleProperty("owntv.corePath").orNull?.takeIf { it.isNotBlank() }?.let { includeBuild(it) }
 
 rootProject.name = "8KProWeb"

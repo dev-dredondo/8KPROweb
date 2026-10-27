@@ -1,0 +1,71 @@
+package tv.own.owntv.core.database.entity
+
+import androidx.room.Entity
+import androidx.room.Index
+import androidx.room.PrimaryKey
+
+/**
+ * TMDB enrichment cache. Two additive tables, both pure caches — safe to wipe (they re-fetch)
+ * and deliberately decoupled from the huge content tables (movies/series/episodes are never mutated).
+ *
+ * IMPORTANT: content DB ids change on every re-sync (M3U is clear-then-insert), so [MetadataMatchEntity]
+ * keys on a *stable* content identity (`type:sourceId:remoteId|name`), the same survives-resync approach
+ * as CustomizeKeys — never the raw autoincrement id.
+ */
+
+/** One resolved TMDB object. [key] is e.g. "movie:872585" (or later "tv:1399", "tv:1399:s1e1"). */
+@Entity(
+    tableName = "metadata_cache",
+    indices = [Index("tmdbId"), Index("updatedAt")],
+)
+data class MetadataCacheEntity(
+    @PrimaryKey val key: String,
+    val tmdbId: Int,
+    val imdbId: String?,      // the id Trakt sync will need
+    val type: String,         // movie | tv | episode
+    val title: String,
+    val year: Int?,
+    val overview: String?,
+    val posterPath: String?,  // TMDB relative path; build the image.tmdb.org URL at render time
+    val backdropPath: String?,
+    val rating: Double?,
+    val genresJson: String?,  // JSON array of genre names
+    val castJson: String?,    // JSON array of top cast names
+    val trailerKey: String?,  // YouTube video key for the in-app trailer player; null = no trailer
+    val logoPath: String?,    // TMDB title/logo path for cinematic Home hero treatment; null = text title fallback
+    val updatedAt: Long,      // for TTL / manual refresh
+    /**
+     * For an episode row, the day it first aired as TMDB states it (`yyyy-MM-dd`); null everywhere
+     * else (v37). Only the year was kept before, which is no help at all on the shows this exists
+     * for — a series with a thousand episodes puts hundreds of them in the same year.
+     *
+     * This is the *fallback*: an episode shows its provider's own date when the panel sends one, and
+     * this when it does not. Which is why it lives here, in the disposable cache, and is merged at
+     * render time — the metadata layer never writes to the content tables.
+     */
+    val airDate: String? = null,
+    /**
+     * TMDB `original_language` of a movie or show (ISO 639-1), for the "Original language" audio
+     * choice (v45). Null on episode rows, search-hit fallback rows and rows cached before v45 — the
+     * player's lookup re-fetches those details once, when that title is played.
+     */
+    val originalLanguage: String? = null,
+)
+
+/**
+ * Local content item → resolved TMDB id (or a negative "searched, no match" marker). Keeps the 170k-row
+ * content tables from being re-searched on every scroll and lets a wrong match be undone by deleting the
+ * mapping (which restores the pure provider view). [tmdbId] null = negative cache.
+ */
+@Entity(
+    tableName = "metadata_match",
+    indices = [Index("updatedAt")],
+)
+data class MetadataMatchEntity(
+    /** Stable, re-sync-proof key: e.g. "movie:12:tt-remote" or "movie:12:Some Title". */
+    @PrimaryKey val localKey: String,
+    val type: String,         // movie | tv | episode
+    val tmdbId: Int?,         // null = negative cache (no confident match)
+    val confidence: Double,   // 0..1 match confidence (0 for negative)
+    val updatedAt: Long,
+)

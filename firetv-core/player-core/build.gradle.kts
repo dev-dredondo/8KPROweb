@@ -1,0 +1,136 @@
+plugins {
+    alias(libs.plugins.android.library)
+    // Kotlin is provided by AGP 9's built-in Kotlin support, exactly as in :core. The library
+    // plugin must NOT be applied with a version from here — it is declared in the root build file.
+    alias(libs.plugins.compose.compiler)
+    `maven-publish`
+}
+
+// Module identity. The publication below reuses these, but they must be set on the project itself:
+// a consuming app that includes this repo as a composite build substitutes the published artifact
+// for this project by matching group:name, and it can only do that if the project declares them.
+group = "tv.own.owntv"
+version = rootProject.extra["coreVersion"] as String
+
+android {
+    namespace = "tv.own.owntv.playercore"
+    compileSdk {
+        version = release(37)
+    }
+
+    defaultConfig {
+        // 8K PRO Fire TV: Android 7.1 (Fire OS 6). java.time & co. come from core library desugaring.
+        minSdk = 25
+        consumerProguardFiles("consumer-rules.pro")
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildFeatures {
+        // Compose *runtime* only, same rule as :core — the engine holds Compose state that the HUD
+        // observes, but it renders nothing. No ui, no foundation, no androidx.tv.
+        compose = true
+    }
+
+    testOptions {
+        // Mirrors :app and :core — code under test touches android.util.Log / SystemClock and must
+        // get defaults rather than "not mocked" crashes.
+        unitTests.isReturnDefaultValues = true
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+        isCoreLibraryDesugaringEnabled = true
+    }
+
+    // Same as :core — release only, sources included.
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+        }
+    }
+
+    lint {
+        // 8K PRO Fire TV: this copy is linted only for calls Android 7.1 lacks; the report is read by hand.
+        abortOnError = false
+        checkOnly += "NewApi"
+        textReport = true
+        textOutput = rootProject.file("lint-newapi-player-core.txt")
+        warningsAsErrors = false
+        checkDependencies = false
+        // Media3's player API surface is almost entirely @UnstableApi; this engine is built on it,
+        // so the check fires across most of the module and carries no signal. Opting in
+        // file-by-file would only move the same acknowledgement into a dozen annotations.
+        disable += "UnsafeOptInUsageError"
+        // See :core — developer-local file, never committed, absent in CI.
+        disable += "PropertyEscape"
+    }
+}
+
+// Same version as :core, deliberately. Two artifacts that must be used together should not have
+// numbers that can disagree — that only creates combinations nobody ever built.
+publishing {
+    publications {
+        register<MavenPublication>("release") {
+            groupId = "tv.own.owntv"
+            artifactId = "player-core"
+            version = project.version as String
+            afterEvaluate { from(components["release"]) }
+        }
+    }
+    repositories {
+        // A local staging repository; tools/publish_pages.py copies it into OwnTV's public Maven
+        // repository (this repo's gh-pages branch, https://ahxn00.github.io/OwnTV_Core/maven).
+        maven {
+            name = "Staging"
+            url = uri(rootProject.layout.buildDirectory.dir("staging-maven"))
+        }
+    }
+}
+
+dependencies {
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs_nio:2.1.5")
+    // The engine reads settings, playback preferences and DB entities, and reports into core's
+    // hooks. The arrow points this way only: :core never sees :player-core.
+    implementation(project(":core"))
+
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.kotlinx.coroutines.android)
+
+    // Playback — libmpv (FFmpeg) plus the Media3/ExoPlayer path used for VOD, image subtitles and
+    // the Live/hero preview panes. Same set :app carried before the split.
+    //
+    // `api`, not `implementation`: OwnTVPlayer's supertype is MPVLib.EventObserver, so a consumer
+    // that merely names the player type needs libmpv on its compile classpath. Hiding it here made
+    // the module unusable until the app redeclared the same dependency by hand — which the TV app
+    // happens to do for historical reasons, so nobody noticed until the mobile app was built. This
+    // also pins both apps to ONE libmpv version; two hosts each declaring their own could package
+    // two builds of the same native library.
+    //
+    // -Powntv.libmpvLocalRepo=<folder> on the build command (never in a file) swaps in the
+    // engine built on this PC by OwnTV_libmpv's buildscripts/wsl_build.sh; settings.gradle.kts adds
+    // its folder as a repository. CI never sets it.
+    if (providers.gradleProperty("owntv.libmpvLocalRepo").isPresent) {
+        api("tv.own.owntv:libmpv:local")
+    } else {
+        api(libs.libmpv)
+    }
+    implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.media3.exoplayer.hls)
+    implementation(libs.androidx.media3.exoplayer.dash)
+    implementation(libs.androidx.media3.ui)
+    implementation(libs.androidx.media3.datasource.okhttp)
+
+    implementation(libs.okhttp)
+
+    implementation(platform(libs.koin.bom))
+    implementation(libs.koin.android)
+
+    // Compose RUNTIME ONLY, via the same BOM :app uses. Deliberately not ui/foundation/material,
+    // not androidx.tv.*, not navigation, not coil.
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.compose.runtime)
+
+    testImplementation(libs.junit)
+    testImplementation(libs.kotlinx.coroutines.test)
+}

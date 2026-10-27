@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Everything declared here merges into BOTH apps, so the test for each entry is: would the phone
+     app want this? Networking and the sync/download foreground service move here because core is
+     what performs them. Storage, installing an APK, the Watch Next provider, audio effects, the
+     launcher activity and the WorkManager auto-init removal stay in :app — those belong to a shell,
+     not to the engine. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Core does all of the networking: playlist/EPG sync, metadata, subtitles, downloads. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- ExoPlayer's network wake mode (background playback) holds a wake lock and a Wi-Fi lock while
+         playing. WorkManager happens to merge WAKE_LOCK in too; core uses it, so core declares it. -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <!-- Core owns CatalogSyncWorker and DownloadManager, so it owns the foreground service they run
+         in. POST_NOTIFICATIONS is only asked for by the system on API 33+; if it is denied the
+         service still runs, the notification is just not shown. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- Live recording. Deliberately mediaPlayback and NOT dataSync: an app targeting Android 15 gets
+         six hours of dataSync foreground service per 24 hours and then Service.onTimeout() fires,
+         which a DVR would hit. Google's own foreground-service-type table names mediaPlayback's use
+         case as "Background audio or video playback; Android TV DVR". This type must be declared in
+         Play Console under Policy -> App content. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+
+    <!-- A recording timer has to fire at the programme's start, not at a time that suits the
+         battery, so it is an AlarmManager exact alarm. SCHEDULE_EXACT_ALARM and deliberately NOT
+         USE_EXACT_ALARM: the second is granted automatically and cannot be revoked, and Google Play
+         policy restricts it to apps whose core function is precise timing — an alarm clock or a
+         calendar. A TV player is neither. This one is user-revocable, so the code checks
+         canScheduleExactAlarms() on every arm and falls back to an inexact alarm with a bigger head
+         start. Verified against developer.android.com/develop/background-work/services/alarms/schedule
+         on 2026-09-12. -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <!-- Alarms do not survive a reboot; without this every scheduled recording would evaporate the
+         first time the television was switched off at the wall. -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <!-- ExternalPlayerLauncher asks which installed apps can play a stream. From Android 11 that
+         answer only includes apps matching a declared query, so without these it can report "no
+         external player" with VLC installed. One entry per intent shape it tries: each MIME it
+         offers, then the bare URI. -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:mimeType="video/*" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:mimeType="application/x-mpegURL" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="http" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="rtsp" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="rtmp" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="udp" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="mms" />
+        </intent>
+    </queries>
+
+    <application>
+        <!-- "Restart now" after an icon change (AppRestartActivity). Its own process, so it outlives
+             the app process it ends, and its own task, so the reopened app is never put back into the
+             task of the icon just disabled; invisible, never in recents. Both apps' Application.onCreate
+             return at once in this process (AppIconSwitcher.isRestartProcess). -->
+        <activity
+            android:name="tv.own.owntv.core.brand.AppRestartActivity"
+            android:process=":restart"
+            android:taskAffinity=":restart"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:theme="@android:style/Theme.NoDisplay" />
+
+        <!-- Google TV Home runs outside OwnTV, so it needs a public read-only URI for the
+             generated logo files. LiveLogoArtProvider accepts only hash-named PNGs below its
+             dedicated cache directory; it cannot expose any other app-private file. Disabled until
+             LiveLogoPosterArt writes its first file, so an app with no launcher rows never exposes it. -->
+        <provider
+            android:name="tv.own.owntv.core.tv.LiveLogoArtProvider"
+            android:authorities="${applicationId}.owntv-live-logo-art"
+            android:enabled="false"
+            android:exported="true" />
+
+        <!-- WorkManager's foreground-service host. Both types, because both workers run in it: the
+             download queue is a data sync, a recording is media playback. Each worker picks its own
+             via the ForegroundInfo it returns. -->
+        <service
+            android:name="androidx.work.impl.foreground.SystemForegroundService"
+            android:foregroundServiceType="dataSync|mediaPlayback"
+            tools:node="merge" />
+
+        <!-- A recording is due. Exported="false": nothing outside the app has any business firing
+             this, and an exported receiver would let anything on the device start a recording. -->
+        <receiver
+            android:name="tv.own.owntv.core.recording.RecordingAlarmReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="tv.own.owntv.core.action.RECORDING_DUE" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Re-arms alarms after a reboot, after an update, and when the exact-alarm permission
+             changes. It must never start the recording service itself — an app targeting Android 15
+             may not start a mediaPlayback foreground service from BOOT_COMPLETED. Exported because
+             these are system broadcasts. -->
+        <receiver
+            android:name="tv.own.owntv.core.recording.RecordingBootReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="android.app.action.SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Programme reminders: the same pair as recordings, for the same reasons. -->
+        <receiver
+            android:name="tv.own.owntv.core.reminder.ReminderAlarmReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="tv.own.owntv.core.action.REMINDER_DUE" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="tv.own.owntv.core.reminder.ReminderBootReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="android.app.action.SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Sports goal alerts (phone): a match check or a match reminder is due. Not
+             exported, like the reminder pair above; the boot half re-arms after a reboot or update. -->
+        <receiver
+            android:name="tv.own.owntv.core.sports.MatchAlertReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="tv.own.owntv.core.action.MATCH_DUE" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="tv.own.owntv.core.sports.MatchAlertBootReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="android.app.action.SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- The live score card. dataSync: it keeps one match's score in sync while the
+             app is closed; a match fits Android 15's six-hour daily dataSync allowance, and the
+             service ends itself in onTimeout if it is ever reached. Started only by the user, from a
+             match, with the app in front. -->
+        <service
+            android:name="tv.own.owntv.core.sports.LiveMatchCardService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync" />
+    </application>
+
+</manifest>

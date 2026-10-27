@@ -1,0 +1,1628 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="settings_sort_playlist">プレイリスト</string>
+    <string name="settings_sort_alpha">A–Z</string>
+    <string name="settings_sort_rating">評価</string>
+    <string name="settings_sort_date_added">追加日</string>
+    <string name="settings_mini_player">ミニプレーヤー</string>
+    <string name="settings_mini_player_description">ブラウズ中にチャンネルをドッキング（PiP）すると表示される、小さなフローティングプレーヤーです。ここで変更するか、ミニプレーヤー本体のサイズ変更／移動ボタンを使って、その場で変更できます。</string>
+    <string name="settings_size">サイズ</string>
+    <string name="settings_position">位置</string>
+    <string name="settings_home_screen">ホーム画面</string>
+    <string name="settings_sections">セクション</string>
+    <string name="settings_hidden_sections">非表示のセクションも一覧に残るため、いつでも再表示できます。</string>
+    <string name="settings_keep_watching">視聴を続ける</string>
+    <string name="settings_live_keep_watching">「視聴を続ける」にライブチャンネルを表示</string>
+    <string name="settings_live_keep_watching_description">最近視聴したライブチャンネルをメインの行に表示します。</string>
+    <string name="settings_movies_keep_watching">「視聴を続ける」に映画を表示</string>
+    <string name="settings_movies_keep_watching_description">映画の再生再開カードをメインの行に表示します。</string>
+    <string name="settings_series_keep_watching">「視聴を続ける」にシリーズを表示</string>
+    <string name="settings_series_keep_watching_description">エピソードの再生再開カードをメインの行に表示します。</string>
+    <string name="settings_hero_preview">メインの行で動画を再生</string>
+    <string name="settings_hero_preview_description">選択中の項目の動画プレビューが少し待ってから再生されます。ホーム画面の閲覧中に電力とメモリを節約するにはオフにします。</string>
+    <string name="settings_android_tv_home">Android TVのホーム</string>
+    <string name="settings_android_tv_home_description">TVのホーム画面に「視聴を続ける」と最近視聴したライブチャンネルを表示します。</string>
+    <string name="settings_refresh_now">今すぐ更新</string>
+    <string name="settings_refresh_description">Android TVのホームにある「視聴を続ける」／最近視聴したコンテンツのカードを再構築します。</string>
+    <string name="settings_rebuilding">再構築中…</string>
+    <string name="settings_done_check">完了 ✓</string>
+    <string name="settings_mode"><xliff:g id="mode">%1$s</xliff:g></string>
+    <string name="settings_hidden">非表示</string>
+    <string name="settings_static">静的</string>
+    <string name="settings_dynamic">動的</string>
+    <string name="settings_use_proxy">プロキシを使用</string>
+    <string name="settings_proxy_description">OwnTVのすべての通信と再生をHTTPプロキシ経由で行います。</string>
+    <string name="settings_host">ホスト</string>
+    <string name="settings_proxy_host_hint">proxy.example.com</string>
+    <string name="settings_port">ポート</string>
+    <string name="settings_proxy_port_hint">8080</string>
+    <string name="settings_username_optional">ユーザー名（任意）</string>
+    <string name="settings_password_optional">パスワード（任意）</string>
+    <string name="settings_test_proxy">プロキシをテスト</string>
+    <string name="settings_testing">テスト中…</string>
+    <string name="settings_proxy_privacy">プロキシプロバイダーは、接続先のサーバーとHTTPSで保護されていない通信の内容を確認できます。</string>
+    <string name="settings_proxy_limitations">現在はHTTPプロキシのみに対応しています。SOCKSおよびプレイリストごとのプロキシにはまだ対応していません。</string>
+    <string name="settings_proxy_connected"><xliff:g id="millis">%1$d</xliff:g> ms</string>
+    <string name="settings_proxy_invalid_address">有効なホストとポート（1～65535）を入力してください。</string>
+    <string name="settings_proxy_host_unreachable">プロキシホストに到達できません。</string>
+    <string name="settings_proxy_timed_out">プロキシへの接続がタイムアウトしました。</string>
+    <string name="settings_proxy_connection_failed">プロキシに接続できませんでした（ホスト／ポートを確認してください）。</string>
+    <string name="settings_proxy_http">プロキシからHTTP <xliff:g id="code">%1$d</xliff:g>が返されました</string>
+    <string name="settings_proxy_failed">プロキシのテストに失敗しました。</string>
+    <string name="settings_ch_nav_up">CH+ / 巻き戻しのスキップ数（先頭方向）</string>
+    <string name="settings_ch_nav_up_description">CH+/RWを1回押したときに上方向へ移動する項目数です。長押しすると常に先頭の項目へ移動します。</string>
+    <string name="settings_ch_nav_down">CH− / 早送りのスキップ数（末尾方向）</string>
+    <string name="settings_ch_nav_down_description">CH−/FFを1回押したときに下方向へ移動する項目数です。長押しすると常に末尾の項目へ移動します。</string>
+    <string name="settings_skip_counts">スキップ数</string>
+    <string name="settings_remote_shortcuts">リモコンショートカット</string>
+    <string name="settings_remote_shortcuts_description">リモコンの空きボタンにナビゲーション、再生、一覧操作を割り当てます。重要な操作ボタンは保護されます。</string>
+    <string name="settings_remote_shortcuts_enabled">リモコンショートカットを使用</string>
+    <string name="settings_remote_shortcuts_enabled_description">ボタン割り当てを削除せずにカスタムショートカットをすべて無効にします</string>
+    <string name="settings_remote_shortcuts_assignments">ボタンの割り当て</string>
+    <string name="settings_remote_shortcuts_add">ショートカットを追加</string>
+    <string name="settings_remote_shortcuts_add_description">空きボタンを押すか長押しして、実行する操作を選びます</string>
+    <string name="settings_remote_shortcuts_reset">標準ショートカットを復元</string>
+    <string name="settings_remote_shortcuts_reset_description">CH+/CH−と巻き戻し/早送りのページ操作を復元し、ほかの割り当てを削除します</string>
+    <string name="settings_remote_shortcuts_capture_title">リモコンのボタンを押してください</string>
+    <string name="settings_remote_shortcuts_capture_description">短く押すか、離すまで長押しします。戻る、方向、OK、音量、ホーム、電源ボタンは割り当てできません。</string>
+    <string name="settings_remote_shortcuts_choose_action">操作を選択</string>
+    <string name="settings_remote_shortcuts_short_press">短押し</string>
+    <string name="settings_remote_shortcuts_long_press">長押し</string>
+    <string name="settings_remote_shortcuts_unknown_button">リモコンボタン %1$d</string>
+    <string name="settings_remote_shortcuts_help">• 標準ではCH+/CH−と巻き戻し/早送りで一覧を移動し、長押しで先頭または末尾へ移動します。\n• 短押しと長押しは別々に割り当てできます。\n• 非常に大きい「すべて」一覧では末尾への移動は無効です。\n• 戻るの長押しは常に再生中へフォーカスし、変更できません。\n• 通常は赤/緑/黄/青、数字、CH+/CH−、巻き戻し/早送りを割り当てできます。\n• 戻る、方向、OK、音量、ホーム、電源ボタンは保護されます。\n• 数字ショートカットは閲覧中に動作し、全画面ではチャンネル番号入力が優先されます。</string>
+    <string name="settings_remote_button_channel_up">チャンネル +</string>
+    <string name="settings_remote_button_channel_down">チャンネル −</string>
+    <string name="settings_remote_button_rewind">巻き戻し</string>
+    <string name="settings_remote_button_fast_forward">早送り</string>
+    <string name="settings_remote_button_previous">前へ</string>
+    <string name="settings_remote_button_next">次へ</string>
+    <string name="settings_remote_button_last_channel">前回のチャンネル</string>
+    <string name="settings_remote_button_menu">メニュー</string>
+    <string name="settings_remote_button_red">赤ボタン</string>
+    <string name="settings_remote_button_green">緑ボタン</string>
+    <string name="settings_remote_button_yellow">黄ボタン</string>
+    <string name="settings_remote_button_blue">青ボタン</string>
+    <string name="settings_remote_action_continue">最後に見た項目を続ける</string>
+    <string name="settings_remote_action_focus_now_playing">再生中にフォーカス</string>
+    <string name="settings_remote_action_expand_now_playing">再生中を全画面表示</string>
+    <string name="settings_remote_action_mini_player">ミニプレーヤーへ移動</string>
+    <string name="settings_remote_action_play_pause">再生または一時停止</string>
+    <string name="settings_remote_action_page_first">先頭方向へページ移動</string>
+    <string name="settings_remote_action_page_last">末尾方向へページ移動</string>
+    <string name="settings_remote_action_jump_first">最初の項目へ移動</string>
+    <string name="settings_remote_action_jump_last">最後の項目へ移動</string>
+    <string name="settings_large_skips_warning">スキップ数が大きいと短い一覧を飛び越え、低性能のTVでは動きがぎこちなく感じられることがあります。</string>
+    <string name="settings_weather">天気</string>
+    <string name="settings_show_weather">天気を表示</string>
+    <string name="settings_show_weather_description">現在の天気をトップバーに表示します。</string>
+    <string name="settings_custom_location">カスタム地点</string>
+    <string name="settings_custom_location_description">天気に使用する都市を上書きします。自動検出する場合は空欄にするか、都市名（例：London）または「緯度,経度」（例：51.5,-0.12）を入力してください。自動検出でサーバーの都市が使用されるVPN環境で便利です。</string>
+    <string name="settings_temperature_unit">温度単位</string>
+    <string name="settings_temperature_description">温度を摂氏または華氏で表示します。</string>
+    <string name="settings_auto">自動</string>
+    <string name="settings_city_latlon">都市名または緯度,経度</string>
+    <string name="settings_location_hint">公開IPから自動検出する場合は空欄にしてください。都市名（例：London）または「緯度,経度」（例：51.5,-0.12）を入力します。</string>
+    <string name="settings_metadata">メタデータ（TMDB）</string>
+    <string name="settings_metadata_source">メタデータソース</string>
+    <string name="settings_metadata_source_description">映画とシリーズの詳細情報の取得元を選択します。</string>
+    <string name="settings_metadata_provider_description">プレイリストから提供される情報のみを使用します。TMDBへの照会は行いません。</string>
+    <string name="settings_metadata_provider_tmdb_description">プレイリストの情報を優先し、不足部分をTMDBで補完して、出演者、ジャンル、背景画像を追加します。</string>
+    <string name="settings_metadata_tmdb_only_description">すべての項目でTMDBを優先し、TMDBに情報がない場合のみプレイリストを使用します。</string>
+    <string name="settings_metadata_allowance">1日の利用枠</string>
+    <string name="settings_metadata_reset_automatic">自動的にリセットされます</string>
+    <string name="settings_metadata_library_details">ライブラリの詳細</string>
+    <string name="settings_metadata_test_connection">現在の接続をテスト</string>
+    <string name="settings_allowance_refills"><xliff:g id="time">%1$s</xliff:g> に回復</string>
+    <string name="settings_allowance_minute">分</string>
+    <string name="settings_allowance_hour">時間</string>
+    <string name="settings_allowance_day">日</string>
+    <plurals name="settings_allowance_value">
+        <item quantity="other">残り <xliff:g id="remaining">%1$d</xliff:g> / <xliff:g id="limit">%2$d</xliff:g></item>
+    </plurals>
+    <string name="settings_metadata_active_source">使用中のソース</string>
+    <string name="settings_metadata_shared_worker_description">OwnTV Worker · 設定不要</string>
+    <string name="settings_metadata_connection">接続</string>
+    <string name="settings_metadata_remote_advanced">詳細なTMDB情報を取得</string>
+    <string name="settings_metadata_remote_advanced_description">共有の既定サービスではなく、独自のTMDB APIキーまたは自分でホストしたWorkerを使います。</string>
+    <string name="settings_metadata_key_label">キー</string>
+    <string name="settings_metadata_server_label">サーバー</string>
+    <string name="settings_metadata_clear_advanced_title">独自のキーの使用をやめますか？</string>
+    <string name="settings_metadata_clear_advanced_message">TMDB APIキーと独自サーバーのアドレスがこの端末から削除され、OwnTVは1日の利用枠がある内蔵の共有サービスに戻ります。</string>
+    <string name="settings_metadata_fair_share">内蔵のメタデータサービスはOwnTVを使うすべてのユーザーで共有しているため、各デバイスには1日ごとの利用枠があります。枠を使い切ると、ポスターと説明は回復するまで一時停止します。お使いのプレイリスト自身の情報はこれまでどおり表示されます。独自のTMDB APIキーまたはサーバーを追加すると、この制限はなくなります。無料で、個人キーには実質的に制限がありません。</string>
+    <string name="settings_metadata_limit_reached">1日のメタデータ利用枠を使い切りました。設定 → メタデータで独自のTMDBキーを追加すると、この制限がなくなります。</string>
+    <string name="settings_metadata_language">メタデータの言語</string>
+    <string name="settings_metadata_language_description">TMDBから取得するあらすじ・ジャンル・タイトルの言語です。TMDBが翻訳していない項目は英語のままです。詳細は言語ごとにキャッシュされるため、元に戻すのは瞬時です。</string>
+    <string name="settings_metadata_server_description">内蔵の共有サーバーを使用する場合は両方を空欄にしてください（セットアップ不要）。TMDBを直接呼び出すには独自のTMDB APIキーを入力し、独自のプロキシ／ミラーを使用するにはセルフホストサーバーのURLを入力します。URLはキーより優先されます。</string>
+    <string name="settings_metadata_key_from_phone">別の端末からキーを取得</string>
+    <string name="settings_metadata_key_from_phone_desc">任意の機器（スマホ、パソコン、別のテレビ）のブラウザーでアドレスを開き、TMDB にサインインしてキーを送ります。リモコンでの入力は不要です。</string>
+    <string name="settings_metadata_key_received">TMDBキーを受信しました</string>
+    <string name="settings_tmdb_api_key">TMDB APIキー（v3）</string>
+    <string name="settings_metadata_empty_title">検索するタイトルを入力してください。</string>
+    <string name="settings_metadata_server_unavailable">メタデータサーバーに接続できませんでした。ネットワーク／キー／URLを確認してください。</string>
+    <string name="settings_metadata_no_match">「<xliff:g id="query">%1$s</xliff:g>」に一致するTMDBの結果はありません。</string>
+    <string name="settings_metadata_lookup_failed">照会に失敗しました。</string>
+    <string name="settings_metadata_match_result"><xliff:g id="title">%1$s</xliff:g><xliff:g id="year">%2$s</xliff:g> · TMDB #<xliff:g id="id">%3$d</xliff:g></string>
+    <string name="settings_metadata_year">（<xliff:g id="year">%1$d</xliff:g>）</string>
+    <string name="settings_lookup_movie">映画タイトルを検索</string>
+    <string name="settings_test_lookup">照会をテスト</string>
+    <string name="settings_looking_up">検索中…</string>
+    <string name="settings_tmdb_attribution">この製品はTMDB APIを使用していますが、TMDBによる承認または認定を受けたものではありません。</string>
+    <string name="settings_metadata_provider_only">プロバイダーのみ</string>
+    <string name="settings_metadata_provider_plus_tmdb">プロバイダー + TMDB</string>
+    <string name="settings_metadata_tmdb_only">TMDBのみ</string>
+    <string name="settings_tier_default">デフォルト（共有）</string>
+    <string name="settings_tier_key">自分のTMDBキー</string>
+    <string name="settings_tier_self_host">セルフホスト</string>
+    <string name="settings_title">設定</string>
+    <string name="settings_quick_live_preview">ライブプレビュー</string>
+    <string name="settings_quick_preview_sound">プレビュー音声</string>
+    <string name="settings_quick_channel_numbers">チャンネル番号</string>
+    <string name="settings_quick_prefer_sdr">SDR を優先</string>
+    <string name="settings_quick_autoplay">自動再生</string>
+    <string name="settings_quick_check_update">更新を確認</string>
+    <string name="settings_language">言語</string>
+    <string name="settings_language_description">アプリの表示言語</string>
+    <string name="settings_language_system_default">システムのデフォルト</string>
+    <string name="settings_language_system_default_description">デバイスの言語に従います</string>
+    <string name="settings_language_search_hint">言語を検索…</string>
+    <string name="settings_search_keywords_language">言語 ロケール 翻訳 国際化 i18n</string>
+    <string name="settings_language_coverage"><xliff:g id="percent">%1$d</xliff:g>%%</string>
+    <string name="settings_profile_group">プロフィール</string>
+    <string name="settings_playlists">プレイリスト</string>
+    <string name="settings_playlists_description">M3U／Xtreamプレイリストを追加、再同期、削除</string>
+    <string name="settings_epg_sources">EPGソース</string>
+    <string name="settings_epg_sources_nav_description">番組表用のXMLTVフィードを追加</string>
+    <string name="settings_customize">カテゴリと項目をカスタマイズ</string>
+    <string name="settings_customize_nav_description">項目の非表示／再表示、カテゴリ名の変更、並べ替え</string>
+    <string name="settings_ch_paging">リモコンショートカット</string>
+    <string name="settings_ch_paging_description">リモコンの空きボタンにナビゲーション、再生、一覧操作を割り当てます。重要な操作ボタンは保護されます。</string>
+    <string name="settings_content_menus_title">長押しメニュー</string>
+    <string name="settings_content_menus_description">チャンネル・映画・シリーズ・エピソードのメニューの項目を並べ替えます</string>
+    <string name="settings_content_menus_hint">項目で OK を長押しするとつかめます。上下で移動し、もう一度 OK で置きます。</string>
+    <string name="settings_browsing_lists">ブラウズと一覧</string>
+    <string name="settings_browsing_description">ライブTV、映画、シリーズで最後のカテゴリと項目を記憶</string>
+    <string name="settings_home_root">ホーム画面</string>
+    <string name="settings_home_root_description">ホーム画面の行を選択、並べ替え、フィルター</string>
+    <string name="settings_metadata_root_description">映画とシリーズのポスター、あらすじ、出演者、評価</string>
+    <string name="settings_download_folder">ダウンロードフォルダー</string>
+    <string name="settings_backup_restore">バックアップと復元</string>
+    <string name="settings_clear_history">視聴履歴を消去</string>
+    <string name="settings_appearance_group">外観</string>
+    <string name="settings_theme">テーマ</string>
+    <string name="settings_theme_description">ライト、ダーク、またはシステムに従う</string>
+    <string name="settings_accent">アクセントカラー</string>
+    <string name="settings_accent_description">プリセット、パレット、16進コードで画面の色調を変更</string>
+    <string name="settings_focus_highlight">フォーカスの強調</string>
+    <string name="settings_focus_highlight_description">選択中の項目を囲む枠の色と太さ</string>
+    <string name="settings_focus_highlight_chip"><xliff:g id="color">%1$s</xliff:g> · <xliff:g id="thickness">%2$s</xliff:g></string>
+    <string name="settings_focus_thickness">太さ</string>
+    <string name="settings_focus_width_thin">細い</string>
+    <string name="settings_focus_width_normal">標準</string>
+    <string name="settings_focus_width_thick">太い</string>
+    <string name="settings_focus_width_extra">極太</string>
+    <string name="settings_focus_highlight_sample">フォーカス中</string>
+    <string name="settings_ui_zoom">UIズーム</string>
+    <string name="settings_ui_zoom_description">画面全体を拡大縮小</string>
+    <string name="settings_animations">アニメーション</string>
+    <string name="settings_animations_description">画面の動きをオンまたはオフにします。オフにすると低性能のTVボックスでも軽快に動作します</string>
+    <string name="settings_weather_description_root">トップバーの天気チップ：表示／非表示、カスタム地点、摂氏／華氏を設定します。</string>
+    <string name="settings_playback_group">再生</string>
+    <string name="settings_live_preview_description">フォーカスしたチャンネルを自動再生</string>
+    <string name="settings_preview_audio">プレビュー音声</string>
+    <string name="settings_preview_audio_description">ライブプレビューで音声を再生</string>
+    <string name="settings_mini_player_root">ミニプレーヤー</string>
+    <string name="settings_mini_player_root_description">ドッキングしたミニプレーヤーのサイズと位置</string>
+    <string name="settings_prefer_sdr_description">ストリームに SDR と HDR の両方の映像がある場合、SDR を再生します。HDR が白っぽく、または暗すぎて見えるテレビ向けです。HDR のみのストリームは HDR のままです。ExoPlayer のみ。</string>
+    <string name="settings_auto_frame_rate">自動フレームレート</string>
+    <string name="settings_auto_frame_rate_description">全画面表示でライブTVとVODの再生時にTVのリフレッシュレートを動画（24/25/50/60 fps）に合わせ、終了時に元に戻します。チャンネルを切り替えるたびにTVやレシーバーが大きな音を伴ってHDMIを再ハンドシェイクする場合はオフにしてください。</string>
+    <string name="settings_afr_pause">表示切り替え中は一時停止</string>
+    <string name="settings_afr_pause_description">映画のみ。テレビが新しい表示モードへ再同期する必要があるとき、冒頭が黒い画面で失われないよう、映画はこの時間だけ待ちます。シームレスな切り替えでは一時停止しません。</string>
+    <string name="settings_afr_resolution">解像度を合わせる</string>
+    <string name="settings_afr_resolution_description">映画のみ。映画のために表示モードが変わるとき、テレビを映画の解像度にも切り替えます（4K テレビで HD 映画なら 1080p）。開始時の解像度を超えることはありません。オフでは解像度はそのままで、テレビがアップスケールします。通常はこちらのほうがきれいです。</string>
+    <string name="settings_surround_sound">サラウンドサウンド</string>
+    <string name="settings_surround_description_mobile">このデバイスに接続した実際の5.1/7.1対応レシーバー向けにDolby/DTSをサラウンド（5.1/7.1）へデコードします。内蔵スピーカー、ヘッドホン、ステレオサウンドバーではオフのままにしてください。マルチチャンネル音声が映像より遅れることがあります。ずれが生じる場合は、プレーヤーの「音声」メニュー→「A/V同期」で微調整してください。</string>
+    <string name="settings_audio_passthrough">Dolby/DTS パススルー</string>
+    <string name="settings_audio_passthrough_description">オン：テレビ、サウンドバー、AV アンプが再生できると通知した場合、Dolby と DTS をデコードせずに送ります（ExoPlayer）。オフ：アプリでデコードします。「サラウンドサウンド」が許可していればサラウンドのままです。mpv は常にデコードします。「ナイトモード」または「音量の平準化」がオンの間は使われません。</string>
+    <string name="settings_ffmpeg_audio">ExoPlayer の FFmpeg 音声デコード</string>
+    <string name="settings_ffmpeg_audio_description">オン：ExoPlayer は、デバイスにデコーダーがない音声（DTS、TrueHD、MP2 など）もデコードできます。デバイス自身のデコーダーが引き続き優先されます。オフ：ExoPlayer はデバイスのデコーダーだけを使います。mpv は常に FFmpeg でデコードします。変更すると OwnTV が再起動します。</string>
+    <string name="settings_line_ffmpeg_audio">デバイスがデコードできない音声用</string>
+    <string name="settings_ffmpeg_audio_restart_message">音声デコーダーは OwnTV の再起動後に切り替わります。</string>
+    <string name="settings_night_mode">ナイトモード</string>
+    <string name="settings_night_mode_description">大きな場面の音を下げ、小さな会話を上げて、小さな音量でも見やすくします。</string>
+    <string name="settings_volume_leveling">音量の平準化</string>
+    <string name="settings_volume_leveling_description">すべてのチャンネルと映画をゆっくり同じ音量にそろえ、切り替え時に音量が跳ね上がらないようにします。</string>
+    <string name="settings_max_video_quality">最大画質</string>
+    <string name="settings_max_video_quality_description">チャンネルや映画が複数の画質を提供する場合に再生する最高画質です。通信量を節約し、デコーダーの負担を減らします。</string>
+    <string name="settings_mobile_data_quality">モバイルデータ時の最大画質</string>
+    <string name="settings_mobile_data_quality_description">従量制の接続では、この画質までで再生します。オフ：Wi-Fi と同じです。</string>
+    <string name="settings_tunneled_playback">トンネル再生（試験運用）</string>
+    <string name="settings_tunneled_playback_description">ExoPlayer のライブ TV：テレビ自体のハードウェアが映像と音声を同期させ、プロセッサーの負担を減らします。一部のテレビでのみ動作し、チャンネルが失敗すると自動でオフになります。オンの間は音声の同期を調整できません。</string>
+    <string name="settings_tunneled_playback_failed">このデバイスでチャンネルが失敗したため、オフになりました。</string>
+    <string name="settings_autoplay_next">次のエピソードを自動再生</string>
+    <string name="settings_autoplay_next_description">エピソードの終了時に次のエピソードを自動的に開始し、シーズンの最後では次のシーズンに進みます。見逃し配信も次の番組へ続けて再生します。</string>
+    <string name="settings_catchup">見逃し配信</string>
+    <plurals name="settings_catchup_supported">
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g>件のチャンネルが見逃し配信に対応 · アーカイブ再生のタイムゾーンとプレーヤー</item>
+    </plurals>
+    <string name="settings_catchup_unavailable">このプレイリストでは見逃し配信対応のチャンネルを利用できません</string>
+    <string name="settings_device">デバイス</string>
+    <string name="settings_playback_error_log">エラーログ</string>
+    <string name="settings_playback_speed">再生速度</string>
+    <string name="settings_player_zoom">プレーヤーのズーム</string>
+    <string name="settings_app_group">アプリ</string>
+    <string name="settings_app_startup">アプリ起動時</string>
+    <string name="settings_app_startup_description">OwnTVの起動時に開く画面</string>
+    <string name="settings_check_updates">更新を確認</string>
+    <string name="settings_check_updates_description">GitHub Releasesから最新バージョンを取得</string>
+    <string name="settings_update_startup">起動時に更新を確認</string>
+    <string name="settings_update_startup_description">アプリを開いたときに新しいバージョンを確認</string>
+    <string name="settings_about">アプリについて</string>
+    <string name="settings_live_latency">ライブ遅延</string>
+    <string name="settings_no_settings_match">「<xliff:g id="query">%1$s</xliff:g>」に一致する設定はありません</string>
+    <string name="settings_breadcrumb"><xliff:g id="group">%1$s</xliff:g> › <xliff:g id="title">%2$s</xliff:g></string>
+    <string name="settings_startup_home">ホーム</string>
+    <string name="settings_startup_last_channel">最後のチャンネル</string>
+    <string name="settings_startup_favorites">ライブ · お気に入り</string>
+    <string name="settings_startup_specific_channel">指定したチャンネル</string>
+    <string name="settings_startup_channel_unavailable">起動チャンネルを利用できません。ホームを開きました。</string>
+    <string name="settings_all_history">すべての履歴</string>
+    <string name="settings_choose_history">このプロフィールから削除する項目を選択します。プレイリスト、お気に入り、ダウンロードには影響しません。</string>
+    <string name="settings_clear_history_confirm"><xliff:g id="scope">%1$s</xliff:g>の履歴を消去しますか？</string>
+    <string name="settings_cannot_undo">この操作は元に戻せません。</string>
+    <string name="settings_no">いいえ</string>
+    <string name="settings_yes_clear">はい、消去します</string>
+    <string name="settings_presets">プリセット</string>
+    <string name="settings_hex_code">16進コード</string>
+    <string name="settings_apply">適用</string>
+    <string name="settings_hex_error">6桁の16進数を入力してください（例：52DBC8）</string>
+    <string name="settings_color_picker">カラーピッカー</string>
+    <string name="settings_use_color">この色を使用</string>
+    <string name="settings_about_version">バージョン <xliff:g id="version">%1$s</xliff:g></string>
+    <string name="settings_join_telegram">Telegramに参加</string>
+    <string name="settings_telegram_qr">TelegramグループのQRコード</string>
+    <string name="settings_contributions">GitHubでの貢献、バグ報告、スターを歓迎します。</string>
+    <string name="settings_playback_error_description_full">直近のクラッシュと再生エラーです（新しい順）。問題を報告する際は、この詳細を含めてください。</string>
+    <string name="settings_loading">読み込み中…</string>
+    <string name="settings_no_playback_errors">再生エラーは記録されていません。</string>
+    <string name="settings_live">ライブ</string>
+    <string name="settings_vod">VOD</string>
+    <string name="settings_clear_log">ログを消去</string>
+    <string name="settings_browsing_description_full">ライブTV、映画、シリーズに戻ったときに表示する位置を設定します。</string>
+    <string name="settings_catchup_timezone_description">見逃し配信のタイムスタンプの送信方法です。自動では、プロバイダーのサーバーが通知するタイムゾーンを使い、通知がなければデバイスのタイムゾーンを使います。デバイスを選ぶか、オフセットを自分で設定することもできます。</string>
+    <string name="settings_manual">手動</string>
+    <string name="settings_theme_dark">ダーク</string>
+    <string name="settings_theme_light">ライト</string>
+    <string name="settings_theme_system">システム</string>
+    <string name="settings_accent_teal">ティール</string>
+    <string name="settings_accent_blue">ブルー</string>
+    <string name="settings_accent_violet">バイオレット</string>
+    <string name="settings_accent_green">グリーン</string>
+    <string name="settings_accent_amber">アンバー</string>
+    <string name="settings_group_profile">プロフィール</string>
+    <string name="settings_group_sources">ソースと番組表</string>
+    <string name="settings_group_layout">レイアウト</string>
+    <string name="settings_group_content_metadata">コンテンツとメタデータ</string>
+    <string name="settings_group_appearance">外観</string>
+    <string name="settings_group_network">ネットワーク</string>
+    <string name="settings_dns">DNS</string>
+    <string name="settings_group_app">アプリ</string>
+    <string name="settings_group_summary_profile">プロフィールと視聴できる範囲</string>
+    <string name="settings_group_summary_sources">プレイリスト、番組表データとその時刻</string>
+    <string name="settings_group_summary_appearance">テーマ、アクセント、ガラス、動き、文字サイズ</string>
+    <string name="settings_group_summary_layout">サイドバー、パネル、一覧、ホーム画面</string>
+    <string name="settings_group_summary_content_metadata">名称、画像、字幕サービス</string>
+    <string name="settings_vp_section_sound">サウンド</string>
+    <string name="settings_vp_cat_player">プレーヤー</string>
+    <string name="settings_vp_cat_picture">映像</string>
+    <string name="settings_vp_cat_frame_rate">フレームレート</string>
+    <string name="settings_vp_cat_frame_rate_summary">画面を映像に合わせる</string>
+    <string name="settings_vp_cat_streaming">ストリーミング</string>
+    <string name="settings_vp_cat_live_tuning">ライブの調整</string>
+    <string name="settings_vp_cat_multiview">マルチビューとミニプレーヤー</string>
+    <string name="settings_vp_cat_multiview_summary_mobile">複数のライブチャンネルを同時に</string>
+    <string name="settings_vp_cat_languages">言語と字幕</string>
+    <string name="settings_group_summary_app">言語、起動、更新、アプリ情報</string>
+    <string name="settings_group_quick">クイック</string>
+    <string name="settings_group_summary_quick">よく使う切り替え</string>
+    <string name="settings_group_sound_subtitles">音声と字幕</string>
+    <string name="settings_group_watching_recording">視聴と録画</string>
+    <string name="settings_search_guide_logos">番組表のチャンネルロゴ</string>
+    <string name="settings_search_keywords_profiles">視聴者 子どもモード PINロック アカウント</string>
+    <string name="settings_search_keywords_playlists">M3U Xtream ソース 同期 追加 削除</string>
+    <string name="settings_search_keywords_epg">XMLTV 番組表 フィード 番組</string>
+    <string name="settings_search_keywords_logos">チャンネル ロゴ アイコン XMLTV 番組表 picon プレイリスト</string>
+    <string name="settings_search_keywords_customize">非表示 再表示 名前変更 並べ替え カテゴリ</string>
+    <string name="settings_search_keywords_ch">チャンネル 上 下 スキップ ページ 一覧 カテゴリ チャンネル</string>
+    <string name="settings_search_keywords_browsing">記憶 位置 スクロール カテゴリ 最後 項目 ライブ 映画 シリーズ リセット 先頭</string>
+    <string name="settings_search_keywords_home">行 メイン 並べ替え フィルター</string>
+    <string name="settings_search_keywords_metadata">ポスター あらすじ 出演者 評価</string>
+    <string name="settings_search_keywords_theme">ライト ダーク システム</string>
+    <string name="settings_search_keywords_glass">ガラス 透明度 ぼかし すりガラス 半透明 背景 壁紙</string>
+    <string name="settings_search_keywords_accent">色調 パレット 16進数 プリセット</string>
+    <string name="settings_search_keywords_focus">フォーカス 枠 境界線 選択 カーソル 輪郭</string>
+    <string name="settings_search_keywords_zoom">拡大縮小 インターフェース サイズ</string>
+    <string name="settings_search_keywords_animation">動き 軽快 パフォーマンス</string>
+    <string name="settings_search_keywords_weather">トップバー チップ 地点 摂氏 華氏</string>
+    <string name="settings_search_keywords_live_preview">自動再生 フォーカス チャンネル</string>
+    <string name="settings_search_keywords_sound">音声 ライブ プレビュー</string>
+    <string name="settings_search_keywords_audio">音量 大きい 小さい リップシンク 遅延 音声トラック 言語</string>
+    <string name="settings_search_keywords_channel_numbers">チャンネル 番号 ダイレクト選局 入力 数字 キーパッド 数値 ザッピング LCN</string>
+    <string name="settings_search_keywords_mini">ドッキング PiP ミニプレーヤー サイズ 位置 拡大縮小 パーセント 隅 移動</string>
+    <string name="settings_search_keywords_prefer_sdr">hdr sdr 標準ダイナミックレンジ 白っぽい 暗い 映像</string>
+    <string name="settings_search_keywords_afr">AFR リフレッシュレート Hz ジャダー 24fps 25fps 50Hz 60Hz 表示モード 一致</string>
+    <string name="settings_search_keywords_surround">Dolby DTS 5.1 7.1 レシーバー 音声</string>
+    <string name="settings_search_keywords_autoplay">自動再生 シリーズ シーズン</string>
+    <string name="settings_search_keywords_catchup">アーカイブ タイムゾーン オフセット 見逃し配信 外部プレーヤー VLC MX</string>
+    <string name="settings_search_keywords_video">デコーダー 字幕 同期</string>
+    <string name="settings_search_keywords_recording">録画 録る 予約 タイマー シリーズ 保存 ライブ 生放送</string>
+    <string name="settings_search_keywords_subtitle_appearance">字幕 サイズ 色 位置 透明度 背景 不透明度</string>
+    <string name="settings_search_keywords_latency">ライブ バッファ 遅延 低遅延 秒 ライブの最新位置</string>
+    <string name="settings_search_keywords_proxy">HTTP トラフィック ルート</string>
+    <string name="settings_search_keywords_dns">ドメイン ルックアップ リゾルバー DoH DNS-over-HTTPS</string>
+    <string name="settings_search_keywords_startup">起動 開く 開始画面</string>
+    <string name="settings_search_keywords_updates">GitHub リリース バージョン</string>
+    <string name="settings_search_keywords_update_auto">自動 更新 新しいバージョン</string>
+    <string name="settings_language_default">デフォルト（英語）</string>
+    <string name="settings_language_device">デバイスの言語</string>
+    <string name="settings_language_arabic">アラビア語</string>
+    <string name="settings_language_bulgarian">ブルガリア語</string>
+    <string name="settings_language_chinese">中国語</string>
+    <string name="settings_language_croatian">クロアチア語</string>
+    <string name="settings_language_czech">チェコ語</string>
+    <string name="settings_language_danish">デンマーク語</string>
+    <string name="settings_language_dutch">オランダ語</string>
+    <string name="settings_language_english">英語</string>
+    <string name="settings_language_estonian">エストニア語</string>
+    <string name="settings_language_finnish">フィンランド語</string>
+    <string name="settings_language_french">フランス語</string>
+    <string name="settings_language_german">ドイツ語</string>
+    <string name="settings_language_greek">ギリシャ語</string>
+    <string name="settings_language_hebrew">ヘブライ語</string>
+    <string name="settings_language_hindi">ヒンディー語</string>
+    <string name="settings_language_hungarian">ハンガリー語</string>
+    <string name="settings_language_indonesian">インドネシア語</string>
+    <string name="settings_language_italian">イタリア語</string>
+    <string name="settings_language_japanese">日本語</string>
+    <string name="settings_language_korean">韓国語</string>
+    <string name="settings_language_latvian">ラトビア語</string>
+    <string name="settings_language_lithuanian">リトアニア語</string>
+    <string name="settings_language_malay">マレー語</string>
+    <string name="settings_language_norwegian">ノルウェー語</string>
+    <string name="settings_language_persian">ペルシャ語</string>
+    <string name="settings_language_polish">ポーランド語</string>
+    <string name="settings_language_portuguese_brazil">ポルトガル語（ブラジル）</string>
+    <string name="settings_language_portuguese_portugal">ポルトガル語（ポルトガル）</string>
+    <string name="settings_language_romanian">ルーマニア語</string>
+    <string name="settings_language_russian">ロシア語</string>
+    <string name="settings_language_serbian">セルビア語</string>
+    <string name="settings_language_slovak">スロバキア語</string>
+    <string name="settings_language_slovenian">スロベニア語</string>
+    <string name="settings_language_spanish">スペイン語</string>
+    <string name="settings_language_spanish_latam">スペイン語（ラテンアメリカ）</string>
+    <string name="settings_language_swedish">スウェーデン語</string>
+    <string name="settings_language_thai">タイ語</string>
+    <string name="settings_language_turkish">トルコ語</string>
+    <string name="settings_language_original">オリジナル言語</string>
+    <string name="settings_language_ukrainian">ウクライナ語</string>
+    <string name="settings_language_vietnamese">ベトナム語</string>
+    <string name="settings_hardware_decoding">ハードウェアデコード</string>
+    <string name="settings_hardware_decoding_description">TVのハードウェアデコーダーを使用します。一部のストリームで映像が途切れたり、表示が乱れたりする場合はオフにしてください。</string>
+    <string name="settings_software_decode_above_1080p">1080p超のソフトウェアデコード</string>
+    <string name="settings_software_decode_above_1080p_description">TVのハードウェアデコーダーがオフまたは失敗したとき、4Kなど1080pを超える映像をソフトウェアで再生します。高速なプロセッサーが必要です。ほとんどのTVでは映像が途切れます。</string>
+    <string name="settings_movies_series_player">映画とシリーズのプレーヤー</string>
+    <string name="settings_live_tv_player">ライブTVのプレーヤー</string>
+    <string name="settings_engine_order"><xliff:g id="first">%1$s</xliff:g>、次に <xliff:g id="second">%2$s</xliff:g></string>
+    <string name="settings_engine_only"><xliff:g id="engine">%1$s</xliff:g> のみ</string>
+    <string name="settings_engine_default"><xliff:g id="option">%1$s</xliff:g>（デフォルト）</string>
+    <string name="settings_reset_player_choices">保存したプレーヤーの選択をリセット</string>
+    <string name="settings_external_player">外部プレーヤー</string>
+    <string name="settings_default_zoom">デフォルトのズーム</string>
+    <string name="settings_default_zoom_description">再生開始時に適用するアスペクト比／ズームです。</string>
+    <string name="settings_default_volume">デフォルトの音量</string>
+    <string name="settings_default_volume_description">再生開始時に適用する音量です。100%%を超えると、音の小さいストリームが増幅されます。</string>
+    <string name="settings_reset_saved_zoom">保存したズームをリセット</string>
+    <string name="settings_reset_saved_zoom_description">プレーヤーでズームを変更すると、そのチャンネル・映画・エピソード用に保存されます。リセットすると、すべてが再びデフォルトのズームに従います。</string>
+    <string name="settings_reset_saved_zoom_confirm">保存したズームをリセットしますか？</string>
+    <string name="settings_reset_saved_zoom_confirm_description">すべてのチャンネル、映画、エピソードがデフォルトのズームに戻ります。保存済みの音量はそのまま残ります。個別の設定は、いつでもプレーヤーから行えます。</string>
+    <string name="settings_reset_saved_volume">保存した音量をリセット</string>
+    <string name="settings_reset_saved_volume_description">プレーヤーで音量を変更すると、そのチャンネル・映画・エピソード用に保存されます。リセットすると、すべてが再びデフォルトの音量に従います。</string>
+    <string name="settings_reset_saved_volume_confirm">保存した音量をリセットしますか？</string>
+    <string name="settings_reset_saved_volume_confirm_description">すべてのチャンネル、映画、エピソードがデフォルトの音量に戻ります。保存済みのズーム設定はそのまま残ります。個別の設定は、いつでもプレーヤーから行えます。</string>
+    <string name="settings_reset_saved_audio_delay">保存したA/V同期をリセット</string>
+    <string name="settings_reset_saved_audio_delay_description">プレーヤーで「この遅延を記憶する」を選ぶと、そのチャンネル・映画・エピソードの音声同期が保存されます。リセットするとすべてが上記の設定に戻ります。</string>
+    <string name="settings_reset_saved_audio_delay_confirm">保存したA/V同期をリセットしますか？</string>
+    <string name="settings_reset_saved_audio_delay_confirm_description">すべてのチャンネル・映画・エピソードが上記の音声同期に戻ります。保存したズームと音量はそのままです。個別の値はいつでもプレーヤーから設定し直せます。</string>
+    <string name="settings_seek_step">シークの幅</string>
+    <string name="settings_seek_step_description">映画やエピソードで巻き戻し・早送りが動く長さです。</string>
+    <string name="settings_vod_buffer">映画のバッファ</string>
+    <string name="settings_vod_buffer_description">映画・エピソード・キャッチアップをどれだけ先まで読み込むか。自動ではこの端末に合った値を使います。長いバッファほど不安定な回線に強くなりますが、上限は端末のメモリで決まるため、ビットレートの高い映画では選んだ量より少なくなることがあります。</string>
+    <string name="settings_vod_network_timeout">ネットワークのタイムアウト</string>
+    <string name="settings_vod_network_timeout_description">映画・エピソード・キャッチアップが、応答のないサーバーをどれだけ待ってから接続切れとみなすか。自動では各プレーヤー本来の待ち時間を使います（mpv は 60 秒、ExoPlayer は 20 秒）。</string>
+    <string name="settings_vod_reconnects">再接続の試行回数</string>
+    <string name="settings_vod_reconnects_description">接続が切れた映画やエピソードを、エラーを表示する前に止まった位置から何回開き直すか。1 分間安定して再生すると回数が戻ります。</string>
+    <string name="settings_vod_network_auto">自動</string>
+    <string name="settings_live_rewind_step">ライブ巻き戻しの幅</string>
+    <string name="settings_live_rewind_step_description">ライブチャンネルで巻き戻し・早送りする量：キャッチアップのアーカイブ内、または「ライブ TV の一時停止と巻き戻し」で保存したコピー内。</string>
+    <string name="settings_resume_playback">再生を再開</string>
+    <string name="settings_resume_playback_description">映画またはエピソードに保存済みの再生位置がある場合の動作です。</string>
+    <string name="settings_subtitle_appearance">字幕の外観</string>
+    <string name="settings_subtitle_appearance_description">サイズ、文字色、画面上の位置、背景の透明度を設定します。オフの場合、字幕は標準の外観を維持します。ライブTVの字幕に放送局が埋め込んだスタイルもそのまま使用されます。</string>
+    <string name="settings_subtitle_size">字幕サイズ</string>
+    <string name="settings_subtitle_size_description">字幕テキストの大きさを変更します。</string>
+    <string name="settings_preferred_subtitle_language">優先する字幕言語</string>
+    <string name="settings_preferred_language_description">利用可能な場合、この字幕トラックを自動選択します。</string>
+    <string name="settings_preferred_audio_language_description">ストリームにこの音声トラックがあれば再生します。「オリジナル言語」は映画やシリーズを制作された言語で再生します。</string>
+    <string name="settings_open_subtitles">OpenSubtitles</string>
+    <string name="settings_open_subtitles_connected">接続済み</string>
+    <string name="settings_open_subtitles_reset_in"><xliff:g id="hours">%1$d</xliff:g>時間<xliff:g id="minutes">%2$d</xliff:g>分後</string>
+    <string name="settings_open_subtitles_description">サインインすると、字幕の検索とダウンロード、ダウンロード済み字幕の管理ができます。プロフィールごとの設定です。無料のopensubtitles.comアカウントが必要です。</string>
+    <string name="settings_open_subtitles_advanced">詳細オプション</string>
+    <string name="settings_open_subtitles_advanced_description">独自のアプリケーションAPIキー、または自分でホストしたOpenSubtitles Workerを使います。</string>
+    <string name="settings_open_subtitles_setup_title">OpenSubtitlesを設定</string>
+    <string name="settings_open_subtitles_setup_description">OpenSubtitlesのアカウントでサインインします。</string>
+    <string name="settings_open_subtitles_setup_remote">リモート</string>
+    <string name="settings_open_subtitles_setup_remote_description">同じ Wi-Fi にある別の機器（スマホ、パソコン、別のテレビ）のブラウザーで詳細を入力します。</string>
+    <string name="settings_open_subtitles_setup_local">ここで入力</string>
+    <string name="settings_open_subtitles_setup_local_description">リモコンを使ってこのテレビで入力します。</string>
+    <string name="settings_open_subtitles_api_key">OpenSubtitlesのアプリケーションAPIキー</string>
+    <string name="settings_worker_server_url">Worker／サーバーのURL</string>
+    <string name="settings_shared">共有</string>
+    <string name="settings_open_subtitles_access_priority">どちらも空欄にするとOwnTVの共有Workerを使います。独自のWorker URLは直接指定したAPIキーより優先されます。アカウントのセッションはプロファイルごとに保持されます。</string>
+    <string name="settings_remove_custom_access">カスタムアクセスを削除</string>
+    <string name="settings_preferred_audio_language">優先する音声言語</string>
+    <string name="settings_audio_sync">音声同期</string>
+    <string name="settings_audio_sync_description">映像に合うように音声を早めたり遅らせたりします。両方のプレーヤー（mpv と ExoPlayer）で使えます。</string>
+    <string name="settings_output_audio_delay">この出力の遅延</string>
+    <string name="settings_output_audio_delay_description">「音声同期」に加算され、出力ごとに別々に保存されます（HDMI、HDMI ARC 接続のサウンドバー、Bluetooth、内蔵スピーカー、ヘッドホン）。対象の出力で聞きながら設定してください。</string>
+    <string name="settings_audio_output_speaker">内蔵スピーカー</string>
+    <string name="settings_audio_output_other">ヘッドホンまたは USB</string>
+    <string name="settings_live_tv">ライブTV</string>
+    <string name="settings_live_latency_description">ライブ放送にどの程度近い位置を再生するかを設定します。低くするとライブに近づきますが、バッファが小さくなるため、不安定なストリームでは途切れや再接続が増えることがあります。次に開くチャンネルから適用されます。</string>
+    <string name="settings_live_latency_bitrate_note">ビットレートが非常に高いチャンネル（特に4K）では、メモリに保持できる映像の量に上限があるため、指定した長さよりも短いぶんしかバッファできないことがあります。</string>
+    <string name="settings_channel_numbers">チャンネル番号</string>
+    <string name="settings_channel_numbers_description">ライブTVの一覧、チャンネル一覧オーバーレイ、プレーヤーで、名前の横にプロバイダーのチャンネル番号を表示します。また、全画面再生中にリモコンで番号を入力すると、そのチャンネルへ直接切り替えられます（OKを押すとすぐに切り替え、戻るでキャンセル）。オフにするとすべての番号が非表示になり、数字キーも無視されます。データが失われることはなく、オンに戻すと再び表示されます。</string>
+    <string name="settings_live_left_right_rewinds">左右キーでライブ TV を巻き戻す</string>
+    <string name="settings_live_left_right_rewinds_description">操作パネルが非表示のとき、巻き戻せるチャンネル（キャッチアップ、または「ライブ TV の一時停止と巻き戻し」で保存）では左右キーでチャンネルリストと履歴を開く代わりに巻き戻し・早送りします。</string>
+    <string name="settings_timeshift">ライブ TV の一時停止と巻き戻し</string>
+    <string name="settings_timeshift_description">キャッチアップのないチャンネルは、全画面で視聴中にこのデバイスへ保存され、一時停止や巻き戻しができます。ストレージに常に書き込みます。空き容量は常に 1 GB 以上残ります。</string>
+    <string name="settings_timeshift_window">巻き戻しの長さ</string>
+    <string name="settings_timeshift_window_description">キャッチアップのないチャンネルを巻き戻せる範囲。</string>
+    <string name="settings_timeshift_resume">保存したチャンネルを再開</string>
+    <string name="settings_timeshift_resume_description">離れている間に保存されたチャンネルに戻ったときの動作。</string>
+    <string name="settings_diagnostics">診断</string>
+    <string name="settings_measured_stats">測定したストリーム統計</string>
+    <string name="settings_measured_stats_description">ストリーム情報オーバーレイに、リアルタイムのfps、ビットレート、ドロップフレーム数を表示します（これらの値が明示されていないストリームでは、オーバーレイを開いている間に測定します）。低性能のテレビで再生が途切れる場合にのみオフにしてください。実際の映像には影響せず、診断値だけに影響します。</string>
+    <string name="settings_none_auto">なし／自動</string>
+    <string name="settings_view_grid">グリッド</string>
+    <string name="settings_view_list">一覧</string>
+    <string name="settings_subtitle_small">小</string>
+    <string name="settings_subtitle_normal">標準</string>
+    <string name="settings_subtitle_large">大</string>
+    <string name="settings_subtitle_extra_large">特大</string>
+    <string name="settings_live_latency_low">低遅延</string>
+    <string name="settings_live_latency_balanced">バランス</string>
+    <string name="settings_live_latency_stable">安定</string>
+    <string name="settings_live_latency_custom">カスタム</string>
+    <string name="settings_low_latency_warning">⚠️ 低遅延</string>
+    <string name="settings_low_latency_warning_description">ライブ放送に近い位置を再生すると、バッファが小さくなります。低速な接続や不安定なストリームでは、バッファリング、映像の途切れ、再接続が増えることがあります。\n\nチャンネルが不安定になる場合は「バランス」を選択してください。</string>
+    <string name="settings_low_latency_understand">理解しました</string>
+    <string name="settings_custom_live_buffer">カスタムライブバッファ</string>
+    <string name="settings_live_buffer_seconds"><xliff:g id="seconds">%1$d</xliff:g>秒</string>
+    <string name="settings_audio_delay"><xliff:g id="delay">%1$d</xliff:g> ms</string>
+    <string name="settings_external_player_description">外部アプリで開くセクションを選択します。</string>
+    <string name="settings_audio_delay_value"><xliff:g id="delay">%1$d</xliff:g> ms</string>
+    <string name="settings_movies_player_description">mpv（推奨）は対応形式が最も広く、DTS/TrueHD 音声や珍しいファイルに対応しています。ExoPlayer は一部のテレビで mpv が再生できないストリームを再生できますが、DTS/TrueHD 音声はデコードできません。組み合わせの選択肢では、最初のプレーヤーが失敗すると自動的にもう一方を試します。単独のプレーヤーの選択肢では決して試さないため、もう一方がお使いのテレビでどのみち動作しない場合に数秒の黒画面を省けます。</string>
+    <string name="settings_movies_player_description_mobile">mpv（推奨）は対応形式が最も広く、DTS/TrueHD 音声や珍しいファイルに対応しています。ExoPlayer は一部のデバイスで mpv が再生できないストリームを再生できますが、DTS/TrueHD 音声はデコードできません。組み合わせの選択肢では、最初のプレーヤーが失敗すると自動的にもう一方を試します。単独のプレーヤーの選択肢では決して試さないため、もう一方がお使いのデバイスでどのみち動作しない場合に数秒の黒画面を省けます。</string>
+    <string name="settings_live_player_description">ExoPlayer（推奨）はチャンネルを開くのがはるかに速く、ライブ字幕に対応する唯一のプレーヤーです。mpv は ExoPlayer で再生できないチャンネル、たとえば珍しい音声を含むチャンネルも再生できます。組み合わせの選択肢では、最初のプレーヤーが失敗すると自動的にもう一方を試します。単独のプレーヤーの選択肢では決して試さないため、もう一方がお使いのテレビでどのみち動作しない場合に数秒の黒画面を省けます。プレーヤーで手動で切り替えたチャンネルでは、いずれの場合も選択が保持されます。</string>
+    <string name="settings_reset_player_choices_description">プレーヤーで個々の映画やエピソードをmpvとExoPlayerで切り替えると、その選択が次回のために保存されます。リセットすると、すべてが再び上記の設定に従います。ライブチャンネルの保存済みの選択はそのまま残ります。</string>
+    <string name="settings_reset_player_choices_none">保存なし</string>
+    <plurals name="settings_reset_player_choices_count">
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g>件保存済み</item>
+    </plurals>
+    <string name="settings_reset_player_choices_confirm">保存したプレーヤーの選択をリセットしますか？</string>
+    <string name="settings_reset_player_choices_confirm_description">すべての映画とエピソードが「映画とシリーズのプレーヤー」設定に戻ります。個別の切り替えは、いつでもプレーヤーから行えます。</string>
+    <string name="settings_reset_live_player_choices">ライブTVのプレーヤーの保存した選択をリセット</string>
+    <string name="settings_reset_live_player_choices_description">プレーヤーでチャンネルをExoPlayerとmpvで切り替えると、その選択がチャンネルごとに保存されます。リセットすると、すべてのチャンネルが再び「ライブTVのプレーヤー」設定に従います。映画とエピソードの保存済みの選択はそのまま残ります。</string>
+    <string name="settings_reset_live_player_choices_confirm">ライブTVのプレーヤーの保存した選択をリセットしますか？</string>
+    <string name="settings_reset_live_player_choices_confirm_description">すべてのチャンネルが「ライブTVのプレーヤー」設定に戻ります。個別の切り替えは、いつでもプレーヤーから行えます。</string>
+    <string name="settings_external_player_row_description">セクションごとに選択し、内蔵プレーヤーではなく外部アプリ（VLC、MX Player）でストリームを開きます。このアプリでデコードできないストリームを再生する場合や、別のプレーヤーを使用したい場合に便利です。外部での再生中は再開位置と前へ／次へは利用できません。また、カスタムUser-Agentまたはリファラーが必要なストリームは再生できない場合があります。</string>
+    <string name="settings_resume_always">常に再開</string>
+    <string name="settings_resume_ask">再開するか確認</string>
+    <string name="settings_resume_never">再開しない</string>
+    <string name="settings_delete_subtitles">字幕を削除</string>
+    <string name="settings_delete_all">すべて削除</string>
+    <string name="settings_movies">映画</string>
+    <string name="settings_series">シリーズ</string>
+    <string name="settings_no_downloaded_subtitles">ダウンロード済みの<xliff:g id="section">%1$s</xliff:g>字幕はありません。</string>
+    <string name="settings_delete_subtitle">字幕を削除</string>
+    <string name="settings_delete_subtitle_message">「<xliff:g id="title">%2$s</xliff:g>」の<xliff:g id="name">%1$s</xliff:g>字幕を削除しますか？後で再度ダウンロードできます。</string>
+    <string name="settings_delete_all_subtitles">すべての字幕を削除</string>
+    <string name="settings_delete_all_movies">映画の字幕をすべて削除</string>
+    <string name="settings_delete_all_series">シリーズの字幕をすべて削除</string>
+    <string name="settings_section_count"><xliff:g id="section">%1$s</xliff:g>（<xliff:g id="count">%2$d</xliff:g>）</string>
+    <string name="settings_sync_guide_question">今すぐ番組表を同期しますか？</string>
+    <string name="settings_sync_guide_description">「<xliff:g id="source">%1$s</xliff:g>」の番組表（EPG）をダウンロードします。後で「設定」→「ソースと番組表」→「EPGソース」から実行することもできます。</string>
+    <string name="settings_not_now">今はしない</string>
+    <string name="settings_sync_now">今すぐ同期</string>
+    <string name="settings_syncing_guide">番組表を同期中…</string>
+    <string name="settings_connecting">接続中…</string>
+    <string name="settings_run_background">バックグラウンドで実行</string>
+    <string name="settings_guide_synced">番組表を同期しました</string>
+    <string name="settings_guide_sync_failed">番組表の同期に失敗しました</string>
+    <string name="settings_restore_remote_title">別のデバイスから復元</string>
+    <string name="settings_restore_remote_description">同じ Wi-Fi にあるブラウザー付きの任意の機器（スマホ、パソコン、別のテレビ）で QR を読み取る（または URL を開く）、この PIN を入力して OwnTV のバックアップファイルを選んで送信します。復元する内容はここで選びます。</string>
+    <string name="settings_try_again">再試行</string>
+    <string name="settings_new_pin">新しいPINでやり直す</string>
+    <string name="settings_download_remote_title">別のデバイスにダウンロード</string>
+    <string name="settings_download_remote_description">同じ Wi-Fi にあるブラウザー付きの任意の機器（スマホ、パソコン、別のテレビ）で QR を読み取る（または URL を開く）、この PIN を入力してバックアップファイルをダウンロードし、安全に保管します。</string>
+    <string name="settings_preparing_backup">バックアップを準備中…</string>
+    <string name="settings_ui_zoom_range">インターフェース全体を拡大縮小します（<xliff:g id="min">%1$d</xliff:g>%%～<xliff:g id="max">%2$d</xliff:g>%%）。</string>
+    <string name="settings_low_zoom_warning_title">⚠️ 低ズームの警告</string>
+    <string name="settings_low_zoom_warning">ズームを<xliff:g id="zoom">%1$d</xliff:g>%%にすると、一度に画面に表示される項目が大幅に増えます。メモリが少ないデバイス（例：2 GBのTVスティック）では、特に大きなプレイリストやEPGデータを使用すると、アプリが不安定になったりクラッシュしたりする可能性があります。\n\n続行するにはOKを押してください。<xliff:g id="safe_zoom">%2$d</xliff:g>%%のままにするには戻るを押してください。</string>
+    <string name="settings_low_zoom_warning_mobile">ズームを<xliff:g id="zoom">%1$d</xliff:g>%%にすると、一度に画面に表示される項目が大幅に増えます。メモリが少ないデバイスでは、特に大きなプレイリストやEPGデータを使用すると、アプリが不安定になったりクラッシュしたりする可能性があります。\n\n<xliff:g id="safe_zoom">%2$d</xliff:g>%%のままにするには「キャンセル」を選択してください。</string>
+    <string name="settings_low_zoom_accept">理解したうえでリスクを受け入れます</string>
+    <string name="settings_surface_transparency"><xliff:g id="percent">%1$d</xliff:g>%%</string>
+    <string name="settings_catchup_timezone_automatic">自動</string>
+    <string name="settings_catchup_timezone_device">デバイス</string>
+    <string name="settings_catchup_player_ask">常に確認</string>
+    <string name="settings_catchup_player_internal">OwnTVプレーヤー</string>
+    <string name="settings_catchup_player_external">外部プレーヤー</string>
+    <string name="settings_download_folder_title">ダウンロードフォルダを選択</string>
+    <string name="settings_pick_background_title">背景画像を選択</string>
+    <string name="settings_theme_dialog">テーマ</string>
+    <string name="settings_app_startup_dialog">アプリ起動時</string>
+    <string name="settings_animations_dialog">アニメーション</string>
+    <string name="settings_close">閉じる</string>
+    <string name="settings_done">完了</string>
+    <string name="settings_reset">リセット</string>
+    <string name="settings_device_details"><xliff:g id="model">%1$s</xliff:g> · <xliff:g id="android">%2$s</xliff:g></string>
+    <string name="settings_history_live">ライブTV</string>
+    <string name="settings_history_movies">映画</string>
+    <string name="settings_history_series">シリーズ</string>
+    <string name="settings_history_all">すべて</string>
+    <string name="settings_browsing_last_category">最後のカテゴリを記憶</string>
+    <string name="settings_browsing_last_category_description">セクションを再度開いたとき、「すべて」ではなく最後に表示していたカテゴリを開きます。</string>
+    <string name="settings_browsing_last_item">最後の項目を記憶</string>
+    <string name="settings_browsing_last_item_description">各カテゴリで先頭からではなく、前回のスクロール位置を復元します。ライブTVでは、最後にフォーカスしていたチャンネルも復元します。</string>
+    <string name="settings_catchup_player">見逃し配信の再生方法</string>
+    <string name="settings_customize_title">カテゴリと項目をカスタマイズ</string>
+    <string name="settings_customize_pin_locked">この画面はPINロックされています。</string>
+    <string name="settings_customize_wrong_pin">PINが違います — もう一度お試しください</string>
+    <string name="settings_customize_enter_pin">PINを入力</string>
+    <string name="settings_customize_set_pin">🔒 PINを設定</string>
+    <string name="settings_customize_change_pin">🔒 PINを変更</string>
+    <string name="settings_customize_remove_lock">ロックを解除</string>
+    <string name="settings_customize_description">このプロフィールのチャンネル、映画、シリーズの表示／非表示を切り替え、カテゴリの名前や順序を変更します。再同期後も設定は維持されます。</string>
+    <string name="settings_customize_new_category_behavior">新しいカテゴリの動作</string>
+    <string name="settings_customize_hide">非表示にする</string>
+    <string name="settings_customize_show">表示する</string>
+    <string name="settings_customize_behavior_hide">非表示</string>
+    <string name="settings_customize_behavior_show">表示</string>
+    <string name="settings_customize_hidden_channels">非表示のチャンネル</string>
+    <string name="settings_customize_hidden_movies">非表示の映画</string>
+    <string name="settings_customize_hidden_series">非表示のシリーズ</string>
+    <string name="settings_customize_unhide_description">再表示すると、項目が一覧に戻ります。</string>
+    <string name="settings_customize_categories">カテゴリ</string>
+    <string name="settings_customize_empty">このセクションにはまだカテゴリがありません。先にソースを追加してください。</string>
+    <string name="settings_customize_range_hide_start">範囲選択を開始しました。終点の項目で「表示する」または「非表示にする」を押すと、範囲が選択されます。</string>
+    <string name="settings_customize_range_rename_start">名前変更の範囲選択を開始しました。終点の項目で「名前を変更」を押すと、範囲が選択されます。</string>
+    <string name="settings_customize_range_move_start">移動の範囲選択を開始しました。終点の項目で⤒ ↑ ↓ ⤓を押すと、範囲全体が移動します。</string>
+    <string name="settings_customize_span_hide">範囲を選択して非表示または表示</string>
+    <string name="settings_customize_span_move">範囲を選択して移動</string>
+    <string name="settings_customize_move_top">先頭に移動</string>
+    <string name="settings_customize_move_bottom">末尾に移動</string>
+    <string name="settings_customize_custom_category">カスタム</string>
+    <string name="settings_customize_span_rename">範囲を選択して名前を変更</string>
+    <string name="settings_customize_range_hide_start_touch">範囲選択を開始しました。最後の項目をタップして、非表示または表示を選択してください。</string>
+    <string name="settings_customize_range_move_start_touch">移動範囲を開始しました。最後の項目をタップし、矢印でブロック全体を移動します。</string>
+    <string name="settings_customize_range_rename_start_touch">名前の変更範囲を開始しました。最後の項目をタップすると、その間のすべての名前を変更できます。</string>
+    <plurals name="settings_customize_range_selected">
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g>個のカテゴリを選択しました。まとめて移動するには、⤒ ↑ ↓ ⤓を押してください。</item>
+    </plurals>
+    <string name="settings_customize_rename">名前を変更</string>
+    <string name="settings_customize_rename_category">カテゴリ名を変更</string>
+    <string name="settings_customize_rename_or_delete_category">カテゴリ名の変更または削除</string>
+    <string name="settings_customize_new_category">＋ 新しいカテゴリ</string>
+    <string name="settings_customize_sort_button">並べ替え：<xliff:g id="label">%1$s</xliff:g> ▾</string>
+    <string name="settings_customize_filter_button">フィルター：<xliff:g id="label">%1$s</xliff:g> ▾</string>
+    <string name="settings_customize_filter_title">一覧を絞り込む</string>
+    <string name="settings_customize_filter_all">すべて</string>
+    <string name="settings_customize_filter_visible">表示</string>
+    <string name="settings_customize_filter_hidden">非表示</string>
+    <string name="settings_customize_new_categories_button">新しいカテゴリ：<xliff:g id="label">%1$s</xliff:g> ▾</string>
+    <string name="settings_customize_restore_defaults">プレイリストの初期状態に復元</string>
+    <string name="settings_customize_restore_defaults_title"><xliff:g id="playlist">%2$s</xliff:g>の<xliff:g id="section">%1$s</xliff:g>を復元しますか？</string>
+    <string name="settings_customize_restore_defaults_description">非表示のカテゴリと項目は再表示され、名前の変更とカスタム順序は解除され、移動した項目は元に戻ります。統合カテゴリ、お気に入り、番組表の割り当ては保持されます。</string>
+    <string name="settings_customize_rename_hint">このプロフィールにのみ適用されます。空欄にすると「<xliff:g id="name">%1$s</xliff:g>」に戻ります。</string>
+    <string name="settings_customize_remove_pin_title">PINロックを解除しますか？</string>
+    <string name="settings_customize_remove_pin_message">今後、カスタマイズ画面を開くときにPINの入力を求められなくなります。</string>
+    <string name="settings_customize_remove">解除</string>
+    <string name="settings_customize_confirm_pin">新しいPINを確認</string>
+    <string name="settings_customize_pin_mismatch">PINが一致しません — 入力し直してください</string>
+    <string name="settings_customize_new_pin">新しいPINを入力</string>
+    <plurals name="settings_customize_selected_categories">
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g>個のカテゴリを選択しました。</item>
+    </plurals>
+    <string name="settings_customize_hide_show_title">カテゴリの表示／非表示</string>
+    <string name="settings_customize_was">変更前：「<xliff:g id="name">%1$s</xliff:g>」</string>
+    <string name="settings_customize_hidden">非表示</string>
+    <string name="settings_customize_unhide">再表示</string>
+    <string name="settings_key_actions">操作</string>
+    <string name="settings_span_heading">範囲 / 複数選択</string>
+    <string name="settings_span_help">最初の項目で移動・名前の変更・非表示のいずれかで OK を長押しし、最後の項目で同じ操作を押します。その間の項目がまとめて変わります。</string>
+    <string name="settings_span_ch_help">CH+ / CH− で1ページ移動します。CH+ / CH− を長押しすると最後または最初の項目に移動します。</string>
+    <string name="settings_customize_metadata_separator">"  ·  "</string>
+    <string name="settings_sources_title">ソース</string>
+    <string name="settings_sources_empty">ソースはまだありません。M3UまたはXtreamソースを追加してください。</string>
+    <string name="settings_sources_add">ソースを追加</string>
+    <string name="settings_sources_import_failed">インポートに失敗しました</string>
+    <string name="settings_sources_importing">カタログをインポート中…</string>
+    <string name="settings_sources_preparing">カタログを準備中</string>
+    <string name="settings_sources_deleting">削除中…</string>
+    <string name="settings_sources_resync">再同期</string>
+    <string name="settings_sources_delete_title">「<xliff:g id="name">%1$s</xliff:g>」を削除しますか？</string>
+    <string name="settings_sources_delete_message">このソースと、そのすべてのチャンネル、映画、シリーズが全プロフィールから削除されます。</string>
+    <string name="settings_sources_type_m3u">M3U · <xliff:g id="url">%1$s</xliff:g></string>
+    <string name="settings_sources_type_xtream">Xtream · <xliff:g id="url">%1$s</xliff:g></string>
+    <string name="settings_sources_type_stalker">Stalker · <xliff:g id="url">%1$s</xliff:g></string>
+    <string name="settings_sources_expiry">有効期限：<xliff:g id="date">%1$s</xliff:g></string>
+    <string name="settings_sources_test_title">ソースのテスト</string>
+    <string name="settings_sources_test_ok">接続は正常です</string>
+    <string name="settings_sources_test_auth">プロバイダーがこの情報を拒否しました。ユーザー名、パスワード、MAC アドレスを確認してください。</string>
+    <string name="settings_sources_test_expired">この契約は期限切れです。</string>
+    <string name="settings_sources_test_unreachable">サーバーに接続できませんでした。アドレスとインターネット接続を確認してください。</string>
+    <string name="settings_sources_test_status">状態: <xliff:g id="status">%1$s</xliff:g></string>
+    <string name="settings_sources_test_connections">接続数: <xliff:g id="max">%2$d</xliff:g> 中 <xliff:g id="used">%1$d</xliff:g> 使用中</string>
+    <string name="settings_sources_test_connections_max">接続数: 同時に最大 <xliff:g id="max">%1$d</xliff:g></string>
+    <string name="settings_sources_test_trial">体験アカウント</string>
+    <string name="settings_sources_test_expiry_none">有効期限の報告はありません</string>
+    <string name="settings_sources_info">情報</string>
+    <string name="settings_sources_retest">再テスト</string>
+    <string name="settings_sources_probe_title">このプレイリストをテストしますか？</string>
+    <string name="settings_sources_probe_warning">同時に視聴できるチャンネル数を知らせないプロバイダーは少なくありません。そこで OwnTV はいくつか実際に開き、どれが続くかを見て判断します。再生中のものはすべて停止し、最大で 2 分ほどかかります。</string>
+    <string name="settings_sources_probe_running">このプロバイダーが許可するチャンネル数を確認しています…（<xliff:g id="current">%1$d</xliff:g>/<xliff:g id="total">%2$d</xliff:g>）</string>
+    <string name="settings_sources_probe_unknown">このプロバイダーが許可するチャンネル数を OwnTV は特定できませんでした。</string>
+    <string name="settings_sources_probe_skip">スキップ</string>
+    <string name="settings_sources_auto_refresh">⟳ <xliff:g id="mode">%1$s</xliff:g></string>
+    <string name="settings_sources_default">デフォルト</string>
+    <string name="settings_sources_backup">バックアップ</string>
+    <string name="settings_sources_details_separator">"  •  "</string>
+    <string name="settings_sources_preparing_detail">カタログを準備中</string>
+    <string name="settings_sources_removing_detail">削除中…</string>
+    <string name="settings_sources_edit">編集</string>
+    <string name="settings_sources_delete">削除</string>
+    <string name="settings_sources_cancel">キャンセル</string>
+    <string name="settings_sources_try_again">再試行</string>
+    <string name="settings_sources_import_title">インポート完了</string>
+    <string name="settings_sources_resync_title_full">「<xliff:g id="name">%1$s</xliff:g>」を再同期</string>
+    <string name="settings_sources_resync_now_full">今すぐ再同期</string>
+    <string name="settings_sources_resync_remove_full">再同期して見つからないタイトルを削除</string>
+    <string name="settings_sources_resync_description">「今すぐ再同期」では最新のカタログを取得し、すでに保存されているすべてのデータを維持します。\n\n「再同期して見つからないタイトルを削除」では、プロバイダーの一覧から削除されたタイトルも削除できます。引き続き掲載されているタイトルのお気に入り、視聴履歴、再開位置は維持されます。</string>
+    <string name="settings_sources_refresh_off">オフ</string>
+    <string name="settings_sources_refresh_startup">起動時に更新</string>
+    <string name="settings_sources_refresh_6h">6時間ごと</string>
+    <string name="settings_sources_refresh_12h">12時間ごと</string>
+    <string name="settings_sources_refresh_manual">カスタム間隔…</string>
+    <plurals name="settings_sources_refresh_days">
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g> 日ごと</item>
+    </plurals>
+    <string name="settings_sources_refresh_days_title">更新間隔</string>
+    <string name="settings_sources_refresh_days_hint">左右で日数を選びます（1〜99）。</string>
+    <string name="settings_epg_guide_days">番組表を保持する日数</string>
+    <string name="settings_epg_guide_days_hint">左右で日数を選びます（<xliff:g id="min">%1$d</xliff:g>〜<xliff:g id="max">%2$d</xliff:g>）。</string>
+    <plurals name="settings_epg_guide_days_value">
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g> 日</item>
+    </plurals>
+    <string name="settings_epg_sources_title">EPGソース</string>
+    <string name="settings_epg_sources_empty">EPGソースはまだありません。XMLTVリンクを追加してください。</string>
+    <string name="settings_epg_sources_add">EPGソースを追加</string>
+    <string name="settings_epg_sources_edit">EPGソースを編集</string>
+    <string name="settings_epg_sources_add_sync">追加して同期</string>
+    <string name="settings_epg_sources_save_sync">保存して同期</string>
+    <string name="settings_epg_sources_fill_playlist">プレイリストから入力</string>
+    <string name="settings_epg_sources_none_playlist">EPG URLを提供するプレイリストがありません。</string>
+    <string name="settings_epg_sources_use_logos">この番組表のチャンネルロゴを使用</string>
+    <string name="settings_epg_sources_logos_description">プレイリストのロゴの代わりに、このXMLTVフィードのロゴを表示します。このフィードにロゴがないチャンネルでは、プレイリストのロゴが維持されます。</string>
+    <string name="settings_epg_sources_name">名前</string>
+    <string name="settings_epg_sources_url">XMLTV URL</string>
+    <string name="settings_epg_sources_portal_guide">ポータルの番組表</string>
+    <string name="settings_epg_sources_user_agent">User-Agent（任意）</string>
+    <string name="settings_epg_sources_name_hint">例：英国番組表</string>
+    <string name="settings_epg_sources_url_hint">https://…/epg.xml(.gz)</string>
+    <string name="settings_epg_sources_user_agent_hint">空欄の場合はデフォルトを使用</string>
+    <string name="settings_epg_sources_delete_title">「<xliff:g id="name">%1$s</xliff:g>」を削除しますか？</string>
+    <string name="settings_epg_sources_delete_message">このEPGソースと番組表データを削除します。チャンネルは維持されます。</string>
+    <string name="settings_epg_sources_syncing_percent">同期中 <xliff:g id="percent">%1$d</xliff:g>%%</string>
+    <plurals name="settings_epg_sources_catchup">
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g>チャンネルで見逃し配信を利用できます。</item>
+    </plurals>
+    <string name="settings_epg_sources_error">⚠ <xliff:g id="error">%1$s</xliff:g></string>
+    <string name="settings_epg_sources_auto_refresh_title">自動更新</string>
+    <string name="settings_epg_sources_auto_refresh_description">オフ、起動時、またはデータが古い場合</string>
+    <string name="settings_epg_sources_not_synced">まだ同期されていません</string>
+    <string name="settings_epg_refresh_1h">1時間ごと</string>
+    <string name="settings_epg_refresh_3h">3時間ごと</string>
+    <string name="settings_epg_refresh_6h">6時間ごと</string>
+    <string name="settings_epg_refresh_12h">12時間ごと</string>
+    <string name="settings_epg_refresh_24h">24時間ごと</string>
+    <string name="settings_epg_refresh_48h">48時間ごと</string>
+    <string name="settings_epg_sources_deleting">削除中…</string>
+    <string name="settings_epg_sources_syncing_label">同期中</string>
+    <string name="settings_epg_sources_connecting">接続中…</string>
+    <plurals name="settings_epg_sources_status_count_channels">
+        <item quantity="other">番組表には<xliff:g id="channels">%1$d</xliff:g>チャンネルが含まれています。</item>
+    </plurals>
+    <plurals name="settings_epg_sources_status_count_programmes">
+        <item quantity="other"><xliff:g id="programmes">%1$d</xliff:g>件の番組が含まれています。</item>
+    </plurals>
+    <string name="settings_epg_sources_status_count"><xliff:g id="channels">%1$s</xliff:g> <xliff:g id="programmes">%2$s</xliff:g></string>
+    <string name="settings_epg_sources_status_count_with_catchup"><xliff:g id="counts">%1$s</xliff:g> <xliff:g id="catchup">%2$s</xliff:g></string>
+    <string name="settings_epg_sources_status_synced">同期しましたが、対象期間内に番組が見つかりませんでした。</string>
+    <string name="settings_epg_sources_status_synced_with_catchup"><xliff:g id="catchup">%1$s</xliff:g></string>
+    <string name="settings_backup_title">バックアップと復元</string>
+    <string name="settings_backup_working">処理中…</string>
+    <string name="settings_backup_what_backup">バックアップする項目</string>
+    <string name="settings_backup_what_restore">復元する項目</string>
+    <string name="settings_backup_encrypt_title">このバックアップを暗号化しますか？</string>
+    <string name="settings_backup_encrypt_message">バックアップパスワードを設定すると、プレイリスト、プロフィール、保存済みパスワードを含むファイル全体が暗号化され、そのパスワードなしでは内容を一切読み取れません。パスワードは安全に保管してください。紛失すると、バックアップを開けなくなります。パスワードを設定しない場合、ファイルは暗号化されず、保存済みパスワードとPINは含まれません。</string>
+    <string name="settings_backup_export_title">バックアップをエクスポート</string>
+    <string name="settings_backup_restore_title">バックアップを復元</string>
+    <string name="settings_backup_password">バックアップパスワード</string>
+    <string name="settings_backup_enter_password">バックアップパスワードを入力</string>
+    <string name="settings_backup_wrong_password">バックアップパスワードが違います</string>
+    <string name="settings_backup_password_mismatch">パスワードが一致しません。もう一度お試しになるか、スキップして保存済みパスワード以外のすべてを復元してください。</string>
+    <string name="settings_backup_password_encrypted_mismatch">パスワードが一致しません。このバックアップは暗号化されているため、作成時のパスワードなしでは開けません。</string>
+    <string name="settings_backup_encrypted_description">このバックアップは暗号化されています。バックアップパスワードを入力して開き、復元する項目を選択してください。</string>
+    <string name="settings_backup_saved_passwords_description">このバックアップ内のパスワードは暗号化されています。復元するにはバックアップパスワードを入力してください。スキップしてその他の項目を復元し、後でパスワードを再入力することもできます。</string>
+    <string name="settings_backup_choose_folder">バックアップの保存先フォルダを選択</string>
+    <string name="settings_backup_choose_folder_action">フォルダを選択</string>
+    <string name="settings_backup_pick_file">復元するバックアップファイルを選択</string>
+    <string name="settings_backup_remote">別のデバイス</string>
+    <string name="settings_backup_everything">すべて</string>
+    <string name="settings_backup_kids_profile">子ども用プロフィール</string>
+    <string name="settings_backup_profile_current">「<xliff:g id="name">%1$s</xliff:g>」（現在）</string>
+    <string name="settings_backup_profile_locked">「<xliff:g id="name">%1$s</xliff:g>」はロックされています</string>
+    <string name="settings_backup_profile_pin">プロフィールのPIN</string>
+    <string name="settings_backup_pin_incorrect">PINが違います。</string>
+    <string name="settings_backup_pin_locked">PINロック中</string>
+    <string name="settings_backup_unlock">ロックを解除</string>
+    <string name="settings_backup_continue">続行</string>
+    <string name="settings_backup_encrypt_export">暗号化してエクスポート</string>
+    <string name="settings_backup_export_unencrypted">暗号化せずにエクスポート</string>
+    <string name="settings_backup_encrypt_prepare">暗号化して準備</string>
+    <string name="settings_backup_prepare_unencrypted">暗号化せずに準備</string>
+    <string name="settings_backup_restore_action">復元</string>
+    <string name="settings_backup_skip_passwords">スキップ（パスワードなし）</string>
+    <string name="settings_backup_section_sources">ソース</string>
+    <string name="settings_backup_section_sources_desc">プレイリスト、EPGフィード、認証情報</string>
+    <string name="settings_backup_no_sources_warning">ソースを選択しないと、このデバイスにはプレイリストが入らず、視聴できるものがありません。</string>
+    <string name="settings_backup_section_customize">カスタマイズ</string>
+    <string name="settings_backup_section_customize_desc">非表示／名前変更／並べ替え済みのカテゴリとチャンネル、EPGの一致情報、カスタムTMDB名</string>
+    <string name="settings_backup_section_favorites">お気に入り</string>
+    <string name="settings_backup_section_favorites_desc">お気に入りに登録したチャンネル、映画、シリーズ</string>
+    <string name="settings_backup_section_history">視聴履歴</string>
+    <string name="settings_backup_section_history_desc">最近視聴したコンテンツの一覧</string>
+    <string name="settings_backup_section_resume">再開位置</string>
+    <string name="settings_backup_section_resume_desc">映画とエピソードで視聴を停止した位置</string>
+    <string name="settings_backup_section_reorder">手動並べ替え</string>
+    <string name="settings_backup_section_reorder_desc">チャンネル、映画、シリーズを上下に移動した位置</string>
+    <string name="settings_backup_section_settings">アプリ設定</string>
+    <string name="settings_backup_section_settings_desc">テーマ、アクセントカラー、プレーヤー、レイアウトの設定</string>
+    <string name="settings_backup_device_settings">もう一方のデバイスのハードウェア設定</string>
+    <string name="settings_backup_device_settings_desc">プレーヤーエンジン、ハードウェアデコード、フレームレート、HDR、サラウンド。両方のデバイスが同じハードウェアの場合にのみ復元してください。</string>
+    <string name="settings_backup_saved_to"><xliff:g id="path">%1$s</xliff:g>に保存しました。</string>
+    <string name="settings_backup_saved_to_without_passwords"><xliff:g id="path">%1$s</xliff:g>に保存しました。パスワードとPINは含まれていません。</string>
+    <plurals name="settings_backup_restored">
+        <item quantity="other"><xliff:g id="items">%1$d</xliff:g>件の項目を復元しました。</item>
+    </plurals>
+    <string name="settings_backup_restore_resync">コンテンツを読み込むには、ソースを再同期してください。</string>
+    <string name="settings_backup_restore_password_note">保存済みのパスワードは「ソース／プロキシ」で、プロフィールのPINと併せて再入力してください。</string>
+    <plurals name="settings_backup_skipped_sources">
+        <item quantity="other">プレイリストの種類がサポートされていないため、<xliff:g id="count">%1$d</xliff:g>件のソースをスキップしました。</item>
+    </plurals>
+    <string name="settings_backup_export_error">エクスポートに失敗しました。</string>
+    <string name="settings_backup_read_error">バックアップファイルを読み取れませんでした。</string>
+    <string name="settings_backup_import_error">インポートに失敗しました。</string>
+    <string name="settings_backup_invalid_locale">このバックアップには、サポートされていないアプリ言語が含まれていました。復元は完了しましたが、現在の言語が維持されました。</string>
+    <string name="settings_backup_which_profiles">バックアップするプロフィール</string>
+    <string name="settings_backup_selected_profiles">バックアップには、選択したプロフィールとそのデータのみが含まれます。ロックされたプロフィールにはPINが必要です。</string>
+    <string name="settings_backup_profile_pin_description">これは現在のプロフィールではありません。バックアップに含めるには、このプロフィールのPINを入力してください。PINを入力しない場合、データはバックアップされません。</string>
+    <string name="settings_metadata_optional">任意</string>
+    <string name="settings_metadata_test_title">オッペンハイマー</string>
+    <string name="settings_bulk_rename_title">一括名前変更</string>
+    <plurals name="settings_bulk_rename_selected">
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g>件の名前を選択しました。ルールを追加するか、自動的にクリーンアップしてください。</item>
+    </plurals>
+    <string name="settings_bulk_rename_add_rule">✎ ルールを追加</string>
+    <string name="settings_bulk_rename_auto_cleanup">✨ 自動クリーンアップ</string>
+    <string name="settings_bulk_rename_restore_original">↺ 元の名前に戻す</string>
+    <string name="settings_bulk_rename_rules_title">一括名前変更ルール</string>
+    <string name="settings_bulk_rename_rules_description">ルールは上から順に実行されます。複数の値は「;」で区切ってください。「追加」には値を1つだけ指定できます。</string>
+    <string name="settings_bulk_rename_add_single_value_error">「追加」には値を1つだけ指定してください。セミコロンは「削除」ルールで使用します。</string>
+    <string name="settings_bulk_rename_rule_required">少なくとも1つのルールを追加してください。</string>
+    <string name="settings_bulk_rename_rule_type">ルールの種類</string>
+    <string name="settings_bulk_rename_action_add">追加</string>
+    <string name="settings_bulk_rename_action_remove">削除</string>
+    <string name="settings_bulk_rename_where">位置</string>
+    <string name="settings_bulk_rename_before">前（接頭辞）</string>
+    <string name="settings_bulk_rename_after">後（接尾辞）</string>
+    <string name="settings_bulk_rename_rule_value">ルールの値</string>
+    <string name="settings_bulk_rename_value_hint">複数の値は「;」で区切ってください。「追加」には値を1つだけ指定できます。</string>
+    <string name="settings_bulk_rename_value_example">値;値;値</string>
+    <string name="settings_bulk_rename_add_another_rule">＋ 別のルールを追加</string>
+    <string name="settings_bulk_rename_trim_spaces">残った余分な空白を削除</string>
+    <string name="settings_bulk_rename_ignore_case">大文字と小文字を区別しない</string>
+    <string name="settings_bulk_rename_review">名前の変更内容を確認</string>
+    <string name="settings_bulk_rename_review_description">行を適用するまで変更は保存されません。「完了」を押すと、適用したすべての変更が一度に保存されます。</string>
+    <string name="settings_bulk_rename_blank_rejected">空の名前は使用できません — 元の名前を維持しました</string>
+    <string name="settings_bulk_rename_unchanged">変更なし — 一致するルールがありません</string>
+    <string name="settings_bulk_rename_result">→ <xliff:g id="name">%1$s</xliff:g></string>
+    <string name="settings_bulk_rename_duplicate">名前が重複しています — 別の項目ですでに使用されています</string>
+    <string name="settings_bulk_rename_apply">適用</string>
+    <string name="settings_bulk_rename_decline">却下</string>
+    <plurals name="settings_bulk_rename_will_change">
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g>件が変更されます</item>
+    </plurals>
+    <plurals name="settings_bulk_rename_unchanged_count">
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g>件は変更されません</item>
+    </plurals>
+    <plurals name="settings_bulk_rename_duplicates_count">
+        <item quantity="other">重複：<xliff:g id="count">%1$d</xliff:g>件</item>
+    </plurals>
+    <string name="settings_bulk_rename_apply_all">すべて適用</string>
+    <string name="settings_bulk_rename_decline_all">すべて却下</string>
+    <string name="settings_bulk_rename_edit_rules">✎ ルールを編集</string>
+    <string name="settings_bulk_rename_restore_title">元の名前に復元しますか？</string>
+    <string name="settings_bulk_rename_restore_description">選択した名前はすべて、プロバイダーでの元の名前に戻ります。影響するのは今回の選択範囲のみです。</string>
+    <string name="settings_bulk_rename_restore">復元</string>
+    <string name="settings_bulk_rename_too_many_title">項目が多すぎます</string>
+    <string name="settings_bulk_rename_too_many_description">このカテゴリは、一度にまとめて名前を変更するには項目が多すぎるため、より小さい範囲に分けて変更してください。</string>
+    <string name="settings_bulk_rename_auto_country_provider">自動：国/プロバイダーのタグ</string>
+    <string name="settings_bulk_rename_auto_quality_codec">自動：位置を問わず画質/コーデックのタグ</string>
+    <string name="settings_bulk_rename_auto_emoji_symbols">自動：絵文字と記号</string>
+    <string name="settings_customize_new_category_title">新しいカテゴリ</string>
+    <string name="settings_customize_new_category_description">このプロフィール用の統合カテゴリ — チャンネル、映画、シリーズをここに移動できます。</string>
+    <string name="settings_customize_this_category">このカテゴリ</string>
+    <string name="settings_customize_sort_categories">カテゴリを並べ替え</string>
+    <string name="settings_customize_delete_category">「<xliff:g id="name">%1$s</xliff:g>」を削除しますか？</string>
+    <string name="settings_customize_delete_category_description">統合カテゴリが削除されます。中の項目は元のカテゴリに残ります。</string>
+    <string name="settings_customize_channels_description">このカテゴリのチャンネル — 名前の変更、並べ替え、非表示、再表示ができます。</string>
+    <string name="settings_customize_movies_description">このカテゴリの映画 — 並べ替え、非表示、再表示ができます。</string>
+    <string name="settings_customize_series_description">このカテゴリのシリーズ — 並べ替え、非表示、再表示ができます。</string>
+    <string name="settings_customize_hide_show_items">項目を非表示または表示</string>
+    <plurals name="settings_customize_selected_items">
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g>件の項目を選択しました。</item>
+    </plurals>
+    <plurals name="settings_customize_move_items_selected">
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g>件の項目を選択しました。まとめて移動するには、⇒ ↑ ↓ ⇓ を続けて押してください。</item>
+    </plurals>
+    <string name="settings_customize_rename_item_hint">このプロフィールにのみ適用されます。空欄にすると「<xliff:g id="name">%1$s</xliff:g>」に復元されます。</string>
+    <string name="settings_customize_item_was">以前は「<xliff:g id="name">%1$s</xliff:g>」</string>
+    <string name="settings_customize_rename_items">✎ 項目の名前を変更</string>
+    <string name="settings_customize_move_to">移動先…</string>
+    <string name="settings_customize_back">← 戻る</string>
+    <string name="settings_move_category_title">カテゴリへ移動</string>
+    <string name="settings_move_category_description">元のカテゴリにも残す設定にしない限り、この項目は「<xliff:g id="name">%1$s</xliff:g>」から移動します。</string>
+    <string name="settings_move_category_new">＋ 新しいカテゴリ…</string>
+    <string name="settings_move_category_keep">「<xliff:g id="name">%1$s</xliff:g>」にも残す</string>
+    <string name="settings_move_category_action">移動</string>
+    <string name="settings_dns_description">ドメイン名の名前解決にカスタムDNSサーバーを使用します</string>
+    <string name="settings_dns_toggle_description">OwnTVのすべてのドメイン名をカスタムDNSサーバー経由で名前解決します。</string>
+    <string name="settings_dns_use_custom">カスタムDNSを使用</string>
+    <string name="settings_dns_server_missing">カスタムDNSは有効ですが、サーバーが設定されていません。サーバーアドレスを入力して［保存］を選択するか、この設定をオフにしてください。</string>
+    <string name="settings_dns_server">DNSサーバー</string>
+    <string name="settings_dns_server_hint">8.8.8.8 または https://dns.google/dns-query</string>
+    <string name="settings_dns_test">DNSをテスト</string>
+    <string name="settings_dns_explanation">カスタムDNSを使用すると、ISPレベルのドメインブロックを回避したり、SmartDNSサービスを介して地域制限を解除したりできます。DNS-over-HTTPS (DoH)を推奨します — 名前解決が暗号化されます。</string>
+    <string name="settings_dns_limitations">この設定が影響するのは、OkHttpベースの通信（プレイリストの同期、EPG、API呼び出し、画像、ExoPlayerストリーム）のみです。mpvはシステムのリゾルバーを使用するため、影響を受けません。</string>
+    <string name="settings_dns_resolved">名前解決済み ✓ (<xliff:g id="millis">%1$d</xliff:g> ms)</string>
+    <string name="settings_dns_enter_server">DNSサーバーのホストまたはDoH URLを入力してください。</string>
+    <string name="settings_dns_not_reachable">DNSサーバーに到達できません。</string>
+    <string name="settings_dns_timed_out">DNSリクエストがタイムアウトしました。</string>
+    <string name="settings_dns_network_unreachable">ネットワークに到達できません — サーバーアドレスを確認してください。</string>
+    <string name="settings_dns_connection_refused">接続が拒否されました — サーバーアドレスとポートを確認してください。</string>
+    <string name="settings_dns_test_failed">DNSテストに失敗しました — サーバーアドレスを確認してください。</string>
+    <string name="settings_dns_no_addresses">DNSから<xliff:g id="host">%1$s</xliff:g>のアドレスが返されませんでした。</string>
+    <string name="settings_subtitle_customize">字幕をカスタマイズ</string>
+    <string name="settings_subtitle_customize_off">オフでは、字幕はストリームとプレーヤーが描画するとおりに表示されます。</string>
+    <string name="settings_subtitle_preview_stock">プレビュー — 標準表示</string>
+    <string name="settings_subtitle_reset_all">すべてリセット</string>
+    <string name="settings_subtitle_color">字幕の色</string>
+    <string name="settings_subtitle_color_default_description">デフォルトでは、色の指定はストリームとプレーヤーに委ねられます。</string>
+    <string name="settings_subtitle_color_hex_hint">FFEB3Bなど、6桁の16進数を入力してください</string>
+    <string name="settings_subtitle_use_default">デフォルトを使用</string>
+    <string name="settings_subtitle_position">字幕の位置</string>
+    <string name="settings_subtitle_background_transparency">字幕背景の透明度</string>
+    <string name="settings_subtitle_preview_sample">明日はきっと晴れます</string>
+    <string name="settings_subtitle_customize_description">オンにして、変更したい項目だけを設定してください — 「デフォルト」のままにした項目では、ライブTVの字幕に放送局が埋め込んだ色や配置を含む標準の表示が維持されます。</string>
+    <string name="settings_subtitle_default">デフォルト</string>
+    <string name="settings_subtitle_color_short">色</string>
+    <string name="settings_subtitle_color_description">文字色 — プリセット、ピッカー、または16進コードで指定します。</string>
+    <string name="settings_subtitle_position_short">位置</string>
+    <string name="settings_subtitle_position_description">字幕が画面上に表示される位置です。</string>
+    <string name="settings_subtitle_background_description">文字の背後にあるボックスの不透明度です。</string>
+    <string name="settings_subtitle_hex">16進数</string>
+    <string name="settings_subtitle_position_default_description">デフォルトでは、放送局がライブ字幕に指定した位置も含め、ストリーム側の配置に従います。それ以外の設定は常に優先されます。</string>
+    <string name="settings_subtitle_background_none">なし</string>
+    <string name="settings_subtitle_background_solid">不透明</string>
+    <string name="settings_subtitle_color_white">白</string>
+    <string name="settings_subtitle_color_yellow">黄色</string>
+    <string name="settings_subtitle_color_cyan">シアン</string>
+    <string name="settings_subtitle_color_green">緑</string>
+    <string name="settings_subtitle_color_grey">グレー</string>
+    <string name="settings_live_preroll">ライブストリームを事前バッファリング</string>
+    <string name="settings_live_preroll_description">ライブチャンネルの再生開始前に、この量の映像をバッファリングします。また、カクついた後にもう一度バッファリングします。これは映像の量であり、カウントダウンではありません。オフにすると、最も速く再生を開始できます。</string>
+    <string name="settings_live_tune_timeout">チャンネルを諦めるまでの時間</string>
+    <string name="settings_live_tune_timeout_description">この時間までにライブチャンネルの映像が出ない場合、OwnTV はすべてのプレーヤーを順に試して黒い画面を映し続ける代わりに、試行をやめてお知らせします。「しない」を選ぶと試行を続けるため、プロバイダーが削除したチャンネルでは 1 分をゆうに超えることがあります。プロバイダー側から求められた待ち時間は含みません。</string>
+    <string name="settings_live_preroll_per_playlist">プレイリストごとの事前バッファリング</string>
+    <string name="settings_live_preroll_per_playlist_description">上記の設定を1つのプレイリストだけ上書きし、他のプレイリストは高速なままにできます。</string>
+    <string name="settings_live_engine_per_playlist">プレイリストごとのライブTVプレーヤー</string>
+    <string name="settings_live_engine_per_playlist_description">上記の設定を1つのプレイリストだけ上書きします。片方のプレーヤーでしかうまく再生できないチャンネルを持つ提供元に使います。</string>
+    <string name="settings_live_latency_per_playlist">プレイリストごとのライブ遅延</string>
+    <string name="settings_live_latency_per_playlist_description">上記の設定を1つのプレイリストだけ上書きします。他より深い、または浅いバッファーが必要な提供元に使います。</string>
+    <string name="settings_catchup_timezone_per_playlist">プレイリストごとのキャッチアップのタイムゾーン</string>
+    <string name="settings_catchup_timezone_per_playlist_description">上のタイムゾーンを1つのプレイリストだけ上書きします。アーカイブが別の時計で動いている提供元に使います。</string>
+    <string name="settings_vod_engine_per_playlist">プレイリストごとの映画・シリーズのプレーヤー</string>
+    <string name="settings_vod_engine_per_playlist_description">上記の設定を1つのプレイリストだけ上書きします。映画やエピソードを片方のプレーヤーしかうまく再生できない提供元に使います。</string>
+    <string name="settings_live_tune_timeout_per_playlist">プレイリストごとの再生をあきらめるまでの時間</string>
+    <string name="settings_live_tune_timeout_per_playlist_description">上記の設定を1つのプレイリストだけ上書きします。チャンネルの開始が遅い、またはよく止まっている提供元に使います。</string>
+    <plurals name="settings_live_preroll_overrides">
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g>件</item>
+    </plurals>
+    <string name="settings_surround_stereo">ステレオのみ</string>
+    <string name="settings_surround_auto_description">自動 — Dolby/DTSサラウンドを試し、テレビまたはサウンドバーで再生できない場合は自動的にステレオに切り替えます。推奨。</string>
+    <string name="settings_surround_auto_description_mobile">自動 — Dolby/DTSサラウンドを試し、スピーカー、ヘッドホン、または接続したレシーバーで再生できない場合は自動的にステレオに切り替えます。推奨。</string>
+    <string name="settings_surround_stereo_description">ステレオのみ — 常にアプリ内でデコードし、通常の2.0サウンドを送信します。テレビの内蔵スピーカーやステレオサウンドバーで使用するか、音声が映像より遅れる場合に使用してください。</string>
+    <string name="settings_surround_stereo_description_mobile">ステレオのみ — 常にアプリ内でデコードし、通常の2.0サウンドを送信します。内蔵スピーカー、ヘッドホン、ステレオサウンドバーで使用するか、音声が映像より遅れる場合に使用してください。</string>
+    <string name="settings_surround_forced_description">サラウンド — Dolby/DTSを実際の5.1/7.1レシーバーに送信します。無音になったりカクついたりする場合は、OwnTVはステレオに切り替えてその旨通知します。</string>
+    <string name="settings_panel_width">パネル幅の調整</string>
+    <string name="settings_panel_width_description">ライブTV、映画、シリーズで、カテゴリ、一覧、プレビューの各パネルのサイズを変更します。</string>
+    <string name="settings_vod_layout">映画と番組のレイアウト</string>
+    <string name="settings_vod_layout_description">パネルを分けて表示するか、背景に作品の画像を広げたシネマティック表示か</string>
+    <string name="settings_vod_layout_screen_description">映画と番組の表示方法を選びます。ライブ TV とエピソード一覧は変わりません。</string>
+    <string name="settings_vod_layout_separate">分割パネル</string>
+    <string name="settings_vod_layout_separate_description">カテゴリ、タイトル一覧、プレビューを横に並べます。リスト表示とグリッド表示を利用できます。</string>
+    <string name="settings_vod_layout_cinematic">シネマティック</string>
+    <string name="settings_vod_layout_cinematic_description">選択中の作品の画像が画面いっぱいに広がり、その詳細がポスターのグリッドの上に表示されます。グリッドのみ。</string>
+    <string name="settings_search_keywords_vod_layout">レイアウト シネマティック 背景 画像 パネル 映画 番組 ポスター 表示 グリッド</string>
+    <string name="settings_panel_width_details_height">詳細の高さ</string>
+    <string name="settings_panel_width_details_hint">詳細の高さを下げるとポスターがもう 1 行増え、上げるとあらすじとキャストが多く表示されます。</string>
+    <string name="settings_panel_width_content_area">コンテンツ領域</string>
+    <string name="settings_search_keywords_epg_offset">epg 番組表 時刻オフセット 時差 ずらす シフト タイムゾーン 東 西 時間</string>
+    <string name="settings_search_keywords_panel_width">パネル 幅 サイズ リサイズ カテゴリ 一覧 プレビュー ポスター 列 レイアウト ライブ 映画 シリーズ</string>
+    <string name="settings_search_keywords_live_preroll">事前バッファリング プリロール バッファリング バッファ 再生前 再バッファリング カクつき フリーズ プレイリストごと プレイリスト</string>
+    <string name="settings_detailed_playback_logging">詳細な再生ログ</string>
+    <string name="settings_search_keywords_detailed_logging">診断 詳細 トレース logcat デバッグ レポート バグ ライブ エンジン</string>
+    <string name="settings_playback_kind_error">エラー</string>
+    <string name="settings_playback_kind_event">イベント</string>
+    <string name="settings_playback_kind_report">レポート</string>
+    <string name="settings_export">エクスポート</string>
+    <string name="settings_detailed_playback_logging_description">ライブエンジンの動作の完全なトレース（選局、フォールバック、再接続のすべて）を、Logcatとエクスポートしたレポートに記録します。問題を調査している場合以外はオフのままにしてください。再生には一切影響せず、書き込まれる量が変わるだけです。</string>
+    <string name="settings_live_preroll_playlist_picker">どのプレイリスト？</string>
+    <string name="settings_live_preroll_follow">設定に従う</string>
+    <string name="settings_video_seconds"><xliff:g id="seconds">%1$d</xliff:g>秒の映像</string>
+    <string name="settings_epg_offset_root_description">フィードの時刻が実際の放送と合わない場合は、番組表全体をずらします。個別のチャンネルは、長押しメニュー（ライブTVまたは番組表）から単独でずらせます。同じ番組表を共有するEast/West版の場合は、そちらを使用してください。</string>
+    <string name="settings_epg_offset_dialog_description">番組表のすべての番組をずらします。フィード全体の時刻がずれている場合に使用します。単一のチャンネル（1つの番組表を共有するEast/West版など）の場合は、ライブTVまたは番組表でチャンネルを長押しし、そこで個別のオフセットを設定してください。</string>
+    <string name="settings_panel_width_summary">カテゴリ <xliff:g id="category">%1$d</xliff:g>%% · 一覧 <xliff:g id="list">%2$d</xliff:g>%% · <xliff:g id="preview_label">%3$s</xliff:g> <xliff:g id="preview">%4$d</xliff:g>%%</string>
+    <string name="settings_panel_width_help">• 3つのパネルは1つの行を共有しているため、それぞれの割合の合計が100%%になる必要があります。\n• 1つのパネルを広げた場合は、保存する前に別のパネルから同じ量を縮める必要があります。\n• リセットすると、セクションはこの画面の初期状態の標準幅に戻ります。\n• セクションをオフにすると、値を失うことなく標準レイアウトに戻ります。\n• 映画とシリーズのポスターは自動的に再配置されるため、一覧を狭くすると1行あたりの表示数が少なくなります。</string>
+    <string name="settings_panel_width_preview">プレビュー</string>
+    <string name="settings_panel_width_poster">ポスター</string>
+    <string name="settings_panel_width_dialog_title"><xliff:g id="section">%1$s</xliff:g>のパネル幅</string>
+    <string name="settings_panel_width_customize">パネルをカスタマイズ</string>
+    <string name="settings_panel_width_category">カテゴリパネル</string>
+    <string name="settings_panel_width_list">一覧パネル</string>
+    <string name="settings_panel_width_preview_panel"><xliff:g id="label">%1$s</xliff:g>パネル</string>
+    <string name="settings_panel_width_total">合計サイズ</string>
+    <string name="settings_panel_width_invalid_total">合計サイズは<xliff:g id="total">%1$d</xliff:g>%%です。100%%である必要があります。調整してください。</string>
+    <string name="settings_language_help_translate">OwnTVの翻訳に協力する</string>
+    <string name="settings_language_contribution_description">QRコードをスキャンするかリンクを開いて、利用可能な任意の言語を選択し、OwnTVの6つの翻訳コンポーネントすべてに貢献できます。</string>
+    <string name="settings_language_contribution_qr_description">OwnTVの翻訳プロジェクト概要のQRコード</string>
+    <string name="settings_language_contribution_qr_failed">QRコードを生成できませんでした。代わりに下に表示されているリンクを使用してください。</string>
+    <string name="settings_language_contribution_copy">リンクをコピー</string>
+    <string name="settings_language_contribution_copied">リンクをコピーしました</string>
+    <string name="settings_language_contribution_open_failed">リンクを開けませんでした。代わりにコピーしてください。</string>
+    <string name="settings_language_contribution_copy_failed">リンクをコピーできませんでした。上に表示されているURLを読み取るか、入力してください。</string>
+    <string name="settings_auto_frame_rate_warning_suffix">このテレビでは非推奨：Android 12未満では、フレームレートをスムーズに変更できません。</string>
+    <string name="settings_auto_frame_rate_warning_title">このテレビでは非推奨</string>
+    <string name="settings_auto_frame_rate_warning_title_mobile">このデバイスでは非推奨</string>
+    <string name="settings_auto_frame_rate_warning_description">このデバイスはAndroid <xliff:g id="android_version">%1$s</xliff:g>で動作しています。Android 12未満では、テレビがOwnTVにスムーズに切り替え可能なリフレッシュレートを伝えられないため、レートを変更すると1〜2秒間画面が暗転する可能性があります。番組中に複数回発生することもあります。\n\nここではオートフレームレートをオフにしておくことをお勧めします。テレビが問題なく切り替えられる場合は、オンにして試してみてください。いつでも元に戻せます。</string>
+    <string name="settings_auto_frame_rate_warning_description_mobile">このデバイスはAndroid <xliff:g id="android_version">%1$s</xliff:g>で動作しています。Android 12未満では、デバイスがOwnTVにスムーズに切り替え可能なリフレッシュレートを伝えられないため、レートを変更すると1〜2秒間画面が暗転する可能性があります。番組中に複数回発生することもあります。\n\nここではオートフレームレートをオフにしておくことをお勧めします。画面が問題なく切り替えられる場合は、オンにして試してみてください。いつでも元に戻せます。</string>
+    <string name="settings_auto_frame_rate_keep_off">オフのまま</string>
+    <string name="settings_auto_frame_rate_turn_on_anyway">それでもオンにする</string>
+    <string name="settings_language_request_workflow">リストにない言語を追加したい場合は、まず言語リクエストを開いてください。メンテナーがそれを登録し、ベースの翻訳ファイルを準備します。Hosted Weblate に表示されたら、翻訳に貢献できます。</string>
+    <string name="settings_language_request_new">新しい言語をリクエスト</string>
+    <string name="settings_panel_width_disable_preview_title">ライブプレビュー映像をオフにしますか？</string>
+    <string name="settings_panel_width_disable_preview_description">現在、ライブプレビュー映像はオンになっています。プレビューパネルを非表示にすると映像がオフになり、［パネル幅の調整］でプレビューパネルに幅を設定するまで再びオンにできません。</string>
+    <string name="settings_live_preview_panel_hidden_title">ライブプレビュー映像は利用できません</string>
+    <string name="settings_live_preview_panel_hidden_description">ライブTVのプレビューパネルは非表示になっています。プレビュー映像をオンにする前に、［パネル幅の調整］で幅を0%%より大きい値に設定してください。</string>
+    <string name="settings_font_customization">フォントのカスタマイズ</string>
+    <string name="settings_font_customization_description">メイン画面とポップアップの文字サイズとフォント</string>
+    <string name="settings_font_size">フォントサイズ</string>
+    <string name="settings_main_interface_font">メイン画面のフォント</string>
+    <string name="settings_popup_font">ポップアップのフォント</string>
+    <string name="settings_choose_font">フォントを選択</string>
+    <string name="settings_font_size_range">ポップアップではなくメイン画面の文字を <xliff:g id="min">%1$d</xliff:g>%%～<xliff:g id="max">%2$d</xliff:g>%% の範囲で調整します。字幕のサイズは変わりません。</string>
+    <string name="settings_popup_font_size">ポップアップのフォントサイズ</string>
+    <string name="settings_popup_font_size_description">ダイアログとメニュー内の文字だけを変更します</string>
+    <string name="settings_popup_size">ポップアップのサイズ</string>
+    <string name="settings_popup_size_description">文字サイズを変えずにダイアログとメニューの枠を拡大・縮小します</string>
+    <string name="settings_popup_size_range">ダイアログとメニューの枠を拡大・縮小します（<xliff:g id="min">%1$d</xliff:g>%%～<xliff:g id="max">%2$d</xliff:g>%%）。</string>
+    <string name="settings_font_preview">エンターテインメントを、もっとシンプルに。</string>
+    <string name="settings_search_keywords_fonts">フォント 文字 サイズ 書体 ポップアップ 読みやすさ アクセシビリティ</string>
+    <string name="settings_font_system_sans">システムサンセリフ</string>
+    <string name="settings_font_monospace">等幅フォント</string>
+    <string name="settings_subtitle_font">字幕フォント</string>
+    <string name="settings_ambient_glow">アンビエントグロー</string>
+    <string name="settings_ambient_glow_description">ソリッドUIにセットアップ画面風の輝きを追加します</string>
+    <string name="settings_ambient_glow_dialog_description">非ガラスUIに柔らかなアクセントの光を追加します。アニメーションが有効な場合、ゆっくりと穏やかに脈動します。</string>
+    <string name="settings_ambient_glow_effect">グロー</string>
+    <string name="settings_ambient_glow_pulse">ゆっくりした脈動</string>
+    <string name="settings_glass_live_preview">ライブプレビュー</string>
+    <string name="settings_row_menu_pin">クイックに固定</string>
+    <string name="settings_row_menu_unpin">クイックから外す</string>
+    <string name="settings_row_menu_move_up">上へ移動</string>
+    <string name="settings_row_menu_move_down">下へ移動</string>
+    <string name="settings_quick_empty_title">まだ何も固定されていません</string>
+    <string name="settings_quick_empty_hint">設定を OK 長押しして「クイックに固定」を選びます。</string>
+    <string name="settings_quick_empty_hint_touch">設定を長押しして「クイックに固定」を選びます。</string>
+    <plurals name="settings_setting_count">
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g> 件の設定</item>
+    </plurals>
+    <plurals name="settings_match_count">
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g> 件の一致</item>
+    </plurals>
+    <string name="settings_guide_width">番組ガイドの列幅</string>
+    <string name="settings_guide_width_description">番組ガイドのチャンネル一覧とEPGタイムラインの幅を変更します。</string>
+    <string name="settings_search_keywords_guide_width">ガイド epg チャンネル 一覧 タイムライン 列 パネル 幅 サイズ レイアウト</string>
+    <string name="settings_guide_width_summary">チャンネル一覧 %1$d%% · EPGタイムライン %2$d%%</string>
+    <string name="settings_guide_width_help">• チャンネル一覧とEPGタイムラインは1行を共有するため、合計は100%%にする必要があります。\n• チャンネル一覧を広げると一度に見えるタイムラインは少なくなりますが、番組の長さと時間スケールは変わりません。\n• 両方の列は10%%以上に保たれます。\n• リセットするとチャンネル一覧が10%%、EPGタイムラインが90%%に戻ります。\n• カスタマイズをオフにすると、値を失わずに標準レイアウトへ戻ります。</string>
+    <string name="settings_guide_width_channels">チャンネル一覧</string>
+    <string name="settings_selection_highlight">選択のハイライト</string>
+    <string name="settings_selection_highlight_description">選択中の項目を囲む枠の色と太さ</string>
+    <string name="settings_background_playback">バックグラウンド再生</string>
+    <string name="settings_background_playback_description">アプリを離れても音声を再生し続けます</string>
+    <string name="settings_pip">ピクチャー イン ピクチャー</string>
+    <string name="settings_data_saver">データセーバー</string>
+    <string name="settings_data_saver_description">モバイルデータでは再生しません</string>
+    <string name="settings_gesture_sensitivity">ジェスチャーの感度</string>
+    <string name="settings_downloads_wifi_only">Wi-Fi のときだけダウンロード</string>
+    <string name="settings_downloads_wifi_only_description">モバイルデータを使わず Wi-Fi を待ちます</string>
+    <string name="settings_mini_player_style_description">一覧を見ている間、再生をどう続けるか</string>
+    <string name="settings_mini_player_style_floating">フローティングウィンドウ</string>
+    <string name="settings_mini_player_style_docked">固定バー</string>
+    <string name="settings_pip_size">ウィンドウのサイズ</string>
+    <string name="settings_pip_size_small">小</string>
+    <string name="settings_pip_size_medium">中</string>
+    <string name="settings_pip_size_large">大</string>
+    <string name="settings_pip_snap">端に吸着</string>
+    <string name="settings_audio_on_screen_off">画面が消えたら音声のみ</string>
+    <string name="settings_audio_on_mobile_data">モバイルデータでは音声のみ</string>
+    <string name="settings_audio_on_mobile_data_description">Wi-Fi がないときは映像なしで開始する</string>
+    <string name="settings_audio_per_channel">チャンネルごとに音声のみを記憶</string>
+    <string name="local_sync_title">ローカル同期</string>
+    <string name="local_sync_host_hint">もう一方の端末でも同期モードをオンにし、「接続」をタップしてこの端末を選んでください。</string>
+    <string name="local_sync_qr_description">この端末のアドレスを含む QR コード</string>
+    <string name="local_sync_pin_is">PIN: <xliff:g id="pin">%1$s</xliff:g></string>
+    <string name="local_sync_add_device">端末を探す</string>
+    <string name="local_sync_paired_devices">ペアリング済みの端末</string>
+    <string name="local_sync_working">処理中…</string>
+    <string name="local_sync_find_hint">両方の端末が同じ Wi-Fi に接続し、もう一方で同期モードをオンにしておく必要があります。</string>
+    <string name="local_sync_searching">ネットワークを検索中…</string>
+    <string name="local_sync_found">ネットワーク内で見つかりました</string>
+    <string name="local_sync_scan_qr">コードを読み取る</string>
+    <string name="local_sync_scan_qr_description">もう一方の端末に表示されたコードにカメラを向けてください</string>
+    <string name="local_sync_camera_denied">カメラがなくても、一覧から端末を選ぶか、アドレスを入力できます。</string>
+    <string name="local_sync_manual_address">またはアドレスを入力</string>
+    <string name="local_sync_manual_address_label">アドレス</string>
+    <string name="local_sync_enter_pin">PIN を入力</string>
+    <string name="local_sync_enter_pin_description">もう一方の端末に表示された 6 桁を入力してください。必要なのは最初の一度だけです。</string>
+    <string name="local_sync_pin_label">PIN</string>
+    <string name="local_sync_pair">ペアリング</string>
+    <string name="local_sync_send_to"><xliff:g id="device">%1$s</xliff:g> に送る</string>
+    <string name="local_sync_send_description">データはあちらに送られます。この端末は変わりません。</string>
+    <string name="local_sync_receive_from"><xliff:g id="device">%1$s</xliff:g> から受け取る</string>
+    <string name="local_sync_receive_description">あちらのデータがこの端末に入ります。あちらは変わりません。</string>
+    <string name="local_sync_merge_with"><xliff:g id="device">%1$s</xliff:g> と統合する</string>
+    <string name="local_sync_merge_description">両方の端末がすべてを持つ状態になります</string>
+    <string name="local_sync_unpair">この端末を削除</string>
+    <string name="local_sync_unpair_description">次回はもう一度 PIN が必要になります</string>
+    <string name="local_sync_what_to_send">送る内容</string>
+    <string name="local_sync_what_to_receive">受け取る内容</string>
+    <string name="local_sync_what_to_merge">統合する内容</string>
+    <string name="local_sync_sections_hint">バックアップに入るものと同じです。含めたくない項目はチェックを外してください。</string>
+    <string name="local_sync_everything">すべて</string>
+    <string name="local_sync_confirm_title">変更される内容</string>
+    <string name="local_sync_confirm_hint">まだ何も変更されていません。適用するとこの端末では次のようになります。</string>
+    <string name="local_sync_nothing_to_change">両方の端末はすでに同じ内容です。適用するものはありません。</string>
+    <string name="local_sync_merge_note">そのあとこの端末のデータが返送され、両方が同じ状態になります。</string>
+    <string name="local_sync_change_profiles">新しいプロフィール: <xliff:g id="count">%1$d</xliff:g></string>
+    <string name="local_sync_change_sources">新しいプレイリスト: <xliff:g id="count">%1$d</xliff:g></string>
+    <string name="local_sync_change_favorites">新しいお気に入り: <xliff:g id="count">%1$d</xliff:g></string>
+    <string name="local_sync_change_history">新しい視聴履歴: <xliff:g id="count">%1$d</xliff:g></string>
+    <string name="local_sync_change_resume">新しい再開位置: <xliff:g id="count">%1$d</xliff:g></string>
+    <string name="local_sync_change_reorder">並び順の変更: <xliff:g id="count">%1$d</xliff:g></string>
+    <string name="local_sync_change_settings">異なる設定: <xliff:g id="count">%1$d</xliff:g></string>
+    <string name="local_sync_change_deletions">削除される項目: <xliff:g id="count">%1$d</xliff:g></string>
+    <string name="local_sync_change_customize">カスタマイズ内容も一緒に移ります</string>
+    <string name="local_sync_apply">適用</string>
+    <string name="local_sync_done">同期が完了しました</string>
+    <string name="local_sync_received_items">受け取った項目: <xliff:g id="count">%1$d</xliff:g></string>
+    <string name="local_sync_sent">データを送信しました</string>
+    <string name="local_sync_failed">同期に失敗しました</string>
+    <string name="local_sync_error_unreachable">その端末に接続できませんでした。その端末で OwnTV → その他 → ローカル同期 を開き、同期モードをオンにしてください。両方が同じ Wi-Fi に接続している必要があります。</string>
+    <string name="local_sync_error_unauthorized">もう一方の端末に拒否されました。PIN が違うか、この端末を削除した可能性があります。</string>
+    <string name="local_sync_error_bad_payload">受け取った内容を読み取れませんでした。パスワードを使った場合は、両方の端末で同じか確認してください。</string>
+    <string name="local_sync_error_unknown">問題が発生しました。もう一度お試しください。</string>
+    <string name="local_sync_mode">同期モード</string>
+    <string name="local_sync_connect">接続</string>
+    <string name="local_sync_connect_description">同期モードがオンのほかの端末を探します</string>
+    <string name="local_sync_last_synced">最終同期: <xliff:g id="when">%1$s</xliff:g></string>
+    <string name="local_sync_already_paired">ペアリング済み</string>
+    <string name="local_sync_device_with_code"><xliff:g id="name">%1$s</xliff:g> (<xliff:g id="code">%2$s</xliff:g>)</string>
+    <string name="more_pane_last_backup">最後のバックアップ</string>
+    <string name="more_pane_encrypted">暗号化済み</string>
+    <string name="more_group_your_things">あなたのもの</string>
+    <string name="more_group_keep_safe">データを守る</string>
+    <string name="more_profile_switch">切り替え</string>
+    <string name="more_fav_movies_series">映画とシリーズ</string>
+    <string name="more_fav_empty_title">お気に入りはまだありません</string>
+    <string name="more_fav_empty_body">チャンネル、映画、番組で OK を長押しし、「お気に入りに追加」を選びます。</string>
+    <string name="more_fav_empty_body_mobile">チャンネル、映画、番組を長押しし、「お気に入りに追加」を選びます。</string>
+    <string name="more_history_empty">まだ視聴履歴はありません</string>
+    <string name="more_backup_never_title">バックアップしたことがありません</string>
+    <string name="more_backup_never_body"><xliff:g id="playlists">%1$s</xliff:g>、<xliff:g id="favorites">%2$s</xliff:g>、<xliff:g id="history">%3$s</xliff:g> とすべてのカスタマイズは、このテレビにしかありません。</string>
+    <string name="more_backup_never_body_mobile"><xliff:g id="playlists">%1$s</xliff:g>、<xliff:g id="favorites">%2$s</xliff:g>、<xliff:g id="history">%3$s</xliff:g> とすべてのカスタマイズは、このスマートフォンにしかありません。</string>
+    <string name="more_backup_now">今すぐバックアップ</string>
+    <string name="more_backup_now_body">このテレビにファイルを保存するか、リモートで別の機器に送ります</string>
+    <string name="more_backup_now_body_mobile">このスマートフォンにファイルを保存するか、別の機器に送ります</string>
+    <string name="more_backup_file_tv">このテレビに保存</string>
+    <string name="more_backup_file_tv_mobile">このスマートフォンに保存</string>
+    <string name="more_restore_body">このテレビのファイルから、または別のデバイスからリモートで</string>
+    <string name="more_restore_body_mobile">このスマートフォンのファイルから、または別のデバイスからリモートで</string>
+    <string name="more_backup_included">含まれるもの</string>
+    <string name="more_about_up_to_date">最新</string>
+    <string name="more_about_checked">確認日時: <xliff:g id="value">%1$s</xliff:g></string>
+    <string name="more_settings_pin_hint">行を OK 長押しでクイックに固定</string>
+    <string name="more_settings_search">すべての設定を検索</string>
+    <string name="settings_card_profile">視聴者、キッズモード、PIN ロック</string>
+    <string name="settings_card_sources">プレイリスト、EPG、リマインダー、見逃し</string>
+    <string name="settings_card_appearance">テーマ、アクセント、ガラス、文字</string>
+    <string name="settings_card_layout">ナビゲーション、パネル、ホーム、メニュー</string>
+    <string name="settings_card_content">カテゴリー、TMDB、字幕</string>
+    <string name="settings_card_player">プレーヤー、ストリーミング</string>
+    <string name="settings_card_picture">デコーダー、HDR、ズーム、フレームレート</string>
+    <string name="settings_card_sound">音量、サラウンド、言語</string>
+    <string name="settings_card_live">プレビュー、巻き戻し、遅延、開始</string>
+    <string name="settings_card_watching">スキップ、再開、マルチビュー、録画</string>
+    <string name="settings_card_app">言語、更新、ネットワーク、診断</string>
+    <string name="more_sync_description">Wi-Fi でもう一方のデバイスとデータを共有します。ホームネットワークの外には何も出ません。</string>
+    <string name="more_sync_mode_description">ほかのデバイスからこのデバイスを見つけられるようにします。このページを開いている間はオンのままです。</string>
+    <string name="more_sync_unpair">ペアリング解除</string>
+    <string name="more_about_license">GPLv3 · 無料のオープンソース</string>
+    <string name="more_about_description">Android TV 向けのあなた専用 IPTV プレーヤー。チャンネルやコンテンツは提供しません。合法的に利用できるソースをご自身で追加してください。</string>
+    <string name="more_about_description_mobile">Android 向けのあなた専用 IPTV プレーヤー。チャンネルやコンテンツは提供しません。合法的に利用できるソースをご自身で追加してください。</string>
+    <string name="more_about_scan">スマートフォンでスキャンしてください。</string>
+    <string name="more_about_scan_mobile">スキャンするか、タップして開きます</string>
+    <plurals name="more_playlist_count">
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g> 件のプレイリスト</item>
+    </plurals>
+    <plurals name="more_count_favorites">
+        <item quantity="other">お気に入り <xliff:g id="count">%1$d</xliff:g> 件</item>
+    </plurals>
+    <plurals name="more_count_history">
+        <item quantity="other">履歴 <xliff:g id="count">%1$d</xliff:g> 件</item>
+    </plurals>
+    <plurals name="more_about_languages">
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g> 言語</item>
+    </plurals>
+    <plurals name="more_settings_pinned_count">
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g> 件をピン留め</item>
+    </plurals>
+    <plurals name="more_downloads_running_count">
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g> 件ダウンロード中</item>
+    </plurals>
+    <string name="settings_backup_location">保存先</string>
+    <string name="settings_multiview">マルチビュー</string>
+    <string name="settings_multiview_description">複数のライブチャンネルを同時に視聴できます。いくつ並べるかは毎回あなたが決められ、この上限までです。各画面はプロバイダーの接続を 1 つ使います。</string>
+    <string name="settings_multiview_tiles_max">画面の最大数</string>
+    <string name="settings_multiview_tiles_max_value">最大 <xliff:g id="count">%1$d</xliff:g></string>
+    <string name="settings_multiview_warning_title">3つ以上のタイル</string>
+    <string name="settings_multiview_warning_description">3つまたは4つのタイルには、プロバイダーの接続が3つまたは4つ必要です。テレビ側も同時にデコードできるチャンネル数に限りがあります。タイルが開始できない場合は理由を表示し、ほかのタイルはそのまま再生を続けます。</string>
+    <string name="settings_multiview_keep_two">2のままにする</string>
+    <string name="settings_multiview_use_anyway">それでも使う</string>
+    <string name="settings_app_icon">アプリアイコン</string>
+    <string name="settings_app_icon_summary">OwnTVのアイコンとロゴの色</string>
+    <string name="settings_app_icon_sheet_mobile">ホーム画面での OwnTV の見え方。アプリが一度再起動します。</string>
+    <string name="settings_brand_accent">アクセントカラーのロゴ</string>
+    <string name="app_icon_petrol">ペトロール</string>
+    <string name="app_icon_sunflower">ひまわり</string>
+    <string name="app_icon_cobalt">コバルト</string>
+    <string name="app_icon_tomato">トマト</string>
+    <string name="app_icon_board">駅の案内板</string>
+    <string name="app_icon_eggshell">エッグシェル</string>
+    <string name="app_icon_olive">オリーブ</string>
+    <string name="app_icon_olive_cream">クリーム×オリーブ</string>
+    <string name="app_icon_pixel">Pixel</string>
+    <string name="app_icon_restart_title">OwnTVを再起動しますか？</string>
+    <string name="app_icon_restart_message">新しいアイコンとロゴを選択しました。OwnTVの再起動後に反映されます。</string>
+    <string name="app_icon_restart_now">今すぐ再起動</string>
+    <string name="settings_navigation">ナビゲーション</string>
+    <string name="settings_navigation_description">左側のメニューの動作</string>
+    <string name="settings_nav_floating">フローティング</string>
+    <string name="settings_nav_floating_desc">コンテンツの上に表示。閲覧中は隠れ、端で ◀ を押すと戻ります</string>
+    <string name="settings_nav_docked">固定</string>
+    <string name="settings_nav_docked_desc">常に表示。コンテンツが場所を空けます</string>
+    <string name="settings_nav_hide_after">非表示までの時間</string>
+    <string name="settings_nav_hide_after_desc">フローティングのみ：フォーカスが離れてから隠れるまでの時間</string>
+    <string name="settings_nav_widen">フォーカス時に広げる</string>
+    <string name="settings_nav_widen_desc">固定かつコンパクト時：レールにフォーカスがある間、コンテンツの上に名前を表示</string>
+    <string name="settings_nav_menu_items">メニュー項目</string>
+    <string name="settings_nav_menu_items_desc">動的：プレイリストの内容に合わせる · 固定：自分で選択</string>
+    <string name="settings_nav_bar">バー</string>
+    <string name="settings_nav_labels">ラベル</string>
+    <string name="settings_nav_icons_only">アイコンのみ</string>
+    <string name="settings_nav_hide_scrolling">スクロール中は隠す</string>
+    <string name="settings_nav_hide_scrolling_desc">下にスクロールするとバーが隠れ、上にスクロールすると戻ります</string>
+    <string name="settings_sheet_counts">件数を表示</string>
+    <string name="settings_sheet_counts_desc">パネルにチャンネル数とタイトル数を表示</string>
+    <string name="settings_search_keywords_navigation">レール, サイドバー, メニュー, ナビゲーション, 隠す, フローティング, 固定, サイズ, コンパクト, ワイド, 長さ, 全高</string>
+    <string name="settings_breadcrumb_eyebrow"><xliff:g id="section">%1$s</xliff:g> · <xliff:g id="group">%2$s</xliff:g></string>
+    <string name="settings_nav_size_desc">コンパクト：アイコン · 標準：名前 · ワイド：名前と件数 · エクストラワイド：詳細付き</string>
+    <string name="settings_nav_size_compact">コンパクト</string>
+    <string name="settings_nav_size_normal">標準</string>
+    <string name="settings_nav_size_wide">ワイド</string>
+    <string name="settings_nav_size_extra_wide">エクストラワイド</string>
+    <string name="settings_nav_length">長さ</string>
+    <string name="settings_nav_length_desc">項目に合わせる、または画面の高さいっぱい</string>
+    <string name="settings_nav_length_fit">項目に合わせる</string>
+    <string name="settings_nav_length_full">全高</string>
+    <string name="settings_nav_hide_after_half">0.5秒</string>
+    <plurals name="settings_nav_hide_after_seconds">
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g> 秒</item>
+    </plurals>
+    <string name="settings_live_layout">ライブTVのレイアウト</string>
+    <string name="settings_live_layout_description">カテゴリをシートで表示、または常に表示</string>
+    <string name="settings_live_layout_stage">ステージ</string>
+    <string name="settings_live_layout_stage_description">左キーでカテゴリを開きます。チャンネル一覧とプレビューは画面の幅いっぱいに表示されます。</string>
+    <string name="settings_live_layout_separate_description">カテゴリ、チャンネル一覧、プレビューを横に並べて表示します。</string>
+    <string name="settings_search_keywords_live_layout">レイアウト ライブTV チャンネル カテゴリ シート パネル ステージ</string>
+    <string name="settings_panel_width_live_sheet">カテゴリシート</string>
+    <string name="settings_panel_width_live_sheet_hint">左キーで一覧の上に開くカテゴリの幅です。100%%には含まれません。</string>
+    <string name="settings_panel_width_summary_stage">カテゴリシート <xliff:g id="sheet">%1$d</xliff:g>%% · 一覧 <xliff:g id="list">%2$d</xliff:g>%% · プレビュー <xliff:g id="preview">%3$d</xliff:g>%%</string>
+    <string name="settings_live_opens_in">ライブTVの初期表示</string>
+    <string name="settings_live_opens_in_description">ライブTVをチャンネル一覧と番組表グリッドのどちらで開くか。ライブTVの番組表ビューボタンでも切り替わります。</string>
+    <string name="settings_reminders">番組リマインダー</string>
+    <string name="settings_reminders_description">リマインドを設定した番組が始まるときの動作。</string>
+    <string name="settings_reminder_ask">切り替えを確認</string>
+    <string name="settings_reminder_switch">切り替える</string>
+    <string name="settings_reminder_notify">通知のみ</string>
+    <string name="settings_reminder_lead">リマインドのタイミング</string>
+    <string name="settings_reminder_lead_description">番組開始の何分前に知らせるか。</string>
+    <string name="settings_reminder_at_start">開始時</string>
+    <string name="settings_search_keywords_reminders">リマインド 通知 番組 開始 切り替え</string>
+    <string name="settings_search_keywords_live_opens_in">ライブTV 開く 起動 リスト 番組表 グリッド 表示</string>
+    <string name="settings_panel_width_summary_cinematic">カテゴリシート <xliff:g id="sheet">%1$d</xliff:g>%% · 詳細の高さ <xliff:g id="height">%2$d</xliff:g>%%</string>
+    <string name="settings_panel_width_cinematic_sheet_hint">左キーで作品の上に開くカテゴリの幅。</string>
+    <string name="settings_key_change">変更</string>
+    <string name="settings_key_switch">オン/オフ</string>
+    <string name="settings_key_open">開く</string>
+    <string name="settings_key_unpin">固定を解除</string>
+    <string name="settings_panel_choices">選択肢</string>
+    <string name="settings_panel_recommended">おすすめ</string>
+    <string name="settings_part_guide_catchup">番組表とキャッチアップ</string>
+    <string name="settings_vp_cat_controls_resume">操作と再開</string>
+    <string name="settings_pinned_from"><xliff:g id="group">%1$s</xliff:g> から固定</string>
+    <string name="settings_check_now">今すぐ確認</string>
+    <string name="settings_line_epg_offset">フィードの時刻がずれているときにガイド全体をずらす</string>
+    <string name="settings_line_reminders">リマインダーの時刻になったときの動作</string>
+    <string name="settings_line_reminder_lead">リマインダーが届くタイミング</string>
+    <string name="settings_line_guide_days">ガイドが先の何日分を保存するか</string>
+    <string name="settings_line_catchup">キャッチアップのアーカイブが使うタイムゾーン</string>
+    <string name="settings_line_catchup_sources">1つのプレイリストだけタイムゾーンを変更</string>
+    <string name="settings_line_override_playlist">1つのプレイリストだけ変更</string>
+    <string name="settings_line_accent">ボタン、フォーカス、ハイライトをすべて色付け</string>
+    <string name="settings_line_fonts">メイン画面とポップアップで共通のフォント</string>
+    <string name="settings_line_popup_size">文字はそのままでダイアログとメニューの大きさを変更</string>
+    <string name="settings_line_animations">オフにすると低性能のTVボックスで軽快に</string>
+    <string name="settings_line_weather">右上の天気：場所と °C / °F</string>
+    <string name="settings_line_live_opens_in">チャンネル一覧か番組表グリッドか</string>
+    <string name="settings_line_vod_layout">分割パネルか、シネマ表示か</string>
+    <string name="settings_line_panel_width">カテゴリ・リスト・プレビューの幅</string>
+    <string name="settings_line_guide_width">チャンネル一覧とタイムライン</string>
+    <string name="settings_line_browsing">最後のカテゴリと項目を記憶</string>
+    <string name="settings_line_home">行を選んで並べ替え、絞り込む</string>
+    <string name="settings_line_content_menus">各メニューの操作を並べ替え</string>
+    <string name="settings_line_remote_shortcuts">リモコンの空きボタンを割り当て</string>
+    <string name="settings_line_customize">非表示と再表示、名前の変更、並べ替え</string>
+    <string name="settings_line_metadata">映画とシリーズのポスター、あらすじ、出演者、評価</string>
+    <string name="settings_line_open_subtitles">字幕の検索とダウンロード</string>
+    <string name="settings_line_app_icon">ランチャーのアイコン</string>
+    <string name="settings_line_brand_accent">ロゴの再生三角形をアクセントカラーに</string>
+    <string name="settings_line_check_updates">GitHub から最新版を入手</string>
+    <string name="settings_line_when_app_opens">アプリを開いたとき</string>
+    <string name="settings_line_proxy">すべての通信を HTTP プロキシ経由で</string>
+    <string name="settings_line_dns">カスタム DNS サーバー</string>
+    <string name="settings_line_quick_live_preview">ライブ TV でフォーカス中のチャンネルを再生</string>
+    <string name="settings_line_preview_sound">ライブプレビューの音声</string>
+    <string name="settings_line_quick_channel_numbers">リモコンで番号を入力して選局</string>
+    <string name="settings_line_prefer_sdr">ストリームに両方あるときは SDR</string>
+    <string name="settings_line_quick_autoplay">次のエピソードを自動で開始</string>
+    <string name="settings_line_live_engine">チャンネルを開くエンジンと予備</string>
+    <string name="settings_line_saved_live_choices">手動で切り替えたチャンネル</string>
+    <string name="settings_line_vod_engine">映画とエピソードを開くエンジン</string>
+    <string name="settings_line_saved_choices">手動で切り替えた映画とエピソード</string>
+    <string name="settings_line_external">VLC、MX Player… セクションごと</string>
+    <string name="settings_line_vod_buffer">映画を先読みする量</string>
+    <string name="settings_line_vod_timeout">応答しないサーバーを待つ時間</string>
+    <string name="settings_line_vod_reconnects">止まった位置から開き直す</string>
+    <string name="settings_line_hw">テレビ本体のデコーダーを使う</string>
+    <string name="settings_line_max_quality">複数あるときの最高画質</string>
+    <string name="settings_line_tunneled">試験的 · ExoPlayer のライブ TV</string>
+    <string name="settings_line_zoom">再生開始時のアスペクトとズーム</string>
+    <string name="settings_line_saved_zoom">プレーヤーで変更したズーム</string>
+    <string name="settings_line_films_only">映画のみ</string>
+    <string name="settings_line_volume">100%% を超えると小さい音声を増幅</string>
+    <string name="settings_line_saved_volume">プレーヤーで変更した音量</string>
+    <string name="settings_line_surround">テレビが受け取るままの 5.1 / 7.1</string>
+    <string name="settings_line_passthrough">デコードせずにテレビやサウンドバーへ</string>
+    <string name="settings_line_night_mode">大きな場面を抑え、会話を強調</string>
+    <string name="settings_line_leveling">どのチャンネルも同じ音量に</string>
+    <string name="settings_line_audio_sync">音声を早めたり遅らせたりする</string>
+    <string name="settings_line_output_audio_delay">現在の出力の追加遅延</string>
+    <string name="settings_line_saved_audio_sync">プレーヤーで記憶した遅延</string>
+    <string name="settings_line_audio_lang">ストリームにあればこの音声を再生</string>
+    <string name="settings_line_sub_lang">この言語の字幕をオンにする</string>
+    <string name="settings_line_sub_style">サイズ、色、位置、背景</string>
+    <string name="settings_title_fonts">フォントと文字サイズ</string>
+    <string name="settings_title_saved_live_choices">保存したライブ TV プレーヤーの選択</string>
+    <string name="settings_title_saved_choices">保存したプレーヤーの選択</string>
+    <string name="settings_title_tunneled">トンネル再生</string>
+    <string name="settings_title_saved_zoom">保存したズーム</string>
+    <string name="settings_title_saved_volume">保存した音量</string>
+    <string name="settings_title_saved_audio_sync">保存した音声の同期</string>
+    <string name="settings_line_channel_numbers">名前の横にプロバイダーの番号</string>
+    <string name="settings_line_live_preview">フォーカス中のチャンネルを再生</string>
+    <string name="settings_line_timeshift">キャッチアップのないチャンネルを視聴中に保存</string>
+    <string name="settings_line_timeshift_window">どこまで戻れるか</string>
+    <string name="settings_line_left_right">コントロールを隠しているとき</string>
+    <string name="settings_line_latency">どれだけライブに近づけて再生するか</string>
+    <string name="settings_line_preroll">チャンネル開始前にためる映像</string>
+    <string name="settings_line_tune_timeout">試すのをやめて知らせる</string>
+    <string name="settings_line_seek_step">映画で早戻し・早送りが飛ぶ幅</string>
+    <string name="settings_line_rewind_step">ライブチャンネルで飛ぶ幅</string>
+    <string name="settings_line_resume">映画に保存位置があるとき</string>
+    <string name="settings_line_autoplay">次のシーズンへも続けて</string>
+    <string name="settings_line_tiles">タイル1つごとにストリームが1つ</string>
+    <string name="settings_line_mini">サイズと位置</string>
+    <string name="settings_line_rec_reserve">全接続で録画しない</string>
+    <string name="settings_line_rec_watching">2本目のストリームは使わない</string>
+    <string name="settings_line_rec_pre_roll">番組の開始前に</string>
+    <string name="settings_line_rec_post_roll">延長する番組のために</string>
+    <string name="settings_line_measured_stats">リアルタイムの fps・ビットレート・ドロップフレーム</string>
+    <string name="settings_line_logging">不具合報告用の完全なログ</string>
+    <string name="settings_help_profiles">視聴者ごとにお気に入り、視聴履歴、再開位置、ホームの行を持てます。キッズモードでは許可したカテゴリだけを表示し、PIN を設定すると他の人はプロフィールを開けません。</string>
+    <string name="settings_help_playlists">リンク、Xtream ログイン、Stalker ポータル、ファイルからプレイリストを追加し、再同期または削除します。</string>
+    <string name="settings_help_epg_sources">XMLTV ガイドフィードをリンクで追加し、更新または削除します。フィードは番組表とライブ TV の番組行に使われます。</string>
+    <string name="settings_help_guide_days">ガイドが先の何日分の番組を保存するか。日数を減らすとガイドの更新が速くなり、データベースも小さくなります。</string>
+    <string name="settings_help_catchup_timezone">キャッチアップはプロバイダーのアーカイブから番組を再生します。自動では、プロバイダーが通知するタイムゾーンを使い、通知がなければテレビ本体の時計に従います。それでも開始時刻がずれる場合は固定の UTC オフセットを選んでください。キャッチアップで使うプレーヤーもここで選びます。</string>
+    <string name="settings_help_theme">OwnTV はダーク向けに設計されています。システムはテレビ本体の設定があればそれに従い、ライトは明るい部屋に向いています。</string>
+    <string name="settings_help_accent">ボタン、フォーカスの光、進行バー、ハイライトをすべて色付けします。プリセットを選ぶか、OK でパレットを開いて任意の 16 進コードを入力できます。</string>
+    <string name="settings_help_focus">フォーカス中の項目を囲むリング。ソファからでも追いやすいよう、色と太さを選べます。</string>
+    <string name="settings_help_fonts">OwnTV 全体で使うフォントと文字の大きさです。ポップアップも同じフォントを使います。</string>
+    <string name="settings_help_popup_size">ポップアップ、メニュー、ダイアログ全体を大きく、または小さくします。窮屈に感じるときや画面を覆いすぎるときに使います。</string>
+    <string name="settings_help_zoom">画面のすべてを拡大・縮小します。大きいほど離れても読みやすく、小さいほど多く表示できます。85%% 未満ではメモリの少ない TV ボックスでメモリ不足になることがあります。</string>
+    <string name="settings_help_animations">オンのときはシート、メニュー、フォーカスがなめらかに動きます。オフにするとすべての変化が即座になります。</string>
+    <string name="settings_help_weather">時計の横に気温と地名を表示します。自動の場所が違うとき（VPN 使用中など）は手動で設定し、摂氏か華氏を選べます。</string>
+    <string name="settings_help_navigation">フローティング：メニューは小さなカプセルとしてコンテンツの上に置かれ、左へ移動すると開きます。固定：常に専用の場所を使います。サイズでアイコンのみから件数・詳細まで表示量を決めます。</string>
+    <string name="settings_help_live_layout">Stage はカテゴリを ◀ で現れるシートとして表示し、チャンネル一覧とプレビューに場所を譲ります。分割はカテゴリを一覧の横に常に表示します。</string>
+    <string name="settings_help_vod_layout">シネマはフォーカス中の作品の画像をポスターのグリッドの背後に表示します。分割はカテゴリ、作品、詳細を横に並べます。</string>
+    <string name="settings_help_home">ホームに表示する行とその順番、「いま話題」の行の見た目を選びます。</string>
+    <string name="settings_help_customize">見ないカテゴリや項目を非表示にし、カテゴリに好きな名前を付けて並べ替えます。非表示にしたものはここから戻せるので、失われません。</string>
+    <string name="settings_help_app_icon">テレビのホーム画面にある OwnTV のアイコンです。ランチャーに反映されるまで少し時間がかかることがあります。</string>
+    <string name="settings_help_brand_accent">メニュー、「情報」、セットアップの OwnTV ロゴの再生三角形がアクセントカラーになります。ホーム画面のアイコンは元の色のままです。</string>
+    <string name="settings_help_startup">OwnTV の起動時に表示するもの：ホーム、最後に見たチャンネル、お気に入り、または選んだチャンネル。</string>
+    <string name="settings_help_check_updates">GitHub で新しい OwnTV を今すぐ探し、インストールを提案します。プレイリスト、お気に入り、設定はそのまま残ります。</string>
+    <string name="settings_help_update_startup">OwnTV の起動ごとに新しいバージョンを探し、あれば知らせます。確認なしにインストールされることはありません。</string>
+    <string name="settings_help_dns">ネットワーク既定の DNS ではなく、選んだ DNS サーバーでプロバイダーのアドレスを調べます。ネットワークがアドレスをブロックしたり転送したりするときに役立ちます。</string>
+    <string name="settings_help_live_engine">ExoPlayer はチャンネルをずっと速く開き、ライブ字幕に対応する唯一のプレーヤーです。mpv は ExoPlayer で再生できないチャンネルや、一部の珍しい音声も再生します。組み合わせの選択肢では、最初のプレーヤーが失敗するともう一方を試します。</string>
+    <string name="settings_help_hw">テレビのハードウェアデコーダーを使います。4K がなめらかになり、発熱も減ります。一部のストリームがカクついたりブロックが出たりする場合だけオフにしてください。その場合はソフトウェアデコーダーが処理します。</string>
+    <string name="settings_help_volume">すべてのチャンネル、映画、エピソードの開始時の音量です。100%% を超えると小さい音声を増幅します。プレーヤーで変えた音量は、リセットするまでその作品に保存されます。</string>
+    <string name="settings_help_channel_numbers">ライブ TV の一覧、チャンネル一覧オーバーレイ、プレーヤーで名前の横にプロバイダーのチャンネル番号を表示し、全画面ではリモコンで番号を入力してそのチャンネルへ移動できます。</string>
+    <string name="settings_help_seek_step">映画やエピソードで、1 回押したときに早戻し・早送りが飛ぶ幅です。押し続けると続けて飛びます。</string>
+    <string name="settings_help_zoom_mode">再生開始時に映像が画面をどう埋めるか。フィットは映像全体を表示し、ほかの選択肢は全面表示、引き伸ばし、比率の固定を行います。プレーヤーで変えたズームはその作品に保存されます。</string>
+    <string name="settings_help_sub_lang">ストリームにこの言語の字幕があれば自動でオンになります。なければ、プレーヤーで字幕を選ぶまでオフのままです。</string>
+    <string name="settings_help_live_preview">フォーカス中のチャンネルがライブ TV 一覧の横のプレビューで再生され、開く前に何をやっているか分かります。プレビュー用の場所があるレイアウトが必要です。</string>
+    <string name="settings_help_preview_audio">プレビューの映像に加えて音声も再生します。オフにすると閲覧中は静かです。</string>
+    <string name="settings_help_timeshift_window">キャッチアップのないチャンネルで、ライブ TV の一時停止と巻き戻しがどこまで戻れるか。長いほど、このデバイスのストレージにチャンネルを多く保存します。</string>
+    <string name="settings_help_resume">「再開を確認」では、映画やエピソードに保存位置があると「再開」か「最初から」を選べます。「常に再開」は止めた位置から、「再開しない」は最初から再生します。</string>
+    <string name="settings_help_mini">閲覧中も隅でチャンネルを流し続ける小さなプレーヤーです。サイズと置く隅を選べます。</string>
+    <string name="settings_key_palette">パレット</string>
+    <string name="settings_live_preview_note">行を離れる前から、変更がここに表示されます。</string>
+    <string name="settings_synced_at"><xliff:g id="when">%1$s</xliff:g> に同期</string>
+    <string name="settings_profile_in_use">使用中</string>
+    <string name="settings_profile_kids">キッズモード</string>
+    <string name="settings_profile_pin_lock">PIN ロック</string>
+    <string name="settings_profile_no_lock">ロックなし</string>
+    <string name="settings_profile_add">プロフィールを追加</string>
+    <string name="settings_profile_add_line">お気に入り、履歴、設定を個別に持つ視聴者</string>
+    <plurals name="settings_help_language">
+        <item quantity="other">OwnTV のすべてのメニューとメッセージの言語です。<xliff:g id="count">%1$d</xliff:g> 言語に対応。選ぶまではテレビ本体の言語に従います。</item>
+    </plurals>
+    <plurals name="settings_profile_count">
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g> 件のプロフィール</item>
+    </plurals>
+    <string name="settings_seg_separate">分割</string>
+    <string name="settings_seg_guide">番組表</string>
+    <string name="settings_accent_yours">あなたの色</string>
+    <string name="settings_accent_picker_hint">フィールドか色相バーで OK を押し、矢印で動かします。OK か戻るで終了。</string>
+    <string name="settings_signed_out">サインアウト中</string>
+    <plurals name="settings_epg_feed_count">
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g> 件のフィード</item>
+    </plurals>
+    <string name="settings_title_date_time_weather">日付・時刻・天気</string>
+    <string name="settings_line_show_weather">上部バーに現在の天気を表示</string>
+    <string name="settings_line_custom_location">空欄 = 自動検出</string>
+    <string name="settings_line_temperature_unit">摂氏または華氏</string>
+    <string name="settings_clock_colors">色</string>
+    <string name="settings_clock_time_color">時刻の色</string>
+    <string name="settings_line_clock_time">時計</string>
+    <string name="settings_clock_date_color">日付の色</string>
+    <string name="settings_line_clock_date">時計の下の日付</string>
+    <string name="settings_clock_weather_color">天気の色</string>
+    <string name="settings_line_clock_weather">気温と都市</string>
+    <string name="settings_clock_color_white">白</string>
+    <string name="settings_clock_color_grey">グレー</string>
+    <string name="settings_clock_color_accent">アクセント</string>
+    <string name="settings_clock_color_help">OK でカラーピッカー（プリセット、パレット、16 進コード）を開きます。アクセントカラーと同じものです。プレビューは操作に合わせて変わります。</string>
+    <string name="settings_key_pick_color">色を選ぶ</string>
+    <string name="settings_line_trending_layout">トレンド行の表示方法</string>
+    <string name="settings_home_shown">表示</string>
+    <string name="settings_home_hide_row">この行を非表示</string>
+    <string name="settings_home_show_row">この行を表示</string>
+    <string name="settings_home_move_row">移動（▲ ▼、最後に OK）</string>
+    <string name="settings_line_remote_shortcuts_on">オフでも割り当ては保持されます</string>
+    <string name="settings_language_system_help">OwnTV はテレビの言語（現在は <xliff:g id="language">%1$s</xliff:g>）に従います。OwnTV だけで使う言語を下から選んでください。</string>
+    <string name="settings_language_pick_help">テレビの言語に関係なく、OwnTV で <xliff:g id="language">%1$s</xliff:g> を使います。</string>
+    <string name="settings_key_use">使用</string>
+    <string name="settings_line_metadata_source">映画とシリーズの詳細の取得元</string>
+    <string name="settings_line_metadata_language">TMDB のあらすじ、ジャンル、タイトル</string>
+    <string name="settings_line_metadata_advanced">自分のキーまたはセルフホストの Worker</string>
+    <string name="settings_line_os_advanced">自分の API キーまたは Worker</string>
+    <string name="settings_line_os_filter">選んだ言語のみ</string>
+    <string name="settings_line_os_search_language">検索結果に表示</string>
+    <string name="settings_subtitle_delete_help">削除すると容量が空きます。プレーヤーから再度ダウンロードできます。</string>
+    <plurals name="settings_home_row_count">
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g> 行</item>
+    </plurals>
+    <plurals name="settings_subtitles_downloaded_count">
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g> 件ダウンロード済み</item>
+    </plurals>
+    <plurals name="settings_subtitle_file_count">
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g> ファイル</item>
+    </plurals>
+    <string name="settings_line_add_from_phone">別の機器のブラウザーでフォームに入力</string>
+    <string name="settings_add_type_here">ここで入力</string>
+    <string name="settings_line_add_type_here">リモコンで Xtream、M3U、Stalker を入力</string>
+    <string name="settings_help_add_from_phone">同じ Wi-Fi の任意の機器（スマホ、パソコン、別のテレビ）のブラウザーでアドレスを開くかコードを読み取り、プレイリストを入力してここに送信します。リモコンで URL を入力するよりずっと速いです。</string>
+    <string name="settings_help_add_type_here">リモコンで Xtream のログイン、M3U のアドレス、Stalker のポータルを入力し、パネルからインポートを開始します。</string>
+    <string name="settings_remote_waiting">別の機器を待っています</string>
+    <string name="settings_remote_nothing_yet">まだ何も受信していません</string>
+    <string name="settings_remote_new_pin">新しい PIN</string>
+    <string name="settings_line_remote_new_pin">他の人に見られた場合</string>
+    <string name="settings_remote_scan">読み取るかブラウザーで開く</string>
+    <string name="settings_remote_or_open">または開く</string>
+    <string name="settings_remote_details_note">詳細はここに表示されます。インポートはリモコンで開始します。</string>
+    <string name="settings_key_stop_back">停止して戻る</string>
+    <string name="settings_source_type">種類</string>
+    <string name="settings_line_source_type">Xtream、M3U、Stalker ポータル</string>
+    <string name="settings_choose_local_file">ローカルファイルを選ぶ…</string>
+    <string name="settings_line_local_file">このテレビ上の .m3u または .m3u8</string>
+    <string name="settings_form_optional">任意</string>
+    <string name="settings_form_field_help">OK でキーボードを開き、▼ で次の欄に移ります。</string>
+    <string name="settings_help_playlist_url">.m3u または .m3u8 リストのアドレス。</string>
+    <string name="settings_line_fill_from_playlist">プレイリストのガイドアドレスを使う</string>
+    <string name="settings_line_epg_auto_refresh">ガイドを最新に保つ</string>
+    <string name="settings_line_epg_logos">プレイリストのロゴの代わりに</string>
+    <string name="settings_help_epg_name">ガイド一覧と「EPG を手動で選ぶ」に表示されます。</string>
+    <string name="settings_glass_bg_title">ガラスと背景</string>
+    <string name="settings_line_glass_bg">背景、画像の見え方、ガラス</string>
+    <string name="settings_bg_background">背景</string>
+    <string name="settings_line_bg_background">すべての画面の後ろにあるもの</string>
+    <string name="settings_help_bg_background">Stage は OwnTV 独自のやわらかな色を表示します。画像はすべての画面の後ろに自分の画像を表示します。無地は平らな暗い塗りです。</string>
+    <string name="settings_bg_stage">Stage</string>
+    <string name="settings_bg_picture">画像</string>
+    <string name="settings_bg_plain">無地</string>
+    <string name="settings_line_bg_picture_none">このテレビまたは Remote で画像を選択</string>
+    <string name="settings_line_bg_picture_none_mobile">このスマートフォンから画像を選択</string>
+    <string name="settings_bg_picture_from_phone"><xliff:g id="file" example="sunset.jpg">%1$s</xliff:g> · このスマートフォンから</string>
+    <string name="settings_bg_change">変更</string>
+    <string name="settings_bg_none">なし</string>
+    <string name="settings_bg_look">画像の見え方</string>
+    <string name="settings_line_bg_look">くっきり・ソフト・ダーク</string>
+    <string name="settings_bg_sharp">くっきり</string>
+    <string name="settings_bg_soft">ソフト</string>
+    <string name="settings_bg_dark">ダーク</string>
+    <string name="settings_bg_sharp_desc">画像そのまま、少しだけ暗く</string>
+    <string name="settings_bg_soft_desc">ぼかして暗く。文字が常に読みやすい</string>
+    <string name="settings_bg_dark_desc">ほぼ黒で、画像がほんのり見える</string>
+    <string name="settings_help_bg_look">画像が画面の後ろでどう見えるか。行や文字は画像の上に直接描かれるので、明るい画像にはソフトかダークが必要です。</string>
+    <string name="settings_bg_picture_only">画像のみ</string>
+    <string name="settings_bg_darken">暗さ</string>
+    <string name="settings_line_bg_darken">画像をどれだけ暗くするか</string>
+    <string name="settings_bg_blur">ぼかし</string>
+    <string name="settings_line_bg_blur">画像をどれだけやわらかくするか</string>
+    <string name="settings_bg_accent_light">アクセントライト</string>
+    <string name="settings_line_bg_accent_light">アクセントカラーが隅で光ります</string>
+    <string name="settings_glass_section">ガラス</string>
+    <string name="settings_line_glass_switch">メニューバー、シート、メニュー、ポップアップがすりガラスになります</string>
+    <string name="settings_line_glass_switch_mobile">バー、シート、メニュー、ポップアップがすりガラスになります</string>
+    <string name="settings_help_glass_chrome">浮いている部分をすりガラスにします：メニューバー、カテゴリーシート、メニュー、ポップアップ、上部のボタン。リストとポスターはフラットのままです。</string>
+    <string name="settings_glass_opacity">ガラスの不透明度</string>
+    <string name="settings_line_glass_opacity">低いほど背景がよく見えます</string>
+    <string name="settings_line_glass_reset">Stage の色、ガラスオン、<xliff:g id="percent" example="56%">%1$s</xliff:g></string>
+    <string name="settings_bg_preview_note">この背景のライブ TV。動かすと変更がすぐ表示されます。</string>
+    <string name="settings_root_hint_mobile">行を長押しするとクイックに固定できます</string>
+    <string name="settings_card_layout_mobile">ナビゲーション、ホーム、一覧、メニュー</string>
+    <string name="settings_card_watching_mobile">スキップ、再開、ミニプレーヤー、録画</string>
+    <string name="settings_line_live_preview_mobile">選んだチャンネルをライブTVの上部で再生</string>
+    <string name="settings_line_hw_mobile">スマートフォン本体のデコーダーを使う</string>
+    <string name="settings_line_surround_mobile">スマートフォンが受け取るままの 5.1 / 7.1</string>
+    <string name="settings_line_passthrough_mobile">デコードせずに接続中のレシーバーへ</string>
+    <string name="settings_line_navigation_mobile">下部のバー：ラベル、スクロール中は隠す、項目</string>
+    <string name="settings_vod_view_mobile">映画と番組の表示</string>
+    <string name="settings_line_vod_view_mobile">カテゴリの開き方</string>
+    <string name="settings_guide_size_mobile">番組表のサイズ</string>
+    <string name="settings_line_guide_size_mobile">グリッドに一度に表示する時間</string>
+    <string name="settings_line_download_folder_mobile">映画、エピソード、録画の保存先</string>
+    <string name="settings_browsing_value_both">両方</string>
+    <plurals name="settings_home_rows_count">
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g> 行</item>
+    </plurals>
+    <plurals name="settings_customize_hidden_count">
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g> 件非表示</item>
+    </plurals>
+    <string name="settings_catchup_timezone_label">タイムゾーン</string>
+    <string name="settings_help_add_from_phone_mobile">同じ Wi-Fi の任意の機器（パソコン、タブレット、テレビ）のブラウザーでアドレスを開くかコードを読み取り、プレイリストを入力してここに送信します。スマートフォンで URL を入力するよりずっと速いです。</string>
+    <string name="settings_line_add_type_here_mobile">Xtream、M3U、Stalker</string>
+    <string name="setup_local_file_hint_mobile">このスマートフォン上の .m3u または .m3u8</string>
+    <plurals name="settings_sources_count">
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g> 件のソース</item>
+    </plurals>
+    <string name="settings_sources_status_default">デフォルト</string>
+    <string name="settings_epg_sources_addresses_note">アドレスはユーザー名とパスワードを除いて表示されます。</string>
+    <plurals name="settings_customize_categories_count">
+        <item quantity="other"><xliff:g id="count">%1$d</xliff:g> カテゴリ</item>
+    </plurals>
+    <string name="settings_customize_hold_note_mobile">行を長押し：名前を変更・移動・非表示・または範囲を指定してまとめて変更。</string>
+    <string name="settings_line_quick_channel_numbers_mobile">番号を入力してチャンネルを切り替え</string>
+    <string name="settings_line_playlists_mobile">M3U / Xtream / Stalker を追加・再同期・削除</string>
+    <string name="settings_line_accent_mobile">ボタン、ハイライト、バーをすべて色付け</string>
+    <string name="settings_line_glass_bg_mobile">すりガラスのバーとシート、背景画像</string>
+    <string name="settings_line_popup_size_mobile">文字を変えずにシートとメニューを拡大縮小</string>
+    <string name="settings_line_animations_mobile">オフにすると古いスマートフォンでも軽快</string>
+    <string name="settings_line_vod_buffer_mobile">映画と見逃し配信をどこまで先読みするか</string>
+    <string name="settings_line_vod_timeout_mobile">応答のないサーバーをどれだけ待つか</string>
+    <string name="settings_line_vod_reconnects_mobile">途切れた配信を何回開き直すか</string>
+    <string name="settings_line_sw_decode_mobile">ハードウェアデコーダーが失敗したら 1080p 超をソフトウェアで</string>
+    <string name="settings_line_rec_mobile_data_mobile">オフ：モバイルデータ中の録画はスキップ</string>
+    <string name="settings_line_pip_mobile">アプリを離れると動画を小さなウィンドウに</string>
+    <string name="settings_line_pip_size_mobile">フローティングウィンドウの初期サイズ</string>
+    <string name="settings_line_pip_snap_mobile">ウィンドウを最も近い端に寄せる</string>
+    <string name="settings_line_audio_screen_off_mobile">誰も見ていない映像はデコードしない</string>
+    <string name="settings_line_audio_per_channel_mobile">次回もこの状態で開く</string>
+    <string name="settings_line_seek_step_mobile">戻る・進むの 1 タップで飛ぶ長さ</string>
+    <string name="settings_line_rewind_step_mobile">ライブチャンネルで 1 タップで飛ぶ長さ</string>
+    <string name="settings_line_gesture_mobile">スワイプで音量・明るさ・位置がどれだけ変わるか</string>
+    <string name="settings_line_rec_watching_mobile">プレーヤーに録画ボタンを表示</string>
+    <string name="settings_line_rec_pre_roll_mobile">予定の開始より前に始める</string>
+    <string name="settings_line_rec_post_roll_mobile">予定の終了後も続ける</string>
+    <string name="settings_line_sub_lang_mobile">この字幕トラックを自動で選択</string>
+    <string name="settings_line_sub_style_mobile">サイズ、フォント、色、位置、背景</string>
+    <string name="settings_customize_short_mobile">カスタマイズ</string>
+    <plurals name="settings_epg_line_programmes">
+        <item quantity="other"><xliff:g id="count">%1$s</xliff:g> 番組</item>
+    </plurals>
+    <plurals name="settings_epg_line_catchup">
+        <item quantity="other"><xliff:g id="count">%1$s</xliff:g> チャンネルで見逃し配信</item>
+    </plurals>
+</resources>
