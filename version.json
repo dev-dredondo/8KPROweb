@@ -1,8 +1,8 @@
 {
-  "versionCode": 1010003,
-  "versionName": "1.0.3",
-  "apk": "https://raw.githubusercontent.com/dev-dredondo/8KPROweb/apk/8KPROweb-1.0.3.apk",
-  "sha256": "0d61fe0ddc07b3d96560072b6911dcb9728a509b9eb3d1f6366aa33a9fb991f3",
+  "versionCode": 1010004,
+  "versionName": "1.0.4",
+  "apk": "https://raw.githubusercontent.com/dev-dredondo/8KPROweb/apk/8KPROweb-1.0.4.apk",
+  "sha256": "80b94a61b3dfa6bf43765f3ce85eef86c4268c52767679a013d1c6b45eb74657",
   "size": 86095096,
-  "notes": "- Canales de reserva: si un canal se cae (o se corta mucho), la app ofrece el mismo canal en el servidor de reserva y puede cambiar sola\n- DNS propias activadas por defecto\n- Al reinstalar la app se conserva el mismo código de dispositivo"
+  "notes": "- Un canal caído ya no se abandona: la app lo vuelve a abrir sola hasta que funcione\n- Las alternativas del servidor de reserva aparecen al instante"
 }
