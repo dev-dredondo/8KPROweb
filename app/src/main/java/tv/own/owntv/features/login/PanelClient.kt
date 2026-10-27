@@ -40,7 +40,10 @@ sealed interface PanelStatus {
  * the one whose SHA-256 is [BrandConfig.panelPin] — and refuses every other, including a valid public
  * certificate for the same address. A man in the middle therefore cannot read the credentials.
  */
-class PanelClient {
+class PanelClient(
+    /** Where the backup provider the panel sends is kept; null in tests. */
+    private val backupStore: BackupStore? = null,
+) {
 
     private val client: OkHttpClient by lazy {
         val trust = PinnedTrustManager(BrandConfig.panelPin)
@@ -59,6 +62,7 @@ class PanelClient {
         val body = JSONObject()
             .put("device_id", identity.deviceId)
             .put("token", identity.token)
+            .put("hardware_id", identity.hardwareId)
             .put("model", Build.MODEL)
             .put("manufacturer", Build.MANUFACTURER)
             .put("android", Build.VERSION.RELEASE)
@@ -85,6 +89,7 @@ class PanelClient {
             .url("${BrandConfig.panelUrl}/api/v1/config")
             .header("X-Device-Id", identity.deviceId)
             .header("X-Device-Token", identity.token)
+            .header("X-Hardware-Id", identity.hardwareId)
             .header("X-App-Version", BuildConfig.VERSION_NAME)
             .build()
         try {
@@ -93,7 +98,17 @@ class PanelClient {
                 if (resp.code != 200) return@use PanelStatus.Unreachable
                 val o = JSONObject(resp.body.string())
                 val code = o.optString("code")
-                when (o.optString("status")) {
+                val status = o.optString("status")
+                // The backup provider travels with every answer; no backup (or not active) = none on the device.
+                runCatching {
+                    val b = o.optJSONObject("backup")?.takeIf { status == "active" }
+                    backupStore?.save(
+                        b?.let {
+                            BackupAccount(it.optString("server_url").trim().trimEnd('/'), it.optString("username"), it.optString("password"))
+                        }?.takeIf { it.serverUrl.isNotBlank() && it.username.isNotBlank() },
+                    )
+                }
+                when (status) {
                     "active" -> PanelStatus.Active(
                         code = code,
                         serverUrl = o.optString("server_url").trim().trimEnd('/'),
@@ -121,6 +136,7 @@ class PanelClient {
             .url("${BrandConfig.panelUrl}/api/v1/stats")
             .header("X-Device-Id", identity.deviceId)
             .header("X-Device-Token", identity.token)
+            .header("X-Hardware-Id", identity.hardwareId)
             .header("X-App-Version", BuildConfig.VERSION_NAME)
             .post(payload.toString().toRequestBody(JSON))
             .build()

@@ -66,9 +66,13 @@ object BrandConfig {
         return hiddenHosts.any { it.equals(host, ignoreCase = true) }
     }
 
+    /** The backup provider's server (set by BackupStore); never shown either. */
+    @Volatile
+    var backupServerUrl: String? = null
+
     /** Whether [text] (an error message, a log line) mentions one of the brand's servers anywhere. */
     fun mentionsServer(text: String?): Boolean =
-        !text.isNullOrEmpty() && hiddenHosts.any { text.contains(it, ignoreCase = true) }
+        !text.isNullOrEmpty() && (hiddenHosts + listOfNotNull(hostOf(backupServerUrl))).any { text.contains(it, ignoreCase = true) }
 
     /** Whether [url] is exactly the default server (ignoring a trailing slash and letter case). */
     fun isBrandServer(url: String?): Boolean =

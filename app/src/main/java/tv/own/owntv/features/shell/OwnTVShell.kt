@@ -382,7 +382,7 @@ fun OwnTVShell(
     // favorite their parent series). Picked by the section that armed the stream. Hoisted here because
     // the audio capsule in the top bar carries the same control as the fullscreen HUD.
     val favToggle: (() -> Unit)? = when (zapSource) {
-        MainSection.LIVE_TV -> previewChannel?.let { ch -> { liveVm.toggleFavorite(ch) } }
+        MainSection.LIVE_TV -> previewChannel?.takeIf { it.id > 0 }?.let { ch -> { liveVm.toggleFavorite(ch) } }
         MainSection.MOVIES -> playingMovie?.let { m -> { movieVm.toggleFavorite(m) } }
         MainSection.SERIES -> playingSeries?.let { s -> { seriesVm.toggleFavorite(s) } }
         else -> null
@@ -1735,6 +1735,15 @@ fun OwnTVShell(
                 )
                 goalToast?.let { a ->
                     tv.own.owntv.features.sports.GoalToast(a, Modifier.align(androidx.compose.ui.Alignment.TopEnd).padding(top = 45.mpx, end = 60.mpx))
+                }
+                // 8K PRO: a live channel that will not come back (or keeps cutting out) — offer the same channel
+                // on the backup provider.
+                if (isTunedLive && multiview == null) {
+                    tv.own.owntv.player.BackupOffer(
+                        liveVm = liveVm,
+                        engine = if (liveOnExo) liveVm.previewEngine else mpvEngine,
+                        channel = previewChannel,
+                    )
                 }
                 if (showOtherChannels) {
                     val s = matchSession

@@ -73,7 +73,10 @@ val appModule = module {
     // 8K PRO login: saved session (DataStore + Keystore), the player_api.php check, and the screen's model.
     single { SessionStore(get()) }
     singleOf(::XtreamAuthenticator)
-    single { tv.own.owntv.features.login.PanelClient() }
+    single { tv.own.owntv.features.login.BackupStore(get()) }
+    single { tv.own.owntv.features.login.PanelClient(get()) }
+    // 8K PRO: the backup provider's channels, only ever offered when a channel stops working.
+    single { tv.own.owntv.brand.BackupCatalog(get()) }
     single { tv.own.owntv.features.login.BrandAccount(get(), get(), get()) }
     single { tv.own.owntv.features.login.PanelSync(get(), get(), get()) }
     // 8K PRO: what this device is watching, for the panel's live view.

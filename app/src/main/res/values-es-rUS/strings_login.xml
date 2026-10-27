@@ -26,4 +26,16 @@
     <string name="activation_offline">No se puede conectar con el servidor de activación. Reintentando…</string>
     <string name="activation_manual">Iniciar sesión manualmente</string>
     <string name="activation_use_code">Usar código de activación</string>
+    <string name="backup_offer_title">Este canal no responde</string>
+    <string name="backup_offer_text">Prueba el mismo canal en el servidor de reserva:</string>
+    <string name="backup_offer_searching">Buscando alternativas…</string>
+    <string name="backup_offer_none">No hay canales parecidos en el servidor de reserva.</string>
+    <string name="backup_offer_unreachable">Ahora mismo no se puede contactar con el servidor de reserva.</string>
+    <string name="backup_offer_wait">Seguir esperando</string>
+    <string name="backup_suffix">reserva</string>
+    <string name="backup_offer_search">Buscar en el servidor de reserva</string>
+    <string name="backup_offer_auto">Se reproducirá %1$s en %2$d s</string>
+    <string name="backup_offer_title_stutter">Este canal se está cortando mucho</string>
+    <string name="backup_offer_play">Reproducir</string>
+    <string name="backup_offer_search_go">Buscar</string>
 </resources>

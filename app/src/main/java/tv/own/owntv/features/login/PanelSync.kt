@@ -53,6 +53,7 @@ class PanelSync(
 
     private companion object {
         const val TAG = "PanelSync"
-        const val MIN_INTERVAL_MS = 60_000L
+        // Every time the app is opened or brought back (a few seconds apart at most): DNS, account and backup.
+        const val MIN_INTERVAL_MS = 10_000L
     }
 }

@@ -29,6 +29,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.first
@@ -899,7 +900,7 @@ class LiveViewModel(
         // to start at the top don't also get yanked to a saved channel on re-entry. The category restore
         // above is a separate toggle ("Remember last category — Live TV").
         viewModelScope.launch {
-            _previewChannel.drop(1).filterNotNull().map { it.id }.debounce(800).distinctUntilChanged()
+            _previewChannel.drop(1).filterNotNull().map { it.id }.filter { it > 0 }.debounce(800).distinctUntilChanged()
                 .collect { settings.setLastLiveChannelId(it) }
         }
         viewModelScope.launch {
@@ -1038,7 +1039,8 @@ class LiveViewModel(
     // they apply are shared with the browse lists and belong beside them.
     private val zapList = LiveZapList(
         scope = viewModelScope,
-        playingChannelId = { _previewChannel.value?.id },
+        // A backup channel stands in for the real one: CH± continues from the real one's place in the list.
+        playingChannelId = { _previewChannel.value?.id?.let { if (it <= BACKUP_ID_BASE) backupOf else it } },
         loadForChannel = ::channelsAroundChannel,
         loadForCategory = ::channelsInCategory,
         loadWindowAround = ::buildZapList,
@@ -1545,6 +1547,58 @@ class LiveViewModel(
         // ladder and starts the engine — the same code the phone runs.
         live.start(channel, getSource(channel.sourceId))
         recordLiveHistory(channel)
+    }
+
+    // ---- 8K PRO: backup provider -------------------------------------------------------------------
+
+    /** The real channel a backup channel stands in for, so CH± continues from its place in the list. */
+    private var backupOf: Long? = null
+
+    /** Whether what is playing is a backup provider's channel (see [playBackup]). */
+    val playingBackup: Boolean get() = (_previewChannel.value?.id ?: 0L) <= BACKUP_ID_BASE
+
+    /**
+     * Play a channel of the backup provider in place of the one that stopped working. It is never
+     * stored: a copy of the dead channel's row with the backup's name and stream, under an id no real
+     * channel has (negative), so History, favourites and the channel list never see it.
+     */
+    fun playBackup(name: String, url: String, logoUrl: String?) {
+        val original = _previewChannel.value ?: return
+        val backup = original.copy(
+            id = BACKUP_ID_BASE - (url.hashCode().toLong() and 0x7fffffffL),
+            name = name,
+            streamUrl = url,
+            logoUrl = logoUrl ?: original.logoUrl,
+            catchup = false,
+            catchupDays = 0,
+            catchupSource = null,
+            catchupType = null,
+            httpHeaders = null,
+            drmConfig = null,
+            manifestType = null,
+            remoteId = null,
+            directSource = null,
+        )
+        backupOf = if (original.id < 0) backupOf else original.id
+        pendingZapTuneJob?.cancel()
+        pendingZapTuneJob = null
+        live.launch {
+            _previewChannel.value = backup
+            clearTimeshift()
+            _catchupActive.value = false
+            // No source: the URL is played as it is, with none of the main account's overrides.
+            live.start(backup, null, resolved = url)
+        }
+    }
+
+    /** Back from a backup channel to the real one it stood in for (the backup failed too). */
+    fun returnFromBackup() {
+        val id = backupOf ?: return
+        if (!playingBackup) return
+        viewModelScope.launch {
+            val channel = withContext(Dispatchers.IO) { channelDao.getById(id) } ?: return@launch
+            ensurePlaying(custom.value.itemNames[CustomizeKeys.channel(channel)]?.let { channel.copy(name = it) } ?: channel)
+        }
     }
 
     /** HUD "compatibility mode" toggle: flip the current channel's engine and pin the choice. */
@@ -2120,6 +2174,8 @@ class LiveViewModel(
         liveCountFlow(key, c.profileId, c.sourceIds, hiddenCats, channelDao, customCategoryDao)
 
     private companion object {
+        /** 8K PRO: ids of backup channels (see [playBackup]) — far below any real row id. */
+        const val BACKUP_ID_BASE = -1_000_000_000L
         const val ENGINE_TAG = "LiveEngine"
 
         /** How long a channel must stay tuned before it counts as watched — see [recordLiveHistory]. */

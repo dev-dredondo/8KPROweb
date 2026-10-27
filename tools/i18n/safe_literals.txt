@@ -38,6 +38,48 @@
 1	compiler	app/src/main/java/tv/own/owntv/OwnTVApp.kt	DEPRECATION
 1	file-path	app/src/main/java/tv/own/owntv/OwnTVApp.kt	image_cache
 1	performance	app/src/main/java/tv/own/owntv/OwnTVApp.kt	koin-started
+7	empty	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	\0
+1	url	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	$base&action=get_live_streams
+1	url	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	${account.serverUrl}/live/${Uri.encode(account.username)}/${Uri.encode(account.password)}/$streamId.$extension
+1	url	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	${account.serverUrl}/player_api.php?username=${Uri.encode(account.username)}&password=${Uri.encode(account.password)}
+1	technical	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	&
+1	technical	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	+
+2	technical	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	1
+1	technical	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	1080
+1	technical	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	1080i
+1	technical	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	1080p
+2	technical	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	2
+1	technical	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	2k
+1	technical	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	3
+1	technical	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	4
+1	technical	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	480p
+1	technical	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	4k
+1	technical	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	5
+1	technical	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	50
+1	technical	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	576p
+1	technical	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	60
+1	technical	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	720
+1	technical	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	720p
+1	technical	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	8k
+1	log	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	BackupCatalog
+1	technical	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	HTTP ${resp.code}
+1	technical	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	[^a-z0-9+]+
+1	technical	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	[^a-z0-9]+
+3	technical	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	\\p{Mn}+
+1	technical	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	^\\s*[\\[(|]?\\s*[a-z]{2,3}\\s*[\\])|:\\-]+
+1	technical	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	^\\s*[^\\s:]{1,3}\\s*:
+1	technical	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	allowed_output_formats
+1	technical	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	backup
+1	log	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	backup catalogue failed: ${it.javaClass.simpleName}
+1	technical	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	bk
+1	technical	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	cinco
+1	technical	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	cuatro
+1	technical	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	dos
+1	technical	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	es
+1	technical	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	esp
+1	technical	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	espana
+1	technical	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	fhd
+1	technical	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	fps
 1	technical	app/src/main/java/tv/own/owntv/brand/BrandDefaults.kt	#FFB95C
 1	log	app/src/main/java/tv/own/owntv/brand/BrandDefaults.kt	BrandDefaults
 1	preference-key	app/src/main/java/tv/own/owntv/brand/BrandDefaults.kt	applied_version
@@ -189,6 +231,10 @@
 1	log	app/src/main/java/tv/own/owntv/features/live/ZapTuneDelay.kt	(single-connection)
 1	log	app/src/main/java/tv/own/owntv/features/live/ZapTuneDelay.kt	isolated$panel
 1	log	app/src/main/java/tv/own/owntv/features/live/ZapTuneDelay.kt	rapid (previous press ${nowMs - (lastPressMs ?: nowMs)}ms ago)$panel
+1	preference-key	app/src/main/java/tv/own/owntv/features/login/BackupStore.kt	brand_backup
+1	preference-key	app/src/main/java/tv/own/owntv/features/login/BackupStore.kt	pass
+1	preference-key	app/src/main/java/tv/own/owntv/features/login/BackupStore.kt	url
+1	preference-key	app/src/main/java/tv/own/owntv/features/login/BackupStore.kt	user
 2	empty	app/src/main/java/tv/own/owntv/features/login/BrandAccount.kt	\0
 1	uri	app/src/main/java/tv/own/owntv/features/login/BrandAccount.kt	&
 1	uri	app/src/main/java/tv/own/owntv/features/login/BrandAccount.kt	?$it
@@ -213,10 +259,12 @@
 2	protocol	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	X-App-Version
 2	protocol	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	X-Device-Id
 2	protocol	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	X-Device-Token
-1	protocol	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	active
+2	protocol	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	X-Hardware-Id
+2	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	active
 1	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	android
 1	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	app_version
 1	mime	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	application/json; charset=utf-8
+1	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	backup
 1	log	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	client certificates are not used
 2	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	code
 1	log	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	config failed: ${e.javaClass.simpleName}
@@ -224,17 +272,18 @@
 1	protocol	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	disabled
 1	log	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	empty chain
 1	protocol	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	expired
+1	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	hardware_id
 1	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	manufacturer
 1	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	model
 1	log	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	panel certificate does not match the pinned key
-1	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	password
+2	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	password
 1	log	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	register failed: ${e.javaClass.simpleName}
-1	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	server_url
+2	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	server_url
 1	log	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	stats failed: ${e.javaClass.simpleName}
 1	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	status
 1	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	token
 1	protocol	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	unknown
-1	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	username
+2	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	username
 1	log	app/src/main/java/tv/own/owntv/features/login/PanelSync.kt	PanelSync
 1	log	app/src/main/java/tv/own/owntv/features/login/PanelSync.kt	account changed on the panel, updating
 1	log	app/src/main/java/tv/own/owntv/features/login/PanelSync.kt	device no longer active on the panel, signing out
@@ -256,10 +305,15 @@
 1	json	app/src/main/java/tv/own/owntv/features/login/PlaybackStats.kt	video
 1	json	app/src/main/java/tv/own/owntv/features/login/PlaybackStats.kt	vod
 1	json	app/src/main/java/tv/own/owntv/features/login/PlaybackStats.kt	watch_s
+4	empty	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	\0
+1	technical	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	%02x
 1	preference-key	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	0
 2	preference-key	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	1
+1	technical	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	8kpro-hw:$raw
+1	technical	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	9774d56d682e549c
 1	technical	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	AES/GCM/NoPadding
 1	technical	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	AndroidKeyStore
+1	technical	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	SHA-256
 1	log	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	SessionStore
 1	file-path	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	brand_session
 1	technical	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	brand_session_key
@@ -984,6 +1038,9 @@
 1	technical	app/src/main/java/tv/own/owntv/player/AudioNowPlayingBar.kt	liveDot
 1	technical	app/src/main/java/tv/own/owntv/player/AudioNowPlayingBar.kt	liveDotAlpha
 1	technical	app/src/main/java/tv/own/owntv/player/AudioNowPlayingBar.kt	tnum
+1	empty	app/src/main/java/tv/own/owntv/player/BackupOffer.kt	\0
+1	technical	app/src/main/java/tv/own/owntv/player/BackupOffer.kt	${alt.name} · $suffix
+1	technical	app/src/main/java/tv/own/owntv/player/BackupOffer.kt	“$query”
 1	log	app/src/main/java/tv/own/owntv/player/FrameRateController.kt	AFR apply failed: ${it.message}
 1	log	app/src/main/java/tv/own/owntv/player/FrameRateController.kt	AFR reset failed: ${it.message}
 1	log	app/src/main/java/tv/own/owntv/player/FrameRateController.kt	AFR: ${fps}fps -> mode $targetId deferred ${waitMs}ms (cooldown)

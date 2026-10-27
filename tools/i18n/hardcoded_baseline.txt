@@ -4,6 +4,37 @@
 # Entries go as literals are translated or classified; the file may only ever shrink.
 # Format: <count>\t<relative path>\t<content with \t/\n escaped>
 
+1	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	h264
+1	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	h265
+1	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	hd
+1	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	hdr
+1	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	hevc
+1	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	hq
+1	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	http
+1	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	lq
+1	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	m3u8
+1	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	multi
+1	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	multiaudio
+1	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	name
+1	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	one
+1	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	plus
+1	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	raw
+1	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	sd
+1	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	sdr
+1	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	spa
+1	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	spain
+1	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	stream_icon
+1	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	stream_id
+1	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	tres
+4	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	ts
+1	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	two
+1	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	uhd
+1	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	uno
+1	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	user_info
+1	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	vip
+1	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	x264
+1	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	x265
+1	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	y
 1	app/src/main/java/tv/own/owntv/features/customize/BulkRenameDialogs.kt	\0
 1	app/src/main/java/tv/own/owntv/features/customize/BulkRenameDialogs.kt	ADD
 1	app/src/main/java/tv/own/owntv/features/customize/BulkRenameDialogs.kt	PREFIX

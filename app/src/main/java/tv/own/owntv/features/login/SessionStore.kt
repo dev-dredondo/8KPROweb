@@ -28,8 +28,12 @@ data class Session(
     val viaPanel: Boolean = false,
 )
 
-/** This install's identity on the activation panel: a random id and a secret only this device knows. */
-data class DeviceIdentity(val deviceId: String, val token: String)
+/**
+ * This install's identity on the activation panel: a random id and a secret only this install knows, plus
+ * [hardwareId] — the same for this phone across uninstall and reinstall (see [SessionStore.hardwareId]) so
+ * the panel can give a reinstalled app back its code and its account.
+ */
+data class DeviceIdentity(val deviceId: String, val token: String, val hardwareId: String = "")
 
 /** What MainActivity routes on: still reading, nobody signed in, or signed in. */
 sealed interface SessionState {
@@ -51,7 +55,23 @@ private val Context.sessionDataStore by preferencesDataStore(name = "brand_sessi
  * decrypted: the session then reads as logged out and the user simply signs in again.
  */
 class SessionStore(context: Context) {
-    private val store = context.applicationContext.sessionDataStore
+    private val appContext = context.applicationContext
+    private val store = appContext.sessionDataStore
+
+    /**
+     * An id for this device that survives uninstalling the app. Android has not let apps read the Wi-Fi
+     * or Ethernet MAC address since Android 6 (every app gets 02:00:00:00:00:00); the stable identifier it
+     * does give is ANDROID_ID, which is the same for this app on this device until a factory reset. It is
+     * hashed before it leaves the phone. Empty when the device has none.
+     */
+    val hardwareId: String by lazy {
+        runCatching {
+            val raw = android.provider.Settings.Secure.getString(appContext.contentResolver, android.provider.Settings.Secure.ANDROID_ID)
+            if (raw.isNullOrBlank() || raw == BROKEN_ANDROID_ID) return@runCatching ""
+            java.security.MessageDigest.getInstance("SHA-256").digest("8kpro-hw:$raw".toByteArray())
+                .joinToString("") { "%02x".format(it) }.take(40)
+        }.getOrDefault("")
+    }
 
     val state: Flow<SessionState> = store.data.map { prefs ->
         val user = prefs[KEY_USERNAME]
@@ -97,7 +117,7 @@ class SessionStore(context: Context) {
         val prefs = store.data.first()
         val id = prefs[KEY_DEVICE_ID]
         val token = prefs[KEY_DEVICE_TOKEN]?.let { runCatching { KeystoreCipher.decrypt(it) }.getOrNull() }
-        if (!id.isNullOrEmpty() && !token.isNullOrEmpty()) return DeviceIdentity(id, token)
+        if (!id.isNullOrEmpty() && !token.isNullOrEmpty()) return DeviceIdentity(id, token, hardwareId)
         return resetIdentity()
     }
 
@@ -106,7 +126,7 @@ class SessionStore(context: Context) {
         val rnd = java.security.SecureRandom()
         fun randomB64(bytes: Int) = ByteArray(bytes).also(rnd::nextBytes)
             .let { Base64.encodeToString(it, Base64.NO_WRAP or Base64.URL_SAFE or Base64.NO_PADDING) }
-        val identity = DeviceIdentity(deviceId = randomB64(18), token = randomB64(32))
+        val identity = DeviceIdentity(deviceId = randomB64(18), token = randomB64(32), hardwareId = hardwareId)
         val sealed = KeystoreCipher.encrypt(identity.token)
         store.edit {
             it[KEY_DEVICE_ID] = identity.deviceId
@@ -117,6 +137,8 @@ class SessionStore(context: Context) {
 
     private companion object {
         const val TAG = "SessionStore"
+        /** The ANDROID_ID a batch of old Android 2.2 phones all shared — not an identity. */
+        const val BROKEN_ANDROID_ID = "9774d56d682e549c"
         val KEY_USERNAME = stringPreferencesKey("username")
         val KEY_PASSWORD = stringPreferencesKey("password_enc")
         val KEY_SERVER = stringPreferencesKey("server_url")
@@ -127,7 +149,7 @@ class SessionStore(context: Context) {
 }
 
 /** AES/GCM with a non-exportable Android Keystore key. Output: Base64(iv ‖ ciphertext+tag). */
-private object KeystoreCipher {
+internal object KeystoreCipher {
     private const val PROVIDER = "AndroidKeyStore"
     private const val ALIAS = "brand_session_key"
     private const val TRANSFORMATION = "AES/GCM/NoPadding"
