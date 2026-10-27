@@ -69,6 +69,12 @@ object BrandDefaults {
                 if (key.isNotEmpty() && settings.currentTmdbApiKey().isBlank()) {
                     settings.setTmdbApiKey(key)
                 }
+                // Older Fire TV (Android 7.1, the Fire TV build): mpv is built for Android 8 and may not load
+                // there, so every channel, film and episode plays on ExoPlayer only.
+                if (android.os.Build.VERSION.SDK_INT < 26) {
+                    settings.setLiveEnginePreference(tv.own.owntv.core.player.EnginePreference.EXO_ONLY)
+                    settings.setVodEnginePreference(tv.own.owntv.core.player.EnginePreference.EXO_ONLY)
+                }
                 // Every launch: if the brand DNS in use does not answer and the other one does, switch.
                 BrandDns.ensureWorking(settings)
             }.onFailure { Log.w(TAG, "brand defaults not applied", it) }
