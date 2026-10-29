@@ -69,3 +69,7 @@ sudo bash panel/instalar-dns-evade.sh redonmaster.xyz
 ```
 
 No abre puertos nuevos; al final imprime las líneas que hay que añadir a Caddy o nginx para exponer `/dns-query`. Se puede volver a ejecutar para actualizar.
+
+Para usar la IP del VPS como DNS en un router (puerto 53 abierto a todos, con límite por IP): `sudo bash panel/dns-publico.sh` (y abrir el 53 TCP/UDP en el firewall del proveedor).
+
+Con el DNS instalado, la pestaña **DNS** del panel (v1.9+) muestra su estado y la gráfica de bloqueos esquivados (guarda una muestra por minuto, 31 días).

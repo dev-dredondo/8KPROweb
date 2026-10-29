@@ -4,7 +4,8 @@
 Un único proceso con:
   * API para la app:   POST /api/v1/register   GET /api/v1/config   POST /api/v1/stats
   * Web de administración en /admin (login, lista, activar por código, editar, ajustes,
-    "En directo" con lo que ve cada dispositivo y "Mapa" con su ubicación aproximada por IP)
+    "En directo" con lo que ve cada dispositivo, "Mapa" con su ubicación aproximada por IP y
+    "DNS" con el estado e historial del DNS anti-bloqueos (evade-proxy) si está instalado en el VPS)
 
 Escucha en 127.0.0.1:8080 detrás de Nginx, que pone el HTTPS. Datos en SQLite.
 
@@ -33,6 +34,7 @@ import threading
 import time
 import ipaddress
 import mimetypes
+import urllib.request
 from datetime import datetime
 from zoneinfo import ZoneInfo
 from http import HTTPStatus
@@ -40,7 +42,7 @@ from http.cookies import SimpleCookie
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, quote, urlparse
 
-PANEL_VERSION = "1.8"
+PANEL_VERSION = "1.9"
 CONFIG_PATH = os.environ.get("PANEL_CONFIG", "/etc/8kpro-panel/config.json")
 DB_PATH = os.environ.get("PANEL_DB", "/var/lib/8kpro-panel/panel.db")
 LISTEN = (os.environ.get("PANEL_HOST", "127.0.0.1"), int(os.environ.get("PANEL_PORT", "8080")))
@@ -60,6 +62,13 @@ except Exception:
 # Periodos de «Estadísticas»: clave -> (segundos, etiqueta, tamaño de cada barra del gráfico en segundos)
 STAT_RANGES = {"1h": (3600, "Última hora", 300), "6h": (6 * 3600, "6 horas", 1800), "24h": (86400, "24 horas", 3600),
                "3d": (3 * 86400, "3 días", 6 * 3600), "7d": (7 * 86400, "7 días", 12 * 3600)}
+# DNS anti-bloqueos (evade-proxy, instalado con vps/instalar-dns-evade.sh): el panel lee sus métricas cada minuto.
+DNS_METRICS_URL = os.environ.get("PANEL_DNS_METRICS", "http://127.0.0.1:5339/metrics")
+DNS_DOH_URL = os.environ.get("PANEL_DNS_DOH", "http://127.0.0.1:4053/dns-query")
+DNS_SAMPLE_EVERY = 60
+DNS_KEEP_DAYS = 31
+DNS_RANGES = {"6h": (6 * 3600, "6 horas", 900), "24h": (86400, "24 horas", 3600), "3d": (3 * 86400, "3 días", 3 * 3600),
+              "7d": (7 * 86400, "7 días", 6 * 3600), "30d": (30 * 86400, "30 días", 86400)}
 MIN_WATCH_FOR_RANKING = 120  # un canal entra en el ranking con al menos 2 min vistos en el periodo
 PLAY_STATES = ("playing", "buffering", "paused", "error", "stopped")
 GEO_CREDIT = '<p style="text-align:center"><small><a href="https://db-ip.com">IP Geolocation by DB-IP</a></small></p>'
@@ -263,6 +272,12 @@ CREATE TABLE IF NOT EXISTS plays (
 );
 CREATE INDEX IF NOT EXISTS idx_plays_device ON plays(device_id, updated_at);
 CREATE INDEX IF NOT EXISTS idx_plays_updated ON plays(updated_at);
+-- Una fila por minuto con los contadores del DNS anti-bloqueos (acumulados desde que arrancó evade-proxy).
+CREATE TABLE IF NOT EXISTS dns_samples (
+    ts          INTEGER PRIMARY KEY,
+    processed   INTEGER, evaded INTEGER, upfail INTEGER, dropped INTEGER,
+    blocked_v4  INTEGER, blocked_v6 INTEGER, evadable INTEGER, cf_ranges INTEGER
+);
 """
 
 _db_lock = threading.Lock()
@@ -424,13 +439,81 @@ th{color:var(--muted);font-weight:600;font-size:13px}small{color:var(--muted)}
 def layout(title: str, body: str, logged: bool = True, head: str = "") -> str:
     nav = ('<nav><a class="btn ghost" href="/admin">Dispositivos</a><a class="btn ghost" href="/admin/live">En directo</a>'
            '<a class="btn ghost" href="/admin/stats">Estadísticas</a>'
-           '<a class="btn ghost" href="/admin/map">Mapa</a><a class="btn ghost" href="/admin/settings">Ajustes</a>'
+           '<a class="btn ghost" href="/admin/map">Mapa</a><a class="btn ghost" href="/admin/dns">DNS</a>'
+           '<a class="btn ghost" href="/admin/settings">Ajustes</a>'
            '<a class="btn ghost" href="/admin/logout">Salir</a></nav>') if logged else ""
     return (f'<!doctype html><html lang="es"><head><meta charset="utf-8">'
             f'<meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">'
             f'<title>{e(title)} · 8K PRO</title><style>{CSS}</style>{head}</head><body>'
             f'<header><b>8K <span>PRO</span> · Panel</b>{nav}</header><main>{body}'
             f'<p style="text-align:center"><small>Panel v{PANEL_VERSION}</small></p></main></body></html>')
+
+
+# ------------------------------------------------------------------ DNS anti-bloqueos
+
+def dns_metrics() -> dict | None:
+    """Métricas de evade-proxy como {nombre o nombre{etiquetas}: valor}; None si no responde."""
+    try:
+        with urllib.request.urlopen(DNS_METRICS_URL, timeout=3) as resp:
+            text = resp.read(256 * 1024).decode("utf-8", "replace")
+    except Exception:
+        return None
+    out = {}
+    for line in text.splitlines():
+        if not line or line.startswith("#"):
+            continue
+        key, _, value = line.rpartition(" ")
+        try:
+            out[key] = float(value)
+        except ValueError:
+            pass
+    return out
+
+
+def _msum(m: dict, name: str) -> int:
+    return int(sum(v for k, v in m.items() if k == name or k.startswith(name + "{")))
+
+
+def dns_snapshot(m: dict) -> dict:
+    return {"processed": _msum(m, "xdp_evade_queries_processed"), "evaded": _msum(m, "xdp_evade_queries_total"),
+            "upfail": _msum(m, "xdp_evade_upstream_failures_total"), "dropped": _msum(m, "xdp_evade_dropped_total"),
+            "blocked_v4": int(m.get('xdp_evade_blocked_ips{family="ipv4"}', 0)),
+            "blocked_v6": int(m.get('xdp_evade_blocked_ips{family="ipv6"}', 0)),
+            "evadable": _msum(m, "xdp_evade_evadable_ips"), "cf_ranges": _msum(m, "xdp_evade_cloudflare_ranges")}
+
+
+def dns_doh_ok() -> bool:
+    """¿Responde el DoH (Blocky)? Consulta real de example.com tipo A."""
+    try:
+        with urllib.request.urlopen(DNS_DOH_URL + "?dns=AAABAAABAAAAAAAAB2V4YW1wbGUDY29tAAABAAE", timeout=3) as resp:
+            return resp.status == 200
+    except Exception:
+        return False
+
+
+def dns_sampler() -> None:
+    """Hilo de fondo: guarda una muestra por minuto mientras evade-proxy responda; borra lo de más de DNS_KEEP_DAYS."""
+    last_prune = 0.0
+    while True:
+        try:
+            m = dns_metrics()
+            if m is not None:
+                snap = dns_snapshot(m)
+                with db() as conn:
+                    conn.execute("INSERT OR REPLACE INTO dns_samples(ts, processed, evaded, upfail, dropped, blocked_v4, "
+                                 "blocked_v6, evadable, cf_ranges) VALUES(?,?,?,?,?,?,?,?,?)",
+                                 (now(), snap["processed"], snap["evaded"], snap["upfail"], snap["dropped"],
+                                  snap["blocked_v4"], snap["blocked_v6"], snap["evadable"], snap["cf_ranges"]))
+                    if time.time() - last_prune > 3600:
+                        last_prune = time.time()
+                        conn.execute("DELETE FROM dns_samples WHERE ts < ?", (now() - DNS_KEEP_DAYS * 86400,))
+        except Exception as exc:
+            sys.stderr.write(f"dns_sampler: {exc!r}\n")
+        time.sleep(DNS_SAMPLE_EVERY)
+
+
+def fmt_num(n) -> str:
+    return f"{int(n or 0):,}".replace(",", ".")
 
 
 # ------------------------------------------------------------------ servidor
@@ -530,6 +613,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self.page_stats(q)
             if path == "/admin/map":
                 return self.page_map()
+            if path == "/admin/dns":
+                return self.page_dns(q)
             if path == "/admin/api/map":
                 return self.json(200, {"points": self.map_points()})
             if path.startswith("/admin/device/"):
@@ -831,6 +916,103 @@ class Handler(BaseHTTPRequestHandler):
 <div class="table-wrap"><table><tr><th>Dispositivo</th><th>Cortes/h</th><th>Cortes</th><th>Tiempo visto</th><th>Ubicación</th></tr>{dev_rows}</table></div></div>
 <p style="text-align:center"><small>Se guardan los últimos {PLAYS_KEEP_DAYS} días.</small></p>"""))
 
+    # ---- admin: DNS anti-bloqueos
+    def page_dns(self, q: dict):
+        rng = q.get("r") if q.get("r") in DNS_RANGES else "24h"
+        span, label, bucket = DNS_RANGES[rng]
+        since = now() - span
+        m = dns_metrics()
+        cur = dns_snapshot(m) if m is not None else None
+        doh = dns_doh_ok() if m is not None else False
+        with db() as conn:
+            prev = conn.execute("SELECT * FROM dns_samples WHERE ts < ? ORDER BY ts DESC LIMIT 1", (since,)).fetchone()
+            rows = conn.execute("SELECT * FROM dns_samples WHERE ts >= ? ORDER BY ts", (since,)).fetchall()
+            first = conn.execute("SELECT MIN(ts) t FROM dns_samples").fetchone()["t"]
+
+        # Los contadores de evade-proxy son acumulados y vuelven a 0 si se reinicia: se suman las diferencias
+        # entre muestras seguidas (una bajada = reinicio, cuenta el valor nuevo entero).
+        start = since - since % bucket
+        nb = (now() - start) // bucket + 1
+        ev_b, q_b, blk_b = [0] * nb, [0] * nb, [0] * nb
+        tot = {"processed": 0, "evaded": 0, "upfail": 0, "dropped": 0}
+        last = prev
+        for r in rows:
+            i = min(nb - 1, max(0, (r["ts"] - start) // bucket))
+            for k in tot:
+                d = r[k] - last[k] if last is not None and r[k] >= last[k] else (r[k] if last is not None else 0)
+                tot[k] += d
+                if k == "evaded":
+                    ev_b[i] += d
+                elif k == "processed":
+                    q_b[i] += d
+            blk_b[i] = max(blk_b[i], r["blocked_v4"] + r["blocked_v6"])
+            last = r
+
+        # Gráfico: barras = bloqueos esquivados por intervalo; línea = IPs bloqueadas (máximo del intervalo).
+        W, H, pad = 900, 200, 24
+        bw = (W - 2 * pad) / nb
+        peak_ev, peak_blk = max(ev_b) or 1, max(blk_b) or 1
+        parts, pts = [], []
+        for i in range(nb):
+            x = pad + i * bw
+            h = (H - 44) * ev_b[i] / peak_ev
+            t0 = datetime.fromtimestamp(start + i * bucket, TZ)
+            tip = (t0.strftime("%d/%m %H:%M") + f" · {fmt_num(ev_b[i])} bloqueos esquivados · {fmt_num(q_b[i])} consultas"
+                   f" · {fmt_num(blk_b[i])} IPs bloqueadas")
+            parts.append(f'<rect x="{x + 1:.1f}" y="{H - 20 - h:.1f}" width="{max(bw - 2, 1):.1f}" height="{max(h, 0):.1f}" rx="2" '
+                         f'fill="#ffb95c"><title>{e(tip)}</title></rect>')
+            pts.append(f"{x + bw / 2:.1f},{H - 20 - (H - 44) * blk_b[i] / peak_blk:.1f}")
+        if any(blk_b):
+            parts.append(f'<polyline points="{" ".join(pts)}" fill="none" stroke="#ff6b6b" stroke-width="2" '
+                         f'stroke-linejoin="round" pointer-events="none"/>')
+        step = max(1, nb // 8)
+        for i in range(0, nb, step):
+            t0 = datetime.fromtimestamp(start + i * bucket, TZ)
+            fmt = "%H:%M" if span <= 86400 else ("%d/%m %Hh" if span <= 7 * 86400 else "%d/%m")
+            parts.append(f'<text x="{pad + i * bw:.1f}" y="{H - 4}" fill="#a49fb8" font-size="11">{t0.strftime(fmt)}</text>')
+        parts.append(f'<text x="{pad}" y="12" fill="#ffb95c" font-size="11">máx. {fmt_num(max(ev_b))} esquivados</text>'
+                     f'<text x="{W - pad}" y="12" fill="#ff6b6b" font-size="11" text-anchor="end">máx. {fmt_num(max(blk_b))} IPs bloqueadas</text>')
+        chart = f'<svg viewBox="0 0 {W} {H}" width="100%" role="img" aria-label="Bloqueos esquivados en el tiempo">{"".join(parts)}</svg>'
+
+        def btn(key, text):
+            cls = "btn" if key == rng else "btn ghost"
+            return f'<a class="{cls}" href="/admin/dns?r={key}" style="padding:6px 14px">{text}</a>'
+
+        ranges = " ".join(btn(k, v[1]) for k, v in DNS_RANGES.items())
+        pct = round(100 * tot["evaded"] / tot["processed"], 2) if tot["processed"] else 0
+        fails = tot["upfail"] + tot["dropped"]
+
+        if cur is None:
+            estado = ('<span class="pill disabled">Sin respuesta</span> <small>evade-proxy no responde en este VPS. '
+                      'Si no está instalado: <span class="code">vps/instalar-dns-evade.sh</span>. Si lo está, en el VPS: '
+                      '<span class="code">systemctl status xdp-evade-proxy</span></small>')
+            now_tiles = ""
+        else:
+            doh_pill = '<span class="pill active">DoH activo</span>' if doh else '<span class="pill disabled">DoH sin respuesta</span>'
+            cf_warn = "" if cur["cf_ranges"] else ' <span class="bad">· sin rangos de Cloudflare: la evasión no funciona (mira el timer update-blocked-ips)</span>'
+            estado = f'<span class="pill active">Activo</span> {doh_pill} <small>{fmt_num(cur["cf_ranges"])} rangos de Cloudflare cargados{cf_warn}</small>'
+            now_tiles = f"""<div class="stat"><b class="{'warn' if cur['blocked_v4'] + cur['blocked_v6'] > 50 else ''}">{fmt_num(cur['blocked_v4'] + cur['blocked_v6'])}</b>
+<small>IPs bloqueadas ahora por los operadores ({fmt_num(cur['blocked_v4'])} IPv4 · {fmt_num(cur['blocked_v6'])} IPv6)</small></div>
+<div class="stat"><b>{fmt_num(cur['evadable'])}</b><small>de ellas se pueden esquivar</small></div>"""
+
+        aviso = ""
+        if not rows:
+            aviso = ('<p><small>Aún no hay historial en este periodo. El panel guarda una muestra por minuto desde '
+                     + (f"el {fmt_time(first)}." if first else "ahora; vuelve en unos minutos.") + "</small></p>")
+
+        return self.html(layout("DNS", f"""<div class="card"><h2 style="margin-top:0">DNS anti-bloqueos</h2><p>{estado}</p>
+<p><small>Cuando un operador bloquea una IP de Cloudflare (p. ej. en los partidos), el DNS la cambia por otra que funciona.
+La lista de IPs bloqueadas se actualiza sola cada 15 s.</small></p></div>
+<div class="stats">{now_tiles}
+<div class="stat"><b>{fmt_num(tot['evaded'])}</b><small>bloqueos esquivados · {label} ({pct}% de las consultas)</small></div>
+<div class="stat"><b>{fmt_num(tot['processed'])}</b><small>consultas DNS · {label}</small></div>
+<div class="stat"><b class="{'bad' if fails else ''}">{fmt_num(fails)}</b><small>consultas fallidas o descartadas · {label}</small></div></div>
+<div class="card" style="display:flex;flex-wrap:wrap;gap:6px;align-items:center"><b>Periodo:</b> {ranges}</div>
+<div class="card"><h2 style="margin-top:0">Bloqueos esquivados · {label}</h2>{chart}
+<div class="legend"><span><span class="dot" style="background:#ffb95c"></span>Bloqueos esquivados</span>
+<span><span class="dot" style="background:#ff6b6b"></span>IPs bloqueadas por los operadores</span></div>{aviso}
+<p><small>Pasa el ratón por una barra para ver el detalle. Se guardan los últimos {DNS_KEEP_DAYS} días.</small></p></div>"""))
+
     # ---- admin: mapa
     def map_points(self) -> list:
         with db() as conn:
@@ -1086,6 +1268,7 @@ def main() -> None:
         return
     init_db()
     load_config()  # falla pronto y claro si falta la configuración
+    threading.Thread(target=dns_sampler, name="dns_sampler", daemon=True).start()
     server = ThreadingHTTPServer(LISTEN, Handler)
     server.daemon_threads = True
     sys.stderr.write(f"8K PRO panel escuchando en {LISTEN[0]}:{LISTEN[1]}\n")
