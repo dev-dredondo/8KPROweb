@@ -59,3 +59,13 @@ y reinicia el panel.
 Logs: `journalctl -u 8kpro-panel -f`. Reiniciar: `systemctl restart 8kpro-panel`.
 
 Cambiar la contraseña del administrador: borra `/etc/8kpro-panel/config.json` y vuelve a ejecutar el instalador.
+
+## DNS anti-bloqueos (opcional)
+
+`instalar-dns-evade.sh` monta en el VPS un DNS por HTTPS que esquiva los bloqueos de IPs de Cloudflare de los operadores (basado en [xdp-dns-evadeproxy](https://github.com/Oihalitz/xdp-dns-evadeproxy)): Unbound → evade-proxy → Blocky, publicado en `https://<dominio>/dns-query`.
+
+```bash
+sudo bash panel/instalar-dns-evade.sh redonmaster.xyz
+```
+
+No abre puertos nuevos; al final imprime las líneas que hay que añadir a Caddy o nginx para exponer `/dns-query`. Se puede volver a ejecutar para actualizar.
