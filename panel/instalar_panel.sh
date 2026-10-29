@@ -172,6 +172,8 @@ server {
     location = /api/v1/register { limit_req zone=panel_api burst=10 nodelay; include /etc/nginx/8kpro-proxy.conf; }
     location /api/             { limit_req zone=panel_api burst=60 nodelay; include /etc/nginx/8kpro-proxy.conf; }
     location = /admin/login    { limit_req zone=panel_login burst=5 nodelay; include /etc/nginx/8kpro-proxy.conf; }
+    # DNS por HTTPS (DoH) del DNS anti-bloqueos, si está instalado (vps/instalar-dns-evade.sh): Blocky en 127.0.0.1:4053
+    location = /dns-query      { proxy_pass http://127.0.0.1:4053; proxy_set_header Host \$host; proxy_set_header X-Forwarded-For \$remote_addr; }
     location /                 { include /etc/nginx/8kpro-proxy.conf; }
 }
 EOF
