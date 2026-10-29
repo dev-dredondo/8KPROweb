@@ -1,8 +1,8 @@
 {
-  "versionCode": 1010005,
-  "versionName": "1.0.5",
-  "apk": "https://raw.githubusercontent.com/dev-dredondo/8KPROweb/apk/8KPROweb-1.0.5.apk",
-  "sha256": "9d7ad32200b3cddef97eb01ea47b683d7daa4b1f6d72b34cc1da50e8f84f4270",
+  "versionCode": 1010006,
+  "versionName": "1.0.6",
+  "apk": "https://raw.githubusercontent.com/dev-dredondo/8KPROweb/apk/8KPROweb-1.0.6.apk",
+  "sha256": "b63578cfb4e4479489eddc3cd0f3e72822699fc5fa321767d007c7f744222aee",
   "size": 86095100,
-  "notes": "- Nuevo DNS anti-bloqueos: la app usa el DNS que se elige en el panel y lo comprueba cada vez que se abre"
+  "notes": "- Mejoras internas para el seguimiento de los canales"
 }
