@@ -77,8 +77,9 @@ val appModule = module {
     single { tv.own.owntv.features.login.PanelClient(get()) }
     // 8K PRO: the backup provider's channels, only ever offered when a channel stops working.
     single { tv.own.owntv.brand.BackupCatalog(get()) }
-    single { tv.own.owntv.features.login.BrandAccount(get(), get(), get()) }
-    single { tv.own.owntv.features.login.PanelSync(get(), get(), get(), get()) }
+    single { tv.own.owntv.features.login.BrandAccount(get(), get(), get(), get()) }
+    single { tv.own.owntv.features.login.BrandPlaylists(get(), get(), get(), get(), get(), get()) }
+    single { tv.own.owntv.features.login.PanelSync(get(), get(), get(), get(), get()) }
     // 8K PRO: what this device is watching, for the panel's live view.
     single { tv.own.owntv.features.login.PlaybackStats(get(), get()) }
     // 8K PRO: automatic updates from version.json on the repository's apk branch.

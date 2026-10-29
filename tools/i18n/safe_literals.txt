@@ -248,19 +248,32 @@
 1	preference-key	app/src/main/java/tv/own/owntv/features/login/BackupStore.kt	user
 2	empty	app/src/main/java/tv/own/owntv/features/login/BrandAccount.kt	\0
 1	uri	app/src/main/java/tv/own/owntv/features/login/BrandAccount.kt	&
+1	technical	app/src/main/java/tv/own/owntv/features/login/BrandAccount.kt	8K PRO
 1	uri	app/src/main/java/tv/own/owntv/features/login/BrandAccount.kt	?$it
 1	log	app/src/main/java/tv/own/owntv/features/login/BrandAccount.kt	BrandAccount
+1	log	app/src/main/java/tv/own/owntv/features/login/BrandAccount.kt	M3U playlist not applied
 2	protocol	app/src/main/java/tv/own/owntv/features/login/BrandAccount.kt	UTF-8
-1	log	app/src/main/java/tv/own/owntv/features/login/BrandAccount.kt	brand_account_changed
+3	technical	app/src/main/java/tv/own/owntv/features/login/BrandAccount.kt	brand_account_changed
 1	log	app/src/main/java/tv/own/owntv/features/login/BrandAccount.kt	guide feeds not updated
 1	json	app/src/main/java/tv/own/owntv/features/login/BrandAccount.kt	password
 1	json	app/src/main/java/tv/own/owntv/features/login/BrandAccount.kt	password=
+1	log	app/src/main/java/tv/own/owntv/features/login/BrandAccount.kt	playlist not switched to Xtream
 1	log	app/src/main/java/tv/own/owntv/features/login/BrandAccount.kt	playlists not updated
 1	json	app/src/main/java/tv/own/owntv/features/login/BrandAccount.kt	username
 1	json	app/src/main/java/tv/own/owntv/features/login/BrandAccount.kt	username=
+1	technical	app/src/main/java/tv/own/owntv/features/login/BrandPlaylists.kt	BrandPlaylists
+1	technical	app/src/main/java/tv/own/owntv/features/login/BrandPlaylists.kt	M3U
+1	technical	app/src/main/java/tv/own/owntv/features/login/BrandPlaylists.kt	brand_playlist_added
+1	technical	app/src/main/java/tv/own/owntv/features/login/BrandPlaylists.kt	brand_playlist_changed
+1	preference-key	app/src/main/java/tv/own/owntv/features/login/BrandPlaylists.kt	brand_playlists
+1	log	app/src/main/java/tv/own/owntv/features/login/BrandPlaylists.kt	panel playlist added
+1	log	app/src/main/java/tv/own/owntv/features/login/BrandPlaylists.kt	panel playlists not applied
+1	preference-key	app/src/main/java/tv/own/owntv/features/login/BrandPlaylists.kt	panel_to_source
+1	technical	app/src/main/java/tv/own/owntv/features/login/BrandPlaylists.kt	{}
 1	empty	app/src/main/java/tv/own/owntv/features/login/LoginScreen.kt	\0
 1	technical	app/src/main/java/tv/own/owntv/features/login/LoginScreen.kt	· · ·
 3	empty	app/src/main/java/tv/own/owntv/features/login/LoginViewModel.kt	\0
+2	empty	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	\0
 1	url	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	${BrandConfig.panelUrl}/api/v1/config
 1	url	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	${BrandConfig.panelUrl}/api/v1/register
 1	url	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	${BrandConfig.panelUrl}/api/v1/stats
@@ -283,18 +296,24 @@
 1	protocol	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	disabled
 1	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	dns
 1	log	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	empty chain
+1	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	epg_url
 1	protocol	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	expired
 1	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	hardware_id
+1	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	http
+1	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	id
 1	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	manufacturer
 1	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	model
+1	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	name
 1	log	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	panel certificate does not match the pinned key
 2	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	password
+1	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	playlists
 1	log	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	register failed: ${e.javaClass.simpleName}
 2	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	server_url
 1	log	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	stats failed: ${e.javaClass.simpleName}
 1	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	status
 1	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	token
 1	protocol	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	unknown
+1	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	url
 2	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	username
 1	log	app/src/main/java/tv/own/owntv/features/login/PanelSync.kt	PanelSync
 1	log	app/src/main/java/tv/own/owntv/features/login/PanelSync.kt	account changed on the panel, updating
@@ -322,7 +341,7 @@
 1	json	app/src/main/java/tv/own/owntv/features/login/PlaybackStats.kt	video
 1	json	app/src/main/java/tv/own/owntv/features/login/PlaybackStats.kt	vod
 1	json	app/src/main/java/tv/own/owntv/features/login/PlaybackStats.kt	watch_s
-4	empty	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	\0
+6	empty	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	\0
 1	technical	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	%02x
 1	preference-key	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	0
 2	preference-key	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	1
@@ -332,15 +351,19 @@
 1	technical	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	AndroidKeyStore
 1	technical	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	SHA-256
 1	log	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	SessionStore
+1	preference-key	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	account_type
 1	file-path	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	brand_session
 1	technical	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	brand_session_key
 1	preference-key	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	device_id
 1	preference-key	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	device_token_enc
+1	preference-key	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	epg_url
+1	preference-key	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	m3u
 1	preference-key	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	password_enc
 1	preference-key	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	server_url
 1	log	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	stored password unreadable, signing out
 1	preference-key	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	username
 1	preference-key	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	via_panel
+1	preference-key	app/src/main/java/tv/own/owntv/features/login/SessionStore.kt	xtream
 1	empty	app/src/main/java/tv/own/owntv/features/login/XtreamAuthenticator.kt	\0
 1	protocol	app/src/main/java/tv/own/owntv/features/login/XtreamAuthenticator.kt	Active
 1	protocol	app/src/main/java/tv/own/owntv/features/login/XtreamAuthenticator.kt	Expired

@@ -19,11 +19,36 @@ import java.util.concurrent.TimeUnit
 import javax.net.ssl.SSLContext
 import javax.net.ssl.X509TrustManager
 
+/** 8K PRO: an M3U playlist the panel assigned to this device ([id] is the panel's, stable across edits). */
+data class BrandPlaylist(val id: Long, val name: String, val url: String, val epgUrl: String)
+
 /** What the activation panel says about this device. */
 sealed interface PanelStatus {
     /** Waiting for activation; [code] is what the TV shows. */
     data class Pending(val code: String) : PanelStatus
-    data class Active(val code: String, val serverUrl: String, val username: String, val password: String) : PanelStatus
+    data class Active(
+        val code: String,
+        val serverUrl: String,
+        val username: String,
+        val password: String,
+        /**
+         * 8K PRO: the M3U playlists the panel gives this device, as providers next to the Xtream account
+         * (or on their own). With no Xtream account the first one is the device's account.
+         */
+        val playlists: List<BrandPlaylist> = emptyList(),
+    ) : PanelStatus {
+        /** No Xtream account: the device signs in with its first M3U playlist. */
+        val isM3u: Boolean get() = (serverUrl.isBlank() || username.isBlank()) && playlists.isNotEmpty()
+        val m3uUrl: String get() = if (isM3u) playlists.first().url else ""
+        val epgUrl: String get() = if (isM3u) playlists.first().epgUrl else ""
+
+        /** The playlists added next to the account (all of them, or all but the first when that is the account). */
+        val extraPlaylists: List<BrandPlaylist> get() = if (isM3u) playlists.drop(1) else playlists
+
+        /** The session this answer signs the device into. */
+        fun toSession(): Session =
+            if (isM3u) Session.forM3u(code, m3uUrl, epgUrl) else Session(username, password, serverUrl, viaPanel = true)
+    }
     data class Disabled(val code: String) : PanelStatus
     data class Expired(val code: String) : PanelStatus
     /** The panel does not know this device (deleted from the panel): register again for a new code. */
@@ -118,6 +143,14 @@ class PanelClient(
                         serverUrl = o.optString("server_url").trim().trimEnd('/'),
                         username = o.optString("username"),
                         password = o.optString("password"),
+                        playlists = o.optJSONArray("playlists")?.let { arr ->
+                            (0 until arr.length()).mapNotNull { i ->
+                                val p = arr.optJSONObject(i) ?: return@mapNotNull null
+                                val url = p.optString("url").trim()
+                                if (!url.startsWith("http")) return@mapNotNull null
+                                BrandPlaylist(p.optLong("id"), p.optString("name").trim(), url, p.optString("epg_url").trim())
+                            }
+                        }.orEmpty(),
                     )
                     "disabled" -> PanelStatus.Disabled(code)
                     "expired" -> PanelStatus.Expired(code)

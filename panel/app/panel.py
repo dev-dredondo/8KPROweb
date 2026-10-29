@@ -42,7 +42,7 @@ from http.cookies import SimpleCookie
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, quote, urlparse
 
-PANEL_VERSION = "1.11"
+PANEL_VERSION = "1.12"
 CONFIG_PATH = os.environ.get("PANEL_CONFIG", "/etc/8kpro-panel/config.json")
 DB_PATH = os.environ.get("PANEL_DB", "/var/lib/8kpro-panel/panel.db")
 LISTEN = (os.environ.get("PANEL_HOST", "127.0.0.1"), int(os.environ.get("PANEL_PORT", "8080")))
@@ -238,6 +238,14 @@ def geo_available() -> bool:
 # ------------------------------------------------------------------ base de datos
 
 SCHEMA = """
+CREATE TABLE IF NOT EXISTS device_playlists (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    device_id INTEGER NOT NULL,
+    name TEXT,
+    url TEXT NOT NULL,
+    epg_url TEXT,
+    position INTEGER NOT NULL DEFAULT 0
+);
 CREATE TABLE IF NOT EXISTS devices (
     id            INTEGER PRIMARY KEY AUTOINCREMENT,
     device_id     TEXT NOT NULL UNIQUE,
@@ -379,6 +387,14 @@ def valid_ip(text: str) -> str | None:
         return str(ipaddress.ip_address(text.strip()))
     except ValueError:
         return None
+
+
+# v1.12: listas M3U de cada dispositivo (además de su cuenta Xtream, o sin ella).
+M3U_SLOTS_FREE = 2  # filas vacías que ofrece la ficha para añadir listas nuevas
+
+
+def playlists_of(conn, device_id: int) -> list:
+    return conn.execute("SELECT * FROM device_playlists WHERE device_id = ? ORDER BY position, id", (device_id,)).fetchall()
 
 
 def new_code(conn) -> str:
@@ -645,7 +661,7 @@ class Handler(BaseHTTPRequestHandler):
             if path == "/admin/api/map":
                 return self.json(200, {"points": self.map_points()})
             if path.startswith("/admin/device/"):
-                return self.page_device(path.rsplit("/", 1)[-1])
+                return self.page_device(path.rsplit("/", 1)[-1], q.get("msg", ""))
             return self.send(404, b"Not found", "text/plain")
         except Exception as exc:  # nunca filtrar trazas al cliente
             sys.stderr.write(f"ERROR GET {path}: {exc!r}\n")
@@ -728,11 +744,16 @@ class Handler(BaseHTTPRequestHandler):
                          (now(), self.client_ip(), version, valid_hw(self.headers.get("X-Hardware-Id")), row["id"]))
             status = effective_status(row)
             server = row["server_url"] or get_setting(conn, "default_server_url")
-            if status == "active" and not (server and row["username"] and row["password"]):
+            xtream_ok = bool(server and row["username"] and row["password"])
+            lists = playlists_of(conn, row["id"])
+            if status == "active" and not (xtream_ok or lists):
                 status = "pending"
             out = {"status": status, "code": row["code"], "dns": app_dns(conn)}
             if status == "active":
-                out.update(server_url=server, username=row["username"], password=row["password"])
+                if xtream_ok:
+                    out.update(server_url=server, username=row["username"], password=row["password"])
+                out["playlists"] = [{"id": p["id"], "name": p["name"] or f"Lista {i + 1}", "url": p["url"],
+                                     "epg_url": p["epg_url"] or ""} for i, p in enumerate(lists)]
                 backup = backup_for(conn, row)
                 if backup:
                     out["backup"] = backup
@@ -1147,13 +1168,14 @@ setInterval(()=>fetch("/admin/api/map",{{credentials:"same-origin"}}).then(r=>r.
         with db() as conn:
             rows = conn.execute(sql, args).fetchall()
             counts = {r[0]: r[1] for r in conn.execute("SELECT status, COUNT(*) FROM devices GROUP BY status")}
+            npl = {r[0]: r[1] for r in conn.execute("SELECT device_id, COUNT(*) FROM device_playlists GROUP BY device_id")}
         trs = []
         for r in rows:
             st = effective_status(r)
             trs.append(f"""<tr><td><a class="code" href="/admin/device/{r['id']}">{e(r['code'])}</a></td>
 <td><span class="pill {st}">{STATUS_LABEL[st]}</span></td>
 <td>{e(r['manufacturer'])} {e(r['model'])}<br><small>Android {e(r['android'])} · app {e(r['app_version'])}</small></td>
-<td>{e(r['username']) or '—'}{((' <span class="pill active" title="Backup activado">backup</span>' if r['backup_enabled'] else ' <span class="pill disabled" title="Backup configurado pero desactivado">backup off</span>') if (r['backup_server_url'] and r['backup_username'] and r['backup_password']) else '')}<br><small>{e(r['notes'])}</small></td>
+<td>{e(r['username']) or '—'}{(f' <span class="pill active">M3U ×{npl[r["id"]]}</span>' if npl.get(r["id"]) else '')}{((' <span class="pill active" title="Backup activado">backup</span>' if r['backup_enabled'] else ' <span class="pill disabled" title="Backup configurado pero desactivado">backup off</span>') if (r['backup_server_url'] and r['backup_username'] and r['backup_password']) else '')}<br><small>{e(r['notes'])}</small></td>
 <td>{fmt_time(r['last_seen'])}<br><small>{e(r['ip'])}{(' · ' + e(geo_label(r['ip']))) if r['ip'] else ''}</small></td>
 <td>{fmt_time(r['expires_at'])}</td></tr>""")
         table = "".join(trs) or '<tr><td colspan="6"><small>No hay dispositivos.</small></td></tr>'
@@ -1181,7 +1203,7 @@ setInterval(()=>fetch("/admin/api/map",{{credentials:"same-origin"}}).then(r=>r.
         return self.redirect(f"/admin/device/{row['id']}")
 
     # ---- admin: dispositivo
-    def page_device(self, dev_id: str):
+    def page_device(self, dev_id: str, msg: str = ""):
         if not dev_id.isdigit():
             return self.redirect("/admin")
         with db() as conn:
@@ -1191,6 +1213,13 @@ setInterval(()=>fetch("/admin/api/map",{{credentials:"same-origin"}}).then(r=>r.
             return self.redirect("/admin")
         with db() as conn:
             plays = conn.execute("SELECT * FROM plays WHERE device_id = ? ORDER BY updated_at DESC LIMIT 20", (r["id"],)).fetchall()
+            lists = playlists_of(conn, r["id"])
+        slots = [(p["id"], p["name"] or "", p["url"], p["epg_url"] or "") for p in lists] + [("", "", "", "")] * M3U_SLOTS_FREE
+        pl_rows = "".join(f"""<div class="card" style="margin:10px 0;padding:12px"><input type="hidden" name="pl_id_{i}" value="{pid}">
+<div class="row"><div><label>Nombre (lo verá el usuario)</label><input name="pl_name_{i}" value="{e(name)}" placeholder="Lista {i + 1}"></div>
+<div><label>URL de la lista M3U</label><input name="pl_url_{i}" value="{e(url)}" placeholder="http://servidor/lista.m3u" autocomplete="off"></div></div>
+<label>URL de la guía EPG (XMLTV, opcional)</label><input name="pl_epg_{i}" value="{e(epg)}" placeholder="http://servidor/guia.xml" autocomplete="off"></div>"""
+                          for i, (pid, name, url, epg) in enumerate(slots))
         st = effective_status(r)
         own_dns = r["server_url"] or ""
         place = geo_label(r["ip"])
@@ -1206,17 +1235,23 @@ setInterval(()=>fetch("/admin/api/map",{{credentials:"same-origin"}}).then(r=>r.
         exp = datetime.fromtimestamp(int(r["expires_at"]), TZ).strftime("%Y-%m-%d") if r["expires_at"] else ""
         status_opts = "".join(f'<option value="{k}"{" selected" if r["status"] == k else ""}>{v}</option>'
                               for k, v in [("active", "Activo"), ("pending", "Pendiente"), ("disabled", "Desactivado")])
-        return self.html(layout(r["code"], f"""<p><a href="/admin">← Dispositivos</a></p>
+        flash = f'<p class="flash">{e(msg)}</p>' if msg else ""
+        return self.html(layout(r["code"], f"""<p><a href="/admin">← Dispositivos</a></p>{flash}
 <div class="card"><h2 style="margin-top:0">Dispositivo <span class="code">{e(r['code'])}</span> <span class="pill {st}">{STATUS_LABEL[st]}</span></h2>
 <p><small>{e(r['manufacturer'])} {e(r['model'])} · Android {e(r['android'])} · app {e(r['app_version'])}<br>
 Registrado {fmt_time(r['created_at'])} · Última conexión {fmt_time(r['last_seen'])} desde {e(r['ip'])}{(' (' + e(place) + ')') if place else ''}</small></p>
 {now_watching}
 <form method="post" action="/admin/device/{r['id']}">
 <label>Estado</label><select name="status">{status_opts}</select>
-<div class="row"><div><label>Usuario</label><input name="username" value="{e(r['username'])}" required autocomplete="off"></div>
-<div><label>Contraseña</label><input name="password" value="{e(r['password'])}" required autocomplete="off"></div></div>
+<h3 style="margin:22px 0 0">Cuenta Xtream Codes <small style="font-weight:400">(vacía si solo usa listas M3U)</small></h3>
+<div class="row"><div><label>Usuario</label><input name="username" value="{e(r['username'])}" autocomplete="off"></div>
+<div><label>Contraseña</label><input name="password" value="{e(r['password'])}" autocomplete="off"></div></div>
 <label>DNS propia de este dispositivo (vacío = DNS global: {e(default_dns) or 'sin configurar'})</label>
 <input name="server_url" value="{e(own_dns)}" placeholder="vacío = usar la DNS global">
+<h3 style="margin:22px 0 0">Listas M3U <small style="font-weight:400">(opcional, se suman a la cuenta Xtream)</small></h3>
+<p style="margin:4px 0 0"><small>Cada lista aparece en la app como un proveedor más, con sus canales, películas y guía.
+Para quitar una lista, borra su URL. Para añadir más de {M3U_SLOTS_FREE} a la vez, guarda y vuelve a entrar.</small></p>
+<input type="hidden" name="pl_count" value="{len(slots)}">{pl_rows}
 <h3 style="margin:22px 0 0">Proveedor de backup <small style="font-weight:400">(opcional)</small></h3>
 <p style="margin:4px 0 0"><small>Si un canal se corta y no vuelve, la app ofrece canales de nombre parecido de este proveedor.
 Sus canales no aparecen nunca en las listas de la app. Déjalo vacío para no usar backup.</small></p>
@@ -1242,7 +1277,25 @@ Sus canales no aparecen nunca en las listas de la app. Déjalo vacío para no us
                 exp_ts = int(datetime.strptime(f["expires"].strip(), "%Y-%m-%d").replace(hour=23, minute=59, tzinfo=TZ).timestamp())
             except ValueError:
                 exp_ts = None
+        lists = []
+        for i in range(min(as_int(f.get("pl_count"), 0, 50) or 0, 50)):
+            url = f.get(f"pl_url_{i}", "").strip()
+            epg = f.get(f"pl_epg_{i}", "").strip()
+            for u in (url, epg):
+                if u and not u.lower().startswith(("http://", "https://")):
+                    return self.redirect(f"/admin/device/{dev_id}?msg=" + quote("Las URL de las listas y de la guía deben empezar por http:// o https://"))
+            lists.append((f.get(f"pl_id_{i}", ""), clip(f.get(f"pl_name_{i}", "").strip(), 60), clip(url, 2000), clip(epg, 2000)))
         with _db_lock, db() as conn:
+            for pos, (pid, name, url, epg) in enumerate(lists):
+                if pid.isdigit():
+                    if url:
+                        conn.execute("UPDATE device_playlists SET name=?, url=?, epg_url=?, position=? WHERE id=? AND device_id=?",
+                                     (name or None, url, epg or None, pos, int(pid), int(dev_id)))
+                    else:
+                        conn.execute("DELETE FROM device_playlists WHERE id=? AND device_id=?", (int(pid), int(dev_id)))
+                elif url:
+                    conn.execute("INSERT INTO device_playlists (device_id, name, url, epg_url, position) VALUES (?,?,?,?,?)",
+                                 (int(dev_id), name or None, url, epg or None, pos))
             bk_url = normalize_url(f.get("backup_server_url", ""))
             bk_user = f.get("backup_username", "").strip() if bk_url else ""
             conn.execute("UPDATE devices SET status=?, server_url=?, username=?, password=?, expires_at=?, notes=?,"
@@ -1257,6 +1310,7 @@ Sus canales no aparecen nunca en las listas de la app. Déjalo vacío para no us
         if dev_id.isdigit():
             with _db_lock, db() as conn:
                 conn.execute("DELETE FROM plays WHERE device_id = ?", (int(dev_id),))
+                conn.execute("DELETE FROM device_playlists WHERE device_id = ?", (int(dev_id),))
                 conn.execute("DELETE FROM devices WHERE id = ?", (int(dev_id),))
         return self.redirect("/admin?msg=" + quote("Dispositivo borrado"))
 

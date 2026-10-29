@@ -129,7 +129,7 @@ class LoginViewModel(
                     PanelStatus.Unreachable -> setActivation(ActivationUi.Offline)
                     is PanelStatus.Active -> {
                         setActivation(ActivationUi.Signing(status.code))
-                        val error = signIn(status.serverUrl, status.username, status.password, viaPanel = true)
+                        val error = if (status.isM3u) signInM3u(status) else signIn(status.serverUrl, status.username, status.password, viaPanel = true)
                         if (error == null) return@launch // signed in: MainActivity leaves this screen
                         setActivation(ActivationUi.BadAccount(status.code, error))
                         delay(BAD_ACCOUNT_RETRY_MS) // the admin may fix the account on the panel
@@ -145,13 +145,25 @@ class LoginViewModel(
 
     // ------------------------------------------------------------- shared
 
+    /**
+     * 8K PRO: an M3U playlist assigned on the panel. There is no account to check: the playlist is
+     * downloaded by the import that follows, which says so if the address does not work.
+     */
+    private suspend fun signInM3u(status: PanelStatus.Active): LoginError? {
+        val target = status.toSession()
+        account.apply(target, previous = null, previousServer = sessionStore.lastServer() ?: BrandConfig.sessionServerUrl)
+        sessionStore.save(target)
+        return null
+    }
+
     /** Checks the account on [server]; on success points the device at it and saves the session. */
     private suspend fun signIn(server: String, user: String, pass: String, viaPanel: Boolean): LoginError? =
         when (val result = authenticator.login(user, pass, server)) {
             is LoginResult.Ok -> {
                 val previous = sessionStore.lastServer() ?: BrandConfig.sessionServerUrl
-                account.apply(server, user, pass, previous)
-                sessionStore.save(Session(user, pass, server, viaPanel))
+                val target = Session(user, pass, server, viaPanel)
+                account.apply(target, previous = null, previousServer = previous)
+                sessionStore.save(target)
                 polling?.takeIf { !viaPanel }?.cancel()
                 null
             }

@@ -18,15 +18,29 @@ import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
 
 /**
- * The signed-in Xtream account. [serverUrl] is the server it belongs to (the panel can change it);
+ * The signed-in account. [serverUrl] is the server it belongs to (the panel can change it);
  * [viaPanel] marks an account handed over by the activation panel, which the app re-checks at launch.
+ *
+ * 8K PRO: an account can also be an M3U playlist assigned on the panel ([m3u]). Then [password] holds
+ * the playlist's address (sealed like a password: such addresses usually carry credentials), [serverUrl]
+ * is that same address, [username] is the device's code and [epgUrl] its optional guide.
  */
 data class Session(
     val username: String,
     val password: String,
     val serverUrl: String = tv.own.owntv.brand.BrandConfig.serverUrl,
     val viaPanel: Boolean = false,
-)
+    val m3u: Boolean = false,
+    val epgUrl: String = "",
+) {
+    /** The M3U playlist's address, or "" for an Xtream account. */
+    val m3uUrl: String get() = if (m3u) password else ""
+
+    companion object {
+        fun forM3u(code: String, m3uUrl: String, epgUrl: String) =
+            Session(username = code, password = m3uUrl, serverUrl = m3uUrl, viaPanel = true, m3u = true, epgUrl = epgUrl)
+    }
+}
 
 /**
  * This install's identity on the activation panel: a random id and a secret only this install knows, plus
@@ -83,7 +97,9 @@ class SessionStore(context: Context) {
             ?: return@map SessionState.LoggedOut
         val server = prefs[KEY_SERVER]?.takeIf { it.isNotBlank() } ?: tv.own.owntv.brand.BrandConfig.serverUrl
         tv.own.owntv.brand.BrandConfig.sessionServerUrl = server
-        SessionState.LoggedIn(Session(user, password, server, prefs[KEY_VIA_PANEL] == "1"))
+        SessionState.LoggedIn(
+            Session(user, password, server, prefs[KEY_VIA_PANEL] == "1", prefs[KEY_TYPE] == TYPE_M3U, prefs[KEY_EPG].orEmpty()),
+        )
     }
 
     suspend fun current(): Session? = (state.first() as? SessionState.LoggedIn)?.session
@@ -95,6 +111,8 @@ class SessionStore(context: Context) {
             it[KEY_PASSWORD] = sealed
             it[KEY_SERVER] = session.serverUrl
             it[KEY_VIA_PANEL] = if (session.viaPanel) "1" else "0"
+            it[KEY_TYPE] = if (session.m3u) TYPE_M3U else TYPE_XTREAM
+            it[KEY_EPG] = session.epgUrl
         }
         tv.own.owntv.brand.BrandConfig.sessionServerUrl = session.serverUrl
     }
@@ -105,7 +123,7 @@ class SessionStore(context: Context) {
      */
     suspend fun clear() {
         store.edit {
-            it.remove(KEY_USERNAME); it.remove(KEY_PASSWORD); it.remove(KEY_VIA_PANEL)
+            it.remove(KEY_USERNAME); it.remove(KEY_PASSWORD); it.remove(KEY_VIA_PANEL); it.remove(KEY_TYPE); it.remove(KEY_EPG)
         }
     }
 
@@ -143,6 +161,11 @@ class SessionStore(context: Context) {
         val KEY_PASSWORD = stringPreferencesKey("password_enc")
         val KEY_SERVER = stringPreferencesKey("server_url")
         val KEY_VIA_PANEL = stringPreferencesKey("via_panel")
+        /** "xtream" or "m3u" (8K PRO: the panel can assign an M3U playlist instead of an Xtream account). */
+        val KEY_TYPE = stringPreferencesKey("account_type")
+        val KEY_EPG = stringPreferencesKey("epg_url")
+        const val TYPE_XTREAM = "xtream"
+        const val TYPE_M3U = "m3u"
         val KEY_DEVICE_ID = stringPreferencesKey("device_id")
         val KEY_DEVICE_TOKEN = stringPreferencesKey("device_token_enc")
     }

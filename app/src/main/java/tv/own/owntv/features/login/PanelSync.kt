@@ -18,6 +18,8 @@ class PanelSync(
     private val account: BrandAccount,
     /** For the DNS servers the panel chooses (see [tv.own.owntv.brand.BrandDns]). */
     private val settings: tv.own.owntv.core.settings.SettingsRepository,
+    /** The panel's M3U playlists, added as providers next to the account. */
+    private val playlists: BrandPlaylists,
 ) {
     @Volatile
     private var lastCheck = 0L
@@ -36,13 +38,14 @@ class PanelSync(
         if (status != PanelStatus.Unreachable) tv.own.owntv.brand.BrandDns.apply(settings)
         when (status) {
             is PanelStatus.Active -> {
-                val changed = status.serverUrl != session.serverUrl ||
-                    status.username != session.username || status.password != session.password
-                if (changed && status.serverUrl.isNotBlank()) {
+                // New DNS, credentials, M3U address or guide — or a switch between Xtream and M3U.
+                val target = status.toSession()
+                if (target != session && target.serverUrl.isNotBlank()) {
                     Log.i(TAG, "account changed on the panel, updating")
-                    account.apply(status.serverUrl, status.username, status.password, session.serverUrl)
-                    sessionStore.save(Session(status.username, status.password, status.serverUrl, viaPanel = true))
+                    account.apply(target, session)
+                    sessionStore.save(target)
                 }
+                playlists.sync(status.extraPlaylists)
             }
             is PanelStatus.Disabled, is PanelStatus.Expired, PanelStatus.Unknown -> {
                 Log.i(TAG, "device no longer active on the panel, signing out")
