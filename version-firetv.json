@@ -1,8 +1,8 @@
 {
-  "versionCode": 1010004,
-  "versionName": "1.0.4",
-  "apk": "https://raw.githubusercontent.com/dev-dredondo/8KPROweb/apk/8KPROweb_FireTV-1.0.4.apk",
-  "sha256": "bee0460e40366b4f8fd4c41234e7a202489abfe6202d4dc5ed27f5701499a106",
-  "size": 34068671,
-  "notes": "- Versión para Fire TV antiguos (Fire OS 6)\n- Un canal caído ya no se abandona: la app lo vuelve a abrir sola hasta que funcione\n- Canales de reserva, DNS propias y el mismo código al reinstalar"
+  "versionCode": 1010005,
+  "versionName": "1.0.5",
+  "apk": "https://raw.githubusercontent.com/dev-dredondo/8KPROweb/apk/8KPROweb_FireTV-1.0.5.apk",
+  "sha256": "eb84a86c7d2ffd3fb4d28ae6dd753890cee2c76028c24407c9edc719ea9f2043",
+  "size": 34068675,
+  "notes": "- Nuevo DNS anti-bloqueos: la app usa el DNS que se elige en el panel y lo comprueba cada vez que se abre"
 }
