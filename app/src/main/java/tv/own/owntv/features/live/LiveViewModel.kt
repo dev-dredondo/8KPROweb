@@ -1545,6 +1545,7 @@ class LiveViewModel(
         _catchupActive.value = false // tuning live ends any archive playback the HUD was showing
         // Core routes it (DRM, the pin, a learned panel refusal, the playlist, the setting), arms the
         // ladder and starts the engine — the same code the phone runs.
+        tv.own.owntv.features.login.LiveStreamServer.note(channel.streamUrl)
         live.start(channel, getSource(channel.sourceId))
         recordLiveHistory(channel)
     }
@@ -1587,6 +1588,7 @@ class LiveViewModel(
             clearTimeshift()
             _catchupActive.value = false
             // No source: the URL is played as it is, with none of the main account's overrides.
+            tv.own.owntv.features.login.LiveStreamServer.note(url, backup = true)
             live.start(backup, null, resolved = url)
         }
     }
@@ -1598,7 +1600,10 @@ class LiveViewModel(
     fun retryLive() {
         val channel = _previewChannel.value ?: return
         if (channel.id <= BACKUP_ID_BASE || _catchupActive.value) return
-        live.launch { live.start(channel, getSource(channel.sourceId)) }
+        live.launch {
+            tv.own.owntv.features.login.LiveStreamServer.note(channel.streamUrl)
+            live.start(channel, getSource(channel.sourceId))
+        }
     }
 
     /** Back from a backup channel to the real one it stood in for (the backup failed too). */

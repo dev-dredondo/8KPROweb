@@ -42,7 +42,7 @@ from http.cookies import SimpleCookie
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, quote, urlparse
 
-PANEL_VERSION = "1.10"
+PANEL_VERSION = "1.11"
 CONFIG_PATH = os.environ.get("PANEL_CONFIG", "/etc/8kpro-panel/config.json")
 DB_PATH = os.environ.get("PANEL_DB", "/var/lib/8kpro-panel/panel.db")
 LISTEN = (os.environ.get("PANEL_HOST", "127.0.0.1"), int(os.environ.get("PANEL_PORT", "8080")))
@@ -304,6 +304,12 @@ def init_db() -> None:
         if "hw_id" not in cols:  # v1.8: id del aparato que sobrevive a desinstalar la app (mismo código al reinstalar)
             conn.execute("ALTER TABLE devices ADD COLUMN hw_id TEXT")
         conn.execute("CREATE INDEX IF NOT EXISTS idx_devices_hw ON devices(hw_id)")
+        # v1.11: a qué servidor está conectada cada reproducción (y si es el de reserva).
+        pcols = {r[1] for r in conn.execute("PRAGMA table_info(plays)")}
+        if "server" not in pcols:
+            conn.execute("ALTER TABLE plays ADD COLUMN server TEXT")
+        if "backup" not in pcols:
+            conn.execute("ALTER TABLE plays ADD COLUMN backup INTEGER NOT NULL DEFAULT 0")
 
 
 def valid_hw(value) -> str | None:
@@ -752,6 +758,8 @@ class Handler(BaseHTTPRequestHandler):
                   as_int(data.get("buffering_count"), 0, 100000) or 0, as_int(data.get("buffering_s"), 0, 7 * 86400) or 0,
                   as_int(data.get("startup_ms"), 0, 600000), clip(data.get("video"), 40), clip(data.get("engine"), 40))
         ip = self.client_ip()
+        server = clip(data.get("server"), 120) or None
+        on_backup = 1 if data.get("backup") is True else 0
         with _db_lock, db() as conn:
             row = conn.execute("SELECT id, token_hash FROM devices WHERE device_id = ?", (device_id,)).fetchone()
             if not row or not hmac.compare_digest(row["token_hash"], sha256(token)):
@@ -763,11 +771,12 @@ class Handler(BaseHTTPRequestHandler):
             if existing:
                 conn.execute("UPDATE plays SET title=?, kind=?, state=?, watch_s=?, buffering_count=?, buffering_s=?,"
                              " startup_ms=COALESCE(?, startup_ms), video=COALESCE(?, video), engine=COALESCE(?, engine),"
-                             " updated_at=?, ip=? WHERE session_id=?", (*values, t, ip, sid))
+                             " updated_at=?, ip=?, server=COALESCE(?, server), backup=? WHERE session_id=?",
+                             (*values, t, ip, server, on_backup, sid))
             else:
                 conn.execute("INSERT INTO plays (title, kind, state, watch_s, buffering_count, buffering_s, startup_ms, video, engine,"
-                             " device_id, session_id, started_at, updated_at, ip) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                             (*values, row["id"], sid, t - watch_s, t, ip))
+                             " device_id, session_id, started_at, updated_at, ip, server, backup) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                             (*values, row["id"], sid, t - watch_s, t, ip, server, on_backup))
             conn.execute("UPDATE devices SET last_seen=?, ip=? WHERE id=?", (t, ip, row["id"]))
             prune_plays(conn)
         return self.json(200, {"ok": True})
@@ -809,12 +818,13 @@ class Handler(BaseHTTPRequestHandler):
             cls = "bad" if r["buffering_count"] >= 5 else ("warn" if r["buffering_count"] else "")
             trs.append(f"""<tr><td><a class="code" href="/admin/device/{r['device_id']}">{e(r['code'])}</a><br><small>{e(r['username']) or '—'}</small></td>
 <td>{e(r['title']) or '—'}<br><small>{'Directo' if r['kind'] == 'live' else 'Película/serie'}{(' · ' + e(r['video'])) if r['video'] else ''}</small></td>
+<td>{e(r['server']) or '<small>—</small>'}{'<br><span class="pill buffering">reserva</span>' if r['backup'] else ''}</td>
 <td><span class="pill {e(r['state'])}">{STATE_LABEL.get(r['state'], e(r['state']))}</span></td>
 <td>{fmt_dur(r['watch_s'] + max(0, now() - r['updated_at']))}</td>
 <td class="{cls}">{cuts}</td>
 <td>{(str(r['startup_ms'] // 100 / 10) + ' s') if r['startup_ms'] is not None else '—'}</td>
 <td>{e(geo_label(r['ip'])) or '—'}<br><small>{e(r['ip'])}</small></td></tr>""")
-        table = "".join(trs) or '<tr><td colspan="7"><small>Nadie está viendo nada ahora mismo.</small></td></tr>'
+        table = "".join(trs) or '<tr><td colspan="8"><small>Nadie está viendo nada ahora mismo.</small></td></tr>'
         hrs = []
         for r in history:
             hrs.append(f"""<tr><td>{fmt_time(r['started_at'])}</td><td><a class="code" href="/admin/device/{r['device_id']}">{e(r['code'])}</a> <small>{e(r['username'])}</small></td>
@@ -827,7 +837,7 @@ class Handler(BaseHTTPRequestHandler):
 <div class="stat"><b>{online}</b><small>conectados en los últimos 10 min</small></div>
 <div class="stat"><b>{active}</b><small>dispositivos activos</small></div></div>
 <div class="card"><h2 style="margin-top:0">Viendo ahora</h2><p><small>Se actualiza sola cada 15 s. «Cortes» = veces que se ha parado a cargar después de empezar (y tiempo total cargando). Historial de 7 días; resumen en <a href="/admin/stats">Estadísticas</a>.</small></p>
-<div class="table-wrap"><table><tr><th>Dispositivo</th><th>Contenido</th><th>Estado</th><th>Tiempo viendo</th><th>Cortes</th><th>Arranque</th><th>Ubicación</th></tr>
+<div class="table-wrap"><table><tr><th>Dispositivo</th><th>Contenido</th><th>Servidor</th><th>Estado</th><th>Tiempo viendo</th><th>Cortes</th><th>Arranque</th><th>Ubicación</th></tr>
 {table}</table></div></div>
 <div class="card"><h2 style="margin-top:0">Últimas sesiones</h2><div class="table-wrap"><table>
 <tr><th>Inicio</th><th>Dispositivo</th><th>Contenido</th><th>Duración</th><th>Cortes</th><th>Estado</th></tr>{hist}</table></div></div>

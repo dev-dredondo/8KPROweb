@@ -299,16 +299,21 @@
 1	log	app/src/main/java/tv/own/owntv/features/login/PanelSync.kt	PanelSync
 1	log	app/src/main/java/tv/own/owntv/features/login/PanelSync.kt	account changed on the panel, updating
 1	log	app/src/main/java/tv/own/owntv/features/login/PanelSync.kt	device no longer active on the panel, signing out
-1	empty	app/src/main/java/tv/own/owntv/features/login/PlaybackStats.kt	\0
+2	empty	app/src/main/java/tv/own/owntv/features/login/PlaybackStats.kt	\0
+1	url	app/src/main/java/tv/own/owntv/features/login/PlaybackStats.kt	${u.scheme ?: "http"}://$host
+1	url	app/src/main/java/tv/own/owntv/features/login/PlaybackStats.kt	:${u.port}
+1	json	app/src/main/java/tv/own/owntv/features/login/PlaybackStats.kt	backup
 2	json	app/src/main/java/tv/own/owntv/features/login/PlaybackStats.kt	buffering
 1	json	app/src/main/java/tv/own/owntv/features/login/PlaybackStats.kt	buffering_count
 1	json	app/src/main/java/tv/own/owntv/features/login/PlaybackStats.kt	buffering_s
 1	json	app/src/main/java/tv/own/owntv/features/login/PlaybackStats.kt	engine
 1	json	app/src/main/java/tv/own/owntv/features/login/PlaybackStats.kt	error
+1	protocol	app/src/main/java/tv/own/owntv/features/login/PlaybackStats.kt	http
 1	json	app/src/main/java/tv/own/owntv/features/login/PlaybackStats.kt	kind
 1	json	app/src/main/java/tv/own/owntv/features/login/PlaybackStats.kt	live
 1	json	app/src/main/java/tv/own/owntv/features/login/PlaybackStats.kt	paused
 1	json	app/src/main/java/tv/own/owntv/features/login/PlaybackStats.kt	playing
+1	json	app/src/main/java/tv/own/owntv/features/login/PlaybackStats.kt	server
 1	json	app/src/main/java/tv/own/owntv/features/login/PlaybackStats.kt	session_id
 1	json	app/src/main/java/tv/own/owntv/features/login/PlaybackStats.kt	startup_ms
 1	json	app/src/main/java/tv/own/owntv/features/login/PlaybackStats.kt	state
