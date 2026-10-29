@@ -1,8 +1,8 @@
 {
-  "versionCode": 1010004,
-  "versionName": "1.0.4",
-  "apk": "https://raw.githubusercontent.com/dev-dredondo/8KPROweb/apk/8KPROweb-1.0.4.apk",
-  "sha256": "80b94a61b3dfa6bf43765f3ce85eef86c4268c52767679a013d1c6b45eb74657",
-  "size": 86095096,
-  "notes": "- Un canal caído ya no se abandona: la app lo vuelve a abrir sola hasta que funcione\n- Las alternativas del servidor de reserva aparecen al instante"
+  "versionCode": 1010005,
+  "versionName": "1.0.5",
+  "apk": "https://raw.githubusercontent.com/dev-dredondo/8KPROweb/apk/8KPROweb-1.0.5.apk",
+  "sha256": "9d7ad32200b3cddef97eb01ea47b683d7daa4b1f6d72b34cc1da50e8f84f4270",
+  "size": 86095100,
+  "notes": "- Nuevo DNS anti-bloqueos: la app usa el DNS que se elige en el panel y lo comprueba cada vez que se abre"
 }

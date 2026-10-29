@@ -1,6 +1,6 @@
 # 8KPROweb
 
-Versión publicada: 1.0.4
+Versión publicada: 1.0.5
 
 Descarga (Downloader): https://raw.githubusercontent.com/dev-dredondo/8KPROweb/apk/8KPROweb.apk
 
