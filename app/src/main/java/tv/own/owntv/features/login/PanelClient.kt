@@ -99,6 +99,10 @@ class PanelClient(
                 val o = JSONObject(resp.body.string())
                 val code = o.optString("code")
                 val status = o.optString("status")
+                // The DNS servers the app resolves with, chosen on the panel (applied by PanelSync).
+                runCatching {
+                    o.optJSONArray("dns")?.let { arr -> tv.own.owntv.brand.BrandDns.saveServers((0 until arr.length()).map { arr.optString(it) }) }
+                }
                 // The backup provider travels with every answer; no backup (or not active) = none on the device.
                 runCatching {
                     val b = o.optJSONObject("backup")?.takeIf { status == "active" }

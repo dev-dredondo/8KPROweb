@@ -86,6 +86,17 @@
 1	log	app/src/main/java/tv/own/owntv/brand/BrandDefaults.kt	brand defaults not applied
 1	file-path	app/src/main/java/tv/own/owntv/brand/BrandDefaults.kt	brand_defaults
 1	locale	app/src/main/java/tv/own/owntv/brand/BrandDefaults.kt	es
+2	empty	app/src/main/java/tv/own/owntv/brand/BrandDns.kt	\0
+1	technical	app/src/main/java/tv/own/owntv/brand/BrandDns.kt	,
+1	technical	app/src/main/java/tv/own/owntv/brand/BrandDns.kt	185.253.152.214
+1	technical	app/src/main/java/tv/own/owntv/brand/BrandDns.kt	85.208.114.51
+1	log	app/src/main/java/tv/own/owntv/brand/BrandDns.kt	BrandDns
+1	log	app/src/main/java/tv/own/owntv/brand/BrandDns.kt	DNS check failed: ${it.javaClass.simpleName}
+1	log	app/src/main/java/tv/own/owntv/brand/BrandDns.kt	DNS server changed
+1	regex	app/src/main/java/tv/own/owntv/brand/BrandDns.kt	^[0-9a-fA-F:]+$
+1	preference-key	app/src/main/java/tv/own/owntv/brand/BrandDns.kt	brand_dns
+1	technical	app/src/main/java/tv/own/owntv/brand/BrandDns.kt	google.com
+1	preference-key	app/src/main/java/tv/own/owntv/brand/BrandDns.kt	servers
 1	empty	app/src/main/java/tv/own/owntv/brand/BrandUpdateDialog.kt	\0
 1	empty	app/src/main/java/tv/own/owntv/brand/BrandUpdater.kt	\0
 1	technical	app/src/main/java/tv/own/owntv/brand/BrandUpdater.kt	%02x
@@ -270,6 +281,7 @@
 1	log	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	config failed: ${e.javaClass.simpleName}
 1	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	device_id
 1	protocol	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	disabled
+1	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	dns
 1	log	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	empty chain
 1	protocol	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	expired
 1	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	hardware_id
@@ -1523,10 +1535,3 @@
 1	technical	app/src/main/java/tv/own/owntv/ui/theme/Glass.kt	glassPosition
 2	empty	app/src/main/java/tv/own/owntv/ui/theme/OwnTVColors.kt	\0
 2	empty	app/src/main/java/tv/own/owntv/ui/theme/Theme.kt	\0
-2	empty	app/src/main/java/tv/own/owntv/brand/BrandDns.kt	\0
-1	technical	app/src/main/java/tv/own/owntv/brand/BrandDns.kt	51.170.52.10
-1	technical	app/src/main/java/tv/own/owntv/brand/BrandDns.kt	85.208.114.51
-1	log	app/src/main/java/tv/own/owntv/brand/BrandDns.kt	BrandDns
-1	log	app/src/main/java/tv/own/owntv/brand/BrandDns.kt	DNS check failed: ${it.javaClass.simpleName}
-1	log	app/src/main/java/tv/own/owntv/brand/BrandDns.kt	DNS server not answering, switching to the other brand server
-1	technical	app/src/main/java/tv/own/owntv/brand/BrandDns.kt	google.com

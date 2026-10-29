@@ -39,6 +39,7 @@ object BrandDefaults {
     ) {
         val prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
         val applied = prefs.getInt(KEY_VERSION, 0)
+        BrandDns.init(context)
         scope.launch {
             runCatching {
                 if (applied < 1) {
@@ -75,8 +76,8 @@ object BrandDefaults {
                     settings.setLiveEnginePreference(tv.own.owntv.core.player.EnginePreference.EXO_ONLY)
                     settings.setVodEnginePreference(tv.own.owntv.core.player.EnginePreference.EXO_ONLY)
                 }
-                // Every launch: if the brand DNS in use does not answer and the other one does, switch.
-                BrandDns.ensureWorking(settings)
+                // Every launch: the first DNS of the panel's list that answers (see PanelSync for the panel's own check).
+                BrandDns.apply(settings)
             }.onFailure { Log.w(TAG, "brand defaults not applied", it) }
         }
     }

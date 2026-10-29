@@ -42,7 +42,7 @@ from http.cookies import SimpleCookie
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, quote, urlparse
 
-PANEL_VERSION = "1.9"
+PANEL_VERSION = "1.10"
 CONFIG_PATH = os.environ.get("PANEL_CONFIG", "/etc/8kpro-panel/config.json")
 DB_PATH = os.environ.get("PANEL_DB", "/var/lib/8kpro-panel/panel.db")
 LISTEN = (os.environ.get("PANEL_HOST", "127.0.0.1"), int(os.environ.get("PANEL_PORT", "8080")))
@@ -354,6 +354,27 @@ def set_setting(conn, key: str, value: str) -> None:
                  (key, value))
 
 
+# DNS con la que la app resuelve nombres (servidor Xtream, logos, EPG...). Se envía en cada /api/v1/config;
+# la app prueba la primera y, si no responde, la segunda. Se comprueba cada vez que se abre la app.
+APP_DNS_DEFAULT = ("185.253.152.214", "85.208.114.51")
+
+
+def app_dns(conn) -> list[str]:
+    out = []
+    for i, default in enumerate(APP_DNS_DEFAULT, start=1):
+        ip = get_setting(conn, f"app_dns_{i}", default).strip()
+        if ip and ip not in out:
+            out.append(ip)
+    return out
+
+
+def valid_ip(text: str) -> str | None:
+    try:
+        return str(ipaddress.ip_address(text.strip()))
+    except ValueError:
+        return None
+
+
 def new_code(conn) -> str:
     while True:
         code = "".join(secrets.choice(CODE_ALPHABET) for _ in range(CODE_LEN))
@@ -638,6 +659,8 @@ class Handler(BaseHTTPRequestHandler):
             # CSRF: la cookie de sesión es SameSite=Strict, así que otra web no puede enviarla en un POST.
             if path == "/admin/settings":
                 return self.save_settings()
+            if path == "/admin/settings/app-dns":
+                return self.save_app_dns()
             if path.startswith("/admin/device/") and path.endswith("/delete"):
                 return self.delete_device(path.split("/")[-2])
             if path.startswith("/admin/device/"):
@@ -701,7 +724,7 @@ class Handler(BaseHTTPRequestHandler):
             server = row["server_url"] or get_setting(conn, "default_server_url")
             if status == "active" and not (server and row["username"] and row["password"]):
                 status = "pending"
-            out = {"status": status, "code": row["code"]}
+            out = {"status": status, "code": row["code"], "dns": app_dns(conn)}
             if status == "active":
                 out.update(server_url=server, username=row["username"], password=row["password"])
                 backup = backup_for(conn, row)
@@ -1231,6 +1254,8 @@ Sus canales no aparecen nunca en las listas de la app. Déjalo vacío para no us
     def page_settings(self, msg: str):
         with db() as conn:
             dns = get_setting(conn, "default_server_url")
+            app_dns_1 = get_setting(conn, "app_dns_1", APP_DNS_DEFAULT[0])
+            app_dns_2 = get_setting(conn, "app_dns_2", APP_DNS_DEFAULT[1])
             own = conn.execute("SELECT COUNT(*) FROM devices WHERE server_url IS NOT NULL AND server_url != ''").fetchone()[0]
         flash = f'<p class="flash">{e(msg)}</p>' if msg else ""
         return self.html(layout("Ajustes", f"""{flash}<div class="card"><h2 style="margin-top:0">DNS global</h2>
@@ -1240,7 +1265,28 @@ Ahora mismo {own} dispositivo(s) tienen una DNS propia y no se ven afectados.</s
 <input name="default_server_url" value="{e(dns)}" required>
 <label class="check"><input type="checkbox" name="reset_own" value="1"> Quitar también la DNS propia de todos los dispositivos</label>
 <p><button type="submit">Guardar</button></p></form></div>
+<div class="card"><h2 style="margin-top:0">DNS de la app (resolución)</h2>
+<p><small>Los servidores DNS con los que la app resuelve los nombres (servidor Xtream, logos, guía...).
+Cada vez que se abre, la app prueba la principal y, si no responde, usa la secundaria. Si ninguna responde,
+usa la DNS normal del aparato. Se aplica a todos los dispositivos la próxima vez que abran la app.</small></p>
+<form method="post" action="/admin/settings/app-dns"><label>DNS principal (IP)</label>
+<input name="app_dns_1" value="{e(app_dns_1)}" required placeholder="{APP_DNS_DEFAULT[0]}">
+<label>DNS secundaria (IP, opcional)</label>
+<input name="app_dns_2" value="{e(app_dns_2)}" placeholder="{APP_DNS_DEFAULT[1]}">
+<p><button type="submit">Guardar</button></p></form></div>
 """))
+
+    def save_app_dns(self):
+        f = self.form()
+        first = valid_ip(f.get("app_dns_1", ""))
+        raw_second = f.get("app_dns_2", "").strip()
+        second = valid_ip(raw_second) if raw_second else ""
+        if not first or second is None:
+            return self.redirect("/admin/settings?msg=" + quote("Escribe una IP válida (por ejemplo 185.253.152.214)"))
+        with _db_lock, db() as conn:
+            set_setting(conn, "app_dns_1", first)
+            set_setting(conn, "app_dns_2", second)
+        return self.redirect("/admin/settings?msg=" + quote("DNS de la app guardadas"))
 
     def save_settings(self):
         f = self.form()

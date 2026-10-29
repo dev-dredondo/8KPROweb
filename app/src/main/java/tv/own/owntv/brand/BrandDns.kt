@@ -11,36 +11,65 @@ import java.net.InetAddress
 import kotlin.random.Random
 
 /**
- * 8K PRO: the brand's custom DNS servers (Settings › Network › DNS), on by default.
+ * 8K PRO: the DNS servers the app resolves names with (Settings › Network › DNS), chosen on the panel.
  *
- * The app's DNS setting holds one server. The brand has two, so on every launch the one in use is
- * checked and, when it does not answer and the other one does, the setting is switched to the other.
- * Only while the setting is still one of these two: a DNS the user typed in, or DNS turned off, is
- * never touched.
+ * The panel sends the list with every config answer ("dns": ["185.253.152.214", "85.208.114.51"]); it is
+ * kept here so a launch without the panel still has it, with [DEFAULT_SERVERS] before the first answer.
+ * The app's DNS setting holds one server, so each time the app is opened the list is tried in order and
+ * the first one that answers is the one used. When none answers the setting is left as it is: core falls
+ * back to the system DNS when the chosen server fails.
  */
 object BrandDns {
     private const val TAG = "BrandDns"
-    val SERVERS = listOf("85.208.114.51", "51.170.52.10")
+    val DEFAULT_SERVERS = listOf("185.253.152.214", "85.208.114.51")
     private const val PORT = 53
     private const val PROBE_HOST = "google.com"
     private const val TIMEOUT_MS = 2_500
+    private const val PREFS = "brand_dns"
+    private const val KEY_SERVERS = "servers"
+
+    @Volatile
+    private var prefs: android.content.SharedPreferences? = null
+
+    /** Called once at start-up, before anything reads or writes the list. */
+    fun init(context: android.content.Context) {
+        if (prefs == null) prefs = context.applicationContext.getSharedPreferences(PREFS, android.content.Context.MODE_PRIVATE)
+    }
+
+    /** The servers to use, in order: the panel's last list, or [DEFAULT_SERVERS]. */
+    fun servers(): List<String> =
+        prefs?.getString(KEY_SERVERS, null)?.split(',')?.map { it.trim() }?.filter { it.isNotEmpty() }
+            ?.takeIf { it.isNotEmpty() } ?: DEFAULT_SERVERS
+
+    /** The list the panel sent (IP literals only); an empty or missing list keeps the current one. */
+    fun saveServers(list: List<String>) {
+        val clean = list.map { it.trim() }.filter { isIpLiteral(it) }.distinct().take(4)
+        if (clean.isEmpty()) return
+        prefs?.edit()?.putString(KEY_SERVERS, clean.joinToString(","))?.apply()
+    }
 
     /** Turns the brand DNS on with the first server (the one-time default). */
     suspend fun enableDefault(settings: SettingsRepository) {
-        settings.saveDns(enabled = true, host = SERVERS.first(), port = PORT, dohUrl = "")
+        settings.saveDns(enabled = true, host = servers().first(), port = PORT, dohUrl = "")
     }
 
-    /** On launch: keep the brand DNS on a server that answers. */
-    suspend fun ensureWorking(settings: SettingsRepository) = withContext(Dispatchers.IO) {
+    /**
+     * Each time the app is opened: the first server of the list that answers becomes the app's DNS.
+     * A DNS-over-HTTPS address typed in by the user is left alone.
+     */
+    suspend fun apply(settings: SettingsRepository) = withContext(Dispatchers.IO) {
         runCatching {
             val cfg = settings.dnsConfig.first()
-            if (!cfg.enabled || cfg.dohUrl.isNotBlank() || cfg.host !in SERVERS) return@runCatching
-            if (answers(cfg.host)) return@runCatching
-            val other = SERVERS.firstOrNull { it != cfg.host && answers(it) } ?: return@runCatching
-            Log.i(TAG, "DNS server not answering, switching to the other brand server")
-            settings.saveDns(enabled = true, host = other, port = PORT, dohUrl = "")
+            if (cfg.dohUrl.isNotBlank()) return@runCatching
+            val chosen = servers().firstOrNull { answers(it) } ?: return@runCatching
+            if (cfg.enabled && cfg.host == chosen && cfg.port == PORT) return@runCatching
+            Log.i(TAG, "DNS server changed")
+            settings.saveDns(enabled = true, host = chosen, port = PORT, dohUrl = "")
         }.onFailure { Log.w(TAG, "DNS check failed: ${it.javaClass.simpleName}") }
     }
+
+    private fun isIpLiteral(text: String): Boolean =
+        Regex("^[0-9]{1,3}(\\.[0-9]{1,3}){3}$").matches(text) || (text.contains(':') && Regex("^[0-9a-fA-F:]+$").matches(text))
 
     /** Whether [server] answers a plain A query for [PROBE_HOST]. */
     private fun answers(server: String): Boolean = runCatching {

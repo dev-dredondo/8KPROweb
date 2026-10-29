@@ -35,6 +35,7 @@
 1	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	x264
 1	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	x265
 1	app/src/main/java/tv/own/owntv/brand/BackupCatalog.kt	y
+1	app/src/main/java/tv/own/owntv/brand/BrandDns.kt	^[0-9]{1,3}(\\.[0-9]{1,3}){3}$
 1	app/src/main/java/tv/own/owntv/features/customize/BulkRenameDialogs.kt	\0
 1	app/src/main/java/tv/own/owntv/features/customize/BulkRenameDialogs.kt	ADD
 1	app/src/main/java/tv/own/owntv/features/customize/BulkRenameDialogs.kt	PREFIX

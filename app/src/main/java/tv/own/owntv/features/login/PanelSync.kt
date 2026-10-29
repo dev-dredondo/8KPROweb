@@ -16,6 +16,8 @@ class PanelSync(
     private val sessionStore: SessionStore,
     private val panel: PanelClient,
     private val account: BrandAccount,
+    /** For the DNS servers the panel chooses (see [tv.own.owntv.brand.BrandDns]). */
+    private val settings: tv.own.owntv.core.settings.SettingsRepository,
 ) {
     @Volatile
     private var lastCheck = 0L
@@ -29,7 +31,10 @@ class PanelSync(
         val session = sessionStore.current() ?: return
         if (!session.viaPanel) return
         val identity = sessionStore.identity()
-        when (val status = panel.config(identity)) {
+        val status = panel.config(identity)
+        // The panel's DNS list (saved by PanelClient): the first server that answers becomes the app's DNS.
+        if (status != PanelStatus.Unreachable) tv.own.owntv.brand.BrandDns.apply(settings)
+        when (status) {
             is PanelStatus.Active -> {
                 val changed = status.serverUrl != session.serverUrl ||
                     status.username != session.username || status.password != session.password
