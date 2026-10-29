@@ -1,8 +1,8 @@
 {
-  "versionCode": 1010006,
-  "versionName": "1.0.6",
-  "apk": "https://raw.githubusercontent.com/dev-dredondo/8KPROweb/apk/8KPROweb-1.0.6.apk",
-  "sha256": "b63578cfb4e4479489eddc3cd0f3e72822699fc5fa321767d007c7f744222aee",
+  "versionCode": 1010007,
+  "versionName": "1.0.7",
+  "apk": "https://raw.githubusercontent.com/dev-dredondo/8KPROweb/apk/8KPROweb-1.0.7.apk",
+  "sha256": "bab8ce1930f57edcdd542ccfaa82f7b66bb06811e5d26b5e0348004767b22116",
   "size": 86095100,
-  "notes": "- Mejoras internas para el seguimiento de los canales"
+  "notes": "- La TV en directo usa el reproductor MPV por defecto: buffer más estable y sin fotogramas perdidos"
 }
