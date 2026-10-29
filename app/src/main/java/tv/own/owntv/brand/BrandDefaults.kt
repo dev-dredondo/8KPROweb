@@ -22,7 +22,7 @@ object BrandDefaults {
     private const val TAG = "BrandDefaults"
     private const val PREFS = "brand_defaults"
     private const val KEY_VERSION = "applied_version"
-    private const val VERSION = 4
+    private const val VERSION = 5
 
     const val ACCENT_HEX = "#FFB95C"
     /** TMDB language code as offered in Settings › Metadata (plain "es" = Spanish, Spain). */
@@ -63,6 +63,11 @@ object BrandDefaults {
                 if (applied < 4) {
                     // 1.0.3: the brand's own DNS servers switched on (Settings › Network › DNS).
                     BrandDns.enableDefault(settings)
+                }
+                if (applied < 5) {
+                    // 1.0.7: live TV on mpv first (steadier buffer, no dropped frames), ExoPlayer as its fallback.
+                    settings.setLiveEnginePreference(tv.own.owntv.core.player.EnginePreference.MPV_FIRST)
+                    settings.setVodEnginePreference(tv.own.owntv.core.player.EnginePreference.MPV_FIRST)
                 }
                 if (applied < VERSION) prefs.edit().putInt(KEY_VERSION, VERSION).apply()
 
