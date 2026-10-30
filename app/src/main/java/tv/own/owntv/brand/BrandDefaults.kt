@@ -30,6 +30,15 @@ object BrandDefaults {
     /** Every playlist on the account's server re-syncs (channels, films, series) at least every 3 days. */
     val PLAYLIST_REFRESH = tv.own.owntv.core.settings.PlaylistRefresh(tv.own.owntv.core.settings.PlaylistAutoRefresh.MANUAL, 3)
 
+    /** Fire TV build: whether this device can load mpv's native libraries (Android 7.1 is below what it targets). */
+    private fun mpvLoads(): Boolean = runCatching {
+        System.loadLibrary("mpv")
+        System.loadLibrary("player")
+        true
+    }.onFailure { Log.w(TAG, "mpv cannot load on this device: ${it.javaClass.simpleName}") }.getOrDefault(false)
+
+    private const val KEY_FIRETV_MPV = "firetv_mpv_applied"
+
     fun apply(
         context: Context,
         scope: CoroutineScope,
@@ -75,11 +84,17 @@ object BrandDefaults {
                 if (key.isNotEmpty() && settings.currentTmdbApiKey().isBlank()) {
                     settings.setTmdbApiKey(key)
                 }
-                // Older Fire TV (Android 7.1, the Fire TV build): mpv is built for Android 8 and may not load
-                // there, so every channel, film and episode plays on ExoPlayer only.
+                // Older Fire TV (Android 7.1, the Fire TV build): mpv is built for Android 8. When its native
+                // libraries load on this device it is used like everywhere else (mpv first, ExoPlayer as the
+                // fallback); when they do not, everything plays on ExoPlayer only, checked at every launch.
                 if (android.os.Build.VERSION.SDK_INT < 26) {
-                    settings.setLiveEnginePreference(tv.own.owntv.core.player.EnginePreference.EXO_ONLY)
-                    settings.setVodEnginePreference(tv.own.owntv.core.player.EnginePreference.EXO_ONLY)
+                    val engine = if (mpvLoads()) tv.own.owntv.core.player.EnginePreference.MPV_FIRST
+                    else tv.own.owntv.core.player.EnginePreference.EXO_ONLY
+                    if (engine == tv.own.owntv.core.player.EnginePreference.EXO_ONLY || !prefs.getBoolean(KEY_FIRETV_MPV, false)) {
+                        settings.setLiveEnginePreference(engine)
+                        settings.setVodEnginePreference(engine)
+                        prefs.edit().putBoolean(KEY_FIRETV_MPV, engine == tv.own.owntv.core.player.EnginePreference.MPV_FIRST).apply()
+                    }
                 }
                 // Every launch: the first DNS of the panel's list that answers (see PanelSync for the panel's own check).
                 BrandDns.apply(settings)

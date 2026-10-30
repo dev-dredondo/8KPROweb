@@ -86,6 +86,10 @@
 1	log	app/src/main/java/tv/own/owntv/brand/BrandDefaults.kt	brand defaults not applied
 1	file-path	app/src/main/java/tv/own/owntv/brand/BrandDefaults.kt	brand_defaults
 1	locale	app/src/main/java/tv/own/owntv/brand/BrandDefaults.kt	es
+1	preference-key	app/src/main/java/tv/own/owntv/brand/BrandDefaults.kt	firetv_mpv_applied
+1	technical	app/src/main/java/tv/own/owntv/brand/BrandDefaults.kt	mpv
+1	log	app/src/main/java/tv/own/owntv/brand/BrandDefaults.kt	mpv cannot load on this device: ${it.javaClass.simpleName}
+1	technical	app/src/main/java/tv/own/owntv/brand/BrandDefaults.kt	player
 2	empty	app/src/main/java/tv/own/owntv/brand/BrandDns.kt	\0
 1	technical	app/src/main/java/tv/own/owntv/brand/BrandDns.kt	,
 1	technical	app/src/main/java/tv/own/owntv/brand/BrandDns.kt	185.253.152.214
