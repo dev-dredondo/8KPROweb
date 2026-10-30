@@ -1,8 +1,8 @@
 {
-  "versionCode": 1010006,
-  "versionName": "1.0.6",
-  "apk": "https://raw.githubusercontent.com/dev-dredondo/8KPROweb/apk/8KPROweb_FireTV-1.0.6.apk",
-  "sha256": "5c667dd996383089f37224e9f5b9caa2eb6b7c58e948061d9649c700b8a33256",
-  "size": 34068675,
-  "notes": "- Mejoras internas para el seguimiento de los canales"
+  "versionCode": 1010008,
+  "versionName": "1.0.8",
+  "apk": "https://raw.githubusercontent.com/dev-dredondo/8KPROweb/apk/8KPROweb_FireTV-1.0.8.apk",
+  "sha256": "902c820921f5a307f3e0858137e7cde056e4a34ed97a17a9459b308cd65c648f",
+  "size": 34085059,
+  "notes": "- Reproductor MPV si el aparato lo admite (más estable), con ExoPlayer de respaldo\n- Listas M3U: el panel puede añadir listas M3U (con su guía) como proveedores"
 }
