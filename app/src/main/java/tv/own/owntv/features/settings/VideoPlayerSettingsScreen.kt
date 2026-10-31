@@ -285,7 +285,7 @@ internal fun videoQuickBinding(key: String, vm: SettingsViewModel): VideoQuickBi
         }
         "vp_live_engine" -> {
             val engine by vm.liveEnginePreference.collectAsStateWithLifecycle()
-            link(engineLabel(engine), engine != EnginePreference.EXO_FIRST)
+            link(engineLabel(engine), engine != EnginePreference.MPV_FIRST) // 8K PRO: mpv first is the brand default
         }
         "vp_live_engine_sources" -> {
             val sources by vm.sources.collectAsStateWithLifecycle()
@@ -750,7 +750,7 @@ internal fun VideoPlayerGroupRows(
             quickKey = "vp_live_engine",
             choices = EnginePreference.entries.map { engineLabel(it) },
             chosen = liveEngine.ordinal,
-            recommended = EnginePreference.EXO_FIRST.ordinal,
+            recommended = EnginePreference.MPV_FIRST.ordinal, // 8K PRO: mpv first is the brand default for live TV
             icon = OwnTVIcon.PLAY,
             title = stringResource(R.string.settings_live_tv_player),
             desc = stringResource(R.string.settings_live_player_description),
@@ -1391,7 +1391,7 @@ internal fun VideoPlayerGroupRows(
     when (dialog) {
         Dialog.LIVE_ENGINE -> PickerDialog(
             title = stringResource(R.string.settings_live_tv_player),
-            options = engineOptions(default = EnginePreference.EXO_FIRST),
+            options = engineOptions(default = EnginePreference.MPV_FIRST), // 8K PRO
             selected = liveEngine.name,
             onSelect = { vm.setLiveEnginePreference(EnginePreference.valueOf(it)); dialog = Dialog.NONE },
             onDismiss = { dialog = Dialog.NONE },

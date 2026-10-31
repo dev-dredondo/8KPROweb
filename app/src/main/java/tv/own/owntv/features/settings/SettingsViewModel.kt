@@ -447,7 +447,7 @@ class SettingsViewModel(
     }
 
     val liveEnginePreference: StateFlow<tv.own.owntv.core.player.EnginePreference> = settings.liveEnginePreference
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), tv.own.owntv.core.player.EnginePreference.EXO_FIRST)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), tv.own.owntv.core.player.EnginePreference.MPV_FIRST)
     fun setLiveEnginePreference(preference: tv.own.owntv.core.player.EnginePreference) {
         viewModelScope.launch { settings.setLiveEnginePreference(preference) }
     }

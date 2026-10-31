@@ -22,7 +22,7 @@ object BrandDefaults {
     private const val TAG = "BrandDefaults"
     private const val PREFS = "brand_defaults"
     private const val KEY_VERSION = "applied_version"
-    private const val VERSION = 5
+    private const val VERSION = 6
 
     const val ACCENT_HEX = "#FFB95C"
     /** TMDB language code as offered in Settings › Metadata (plain "es" = Spanish, Spain). */
@@ -77,6 +77,10 @@ object BrandDefaults {
                     // 1.0.7: live TV on mpv first (steadier buffer, no dropped frames), ExoPlayer as its fallback.
                     settings.setLiveEnginePreference(tv.own.owntv.core.player.EnginePreference.MPV_FIRST)
                     settings.setVodEnginePreference(tv.own.owntv.core.player.EnginePreference.MPV_FIRST)
+                }
+                if (applied < 6) {
+                    // 1.0.9: once more, so every device is on mpv first for live TV (ExoPlayer as the fallback).
+                    settings.setLiveEnginePreference(tv.own.owntv.core.player.EnginePreference.MPV_FIRST)
                 }
                 if (applied < VERSION) prefs.edit().putInt(KEY_VERSION, VERSION).apply()
 
