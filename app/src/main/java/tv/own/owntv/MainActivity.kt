@@ -121,6 +121,8 @@ open class MainActivity : ComponentActivity() {
     }
 
     override fun onStop() {
+        remoteWatch?.cancel()
+        remoteWatch = null
         super.onStop()
         // Backgrounded (Home / another app), exited, or logged out: stop playback and free the demuxer
         // cache + decoder buffers — holding them while invisible got the process LMK-killed on real TVs.
@@ -128,6 +130,9 @@ open class MainActivity : ComponentActivity() {
         if (!isChangingConfigurations) engines.onAppBackgrounded()
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
+
+    /** 8K PRO: the panel's "close the app" check, running while the app is on screen. */
+    private var remoteWatch: kotlinx.coroutines.Job? = null
 
     override fun onStart() {
         super.onStart()
@@ -140,6 +145,11 @@ open class MainActivity : ComponentActivity() {
         shellViewModel.checkAutoRefresh(includeStartup = false)
         // 8K PRO: back in the foreground → has the panel changed this TV's DNS or account?
         lifecycleScope.launch { runCatching { panelSync.refresh() } }
+        // 8K PRO: while on screen, the panel can close the app ("Cerrar app").
+        remoteWatch?.cancel()
+        remoteWatch = lifecycleScope.launch {
+            runCatching { tv.own.owntv.features.login.BrandRemote.watch(get(), get()) }
+        }
         // 8K PRO: a new version of the app? (at most every 30 min; downloads and installs by itself)
         runCatching { get<tv.own.owntv.brand.BrandUpdater>().checkAndUpdate() }
     }

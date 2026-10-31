@@ -70,16 +70,8 @@ class PlaybackStats(
                     startSession(t)
                 }
             }
-            launch {
-                engine.isPlaying.collect { playing ->
-                    if (playing && sessionId != null && !everPlayed) {
-                        everPlayed = true
-                        startupMs = SystemClock.elapsedRealtime() - startedAt
-                        bufferingSince = null
-                    }
-                }
-            }
-            launch { engine.buffering.collect { onBuffering(it) } }
+            launch { engine.isPlaying.collect { markPlayed() } }
+            launch { engine.buffering.collect { markPlayed(); onBuffering(it) } }
             launch {
                 while (isActive) {
                     delay(HEARTBEAT_MS)
@@ -98,7 +90,21 @@ class PlaybackStats(
         bufferingCount = 0
         bufferingMs = 0L
         bufferingSince = null
+        // The engine may already be playing: mpv keeps "playing" across a channel change, and a flow
+        // only speaks when its value changes, so the first frame would otherwise never be noticed and
+        // the panel would show "loading" for as long as the channel is watched.
+        markPlayed()
         send(state())
+    }
+
+    /** The first picture of the current item: start-up time taken, buffering from now on counts as a cut. */
+    private fun markPlayed() {
+        val e = engine ?: return
+        if (sessionId == null || everPlayed) return
+        if (!e.isPlaying.value || e.buffering.value || e.error.value != null) return
+        everPlayed = true
+        startupMs = SystemClock.elapsedRealtime() - startedAt
+        bufferingSince = null
     }
 
     /** Closes the current session on the panel ("stopped"), if there is one. */
@@ -131,6 +137,7 @@ class PlaybackStats(
 
     private fun state(): String {
         val e = engine ?: return "stopped"
+        markPlayed()
         return when {
             e.error.value != null -> "error"
             !everPlayed || e.buffering.value -> "buffering"

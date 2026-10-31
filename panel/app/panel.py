@@ -42,7 +42,7 @@ from http.cookies import SimpleCookie
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, quote, urlparse
 
-PANEL_VERSION = "1.12"
+PANEL_VERSION = "1.13"
 CONFIG_PATH = os.environ.get("PANEL_CONFIG", "/etc/8kpro-panel/config.json")
 DB_PATH = os.environ.get("PANEL_DB", "/var/lib/8kpro-panel/panel.db")
 LISTEN = (os.environ.get("PANEL_HOST", "127.0.0.1"), int(os.environ.get("PANEL_PORT", "8080")))
@@ -312,6 +312,11 @@ def init_db() -> None:
         if "hw_id" not in cols:  # v1.8: id del aparato que sobrevive a desinstalar la app (mismo código al reinstalar)
             conn.execute("ALTER TABLE devices ADD COLUMN hw_id TEXT")
         conn.execute("CREATE INDEX IF NOT EXISTS idx_devices_hw ON devices(hw_id)")
+        # v1.13: órdenes para la app (cerrar la aplicación desde el panel).
+        if "command" not in cols:
+            conn.execute("ALTER TABLE devices ADD COLUMN command TEXT")
+        if "command_at" not in cols:
+            conn.execute("ALTER TABLE devices ADD COLUMN command_at INTEGER")
         # v1.11: a qué servidor está conectada cada reproducción (y si es el de reserva).
         pcols = {r[1] for r in conn.execute("PRAGMA table_info(plays)")}
         if "server" not in pcols:
@@ -395,6 +400,20 @@ M3U_SLOTS_FREE = 2  # filas vacías que ofrece la ficha para añadir listas nuev
 
 def playlists_of(conn, device_id: int) -> list:
     return conn.execute("SELECT * FROM device_playlists WHERE device_id = ? ORDER BY position, id", (device_id,)).fetchall()
+
+
+# Una orden que el aparato no recoge en este tiempo caduca: si la app no estaba abierta, no se cierra
+# la próxima vez que alguien la abra.
+COMMAND_TTL = 120
+
+
+def take_command(conn, device_row_id: int) -> str | None:
+    """La orden pendiente del dispositivo (y la borra: se entrega una sola vez)."""
+    r = conn.execute("SELECT command, command_at FROM devices WHERE id = ?", (device_row_id,)).fetchone()
+    if not r or not r["command"]:
+        return None
+    conn.execute("UPDATE devices SET command = NULL, command_at = NULL WHERE id = ?", (device_row_id,))
+    return r["command"] if now() - (r["command_at"] or 0) <= COMMAND_TTL else None
 
 
 def new_code(conn) -> str:
@@ -630,6 +649,8 @@ class Handler(BaseHTTPRequestHandler):
         try:
             if path == "/api/v1/config":
                 return self.api_config()
+            if path == "/api/v1/command":
+                return self.api_command()
             if path == "/api/v1/ping":
                 return self.json(200, {"ok": True})
             if path.startswith("/static/"):
@@ -651,7 +672,7 @@ class Handler(BaseHTTPRequestHandler):
             if path == "/admin/settings":
                 return self.page_settings(q.get("msg", ""))
             if path == "/admin/live":
-                return self.page_live()
+                return self.page_live(q.get("msg", ""))
             if path == "/admin/stats":
                 return self.page_stats(q)
             if path == "/admin/map":
@@ -683,6 +704,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self.save_settings()
             if path == "/admin/settings/app-dns":
                 return self.save_app_dns()
+            if path.startswith("/admin/device/") and path.endswith("/close"):
+                return self.close_app(path.split("/")[-2], self.form().get("back", ""))
             if path.startswith("/admin/device/") and path.endswith("/delete"):
                 return self.delete_device(path.split("/")[-2])
             if path.startswith("/admin/device/"):
@@ -800,7 +823,33 @@ class Handler(BaseHTTPRequestHandler):
                              (*values, row["id"], sid, t - watch_s, t, ip, server, on_backup))
             conn.execute("UPDATE devices SET last_seen=?, ip=? WHERE id=?", (t, ip, row["id"]))
             prune_plays(conn)
-        return self.json(200, {"ok": True})
+            command = take_command(conn, row["id"])
+            if command == "close":  # la app se cierra: la reproducción termina aquí
+                conn.execute("UPDATE plays SET state='stopped', updated_at=? WHERE session_id=?", (t, sid))
+        return self.json(200, {"ok": True, "command": command})
+
+    def api_command(self):
+        """La app, mientras está abierta, pregunta cada pocos segundos si hay una orden para ella."""
+        device_id = self.headers.get("X-Device-Id", "")
+        token = self.headers.get("X-Device-Token", "")
+        with _db_lock, db() as conn:
+            row = conn.execute("SELECT id, token_hash FROM devices WHERE device_id = ?", (device_id,)).fetchone()
+            if not row or not hmac.compare_digest(row["token_hash"], sha256(token)):
+                return self.json(401, {"status": "unknown"})
+            conn.execute("UPDATE devices SET last_seen=?, ip=? WHERE id=?", (now(), self.client_ip(), row["id"]))
+            command = take_command(conn, row["id"])
+            if command == "close":
+                conn.execute("UPDATE plays SET state='stopped', updated_at=? WHERE device_id=? AND state != 'stopped'",
+                             (now(), row["id"]))
+        return self.json(200, {"command": command})
+
+    def close_app(self, dev_id: str, back: str):
+        if dev_id.isdigit():
+            with _db_lock, db() as conn:
+                conn.execute("UPDATE devices SET command='close', command_at=? WHERE id=?", (now(), int(dev_id)))
+        msg = "Orden enviada: la app se cerrará en unos segundos si está abierta"
+        target = "/admin/live" if back == "live" else f"/admin/device/{dev_id}"
+        return self.redirect(target + "?msg=" + quote(msg))
 
     # ---- estáticos (Leaflet)
     def static(self, path: str):
@@ -824,7 +873,7 @@ class Handler(BaseHTTPRequestHandler):
             self.wfile.write(body)
 
     # ---- admin: en directo
-    def page_live(self):
+    def page_live(self, msg: str = ""):
         with db() as conn:
             live = live_plays(conn)
             history = conn.execute(
@@ -844,21 +893,24 @@ class Handler(BaseHTTPRequestHandler):
 <td>{fmt_dur(r['watch_s'] + max(0, now() - r['updated_at']))}</td>
 <td class="{cls}">{cuts}</td>
 <td>{(str(r['startup_ms'] // 100 / 10) + ' s') if r['startup_ms'] is not None else '—'}</td>
-<td>{e(geo_label(r['ip'])) or '—'}<br><small>{e(r['ip'])}</small></td></tr>""")
-        table = "".join(trs) or '<tr><td colspan="8"><small>Nadie está viendo nada ahora mismo.</small></td></tr>'
+<td>{e(geo_label(r['ip'])) or '—'}<br><small>{e(r['ip'])}</small></td>
+<td><form method="post" action="/admin/device/{r['device_id']}/close" onsubmit="return confirm('¿Cerrar la app en {e(r['code'])}?')">
+<input type="hidden" name="back" value="live"><button class="btn ghost" type="submit">Cerrar app</button></form></td></tr>""")
+        table = "".join(trs) or '<tr><td colspan="9"><small>Nadie está viendo nada ahora mismo.</small></td></tr>'
         hrs = []
         for r in history:
             hrs.append(f"""<tr><td>{fmt_time(r['started_at'])}</td><td><a class="code" href="/admin/device/{r['device_id']}">{e(r['code'])}</a> <small>{e(r['username'])}</small></td>
 <td>{e(r['title'])}</td><td>{fmt_dur(r['watch_s'])}</td><td>{r['buffering_count']} <small>({fmt_dur(r['buffering_s'])})</small></td>
 <td><span class="pill {e(r['state'])}">{STATE_LABEL.get(r['state'], e(r['state']))}</span></td></tr>""")
         hist = "".join(hrs) or '<tr><td colspan="6"><small>Sin historial todavía.</small></td></tr>'
-        return self.html(layout("En directo", f"""<div class="stats">
+        flash = f'<p class="flash">{e(msg)}</p>' if msg else ""
+        return self.html(layout("En directo", f"""{flash}<div class="stats">
 <div class="stat"><b>{len(live)}</b><small>viendo ahora</small></div>
 <div class="stat"><b class="{'warn' if cutting else ''}">{cutting}</b><small>cargando (buffering) ahora</small></div>
 <div class="stat"><b>{online}</b><small>conectados en los últimos 10 min</small></div>
 <div class="stat"><b>{active}</b><small>dispositivos activos</small></div></div>
 <div class="card"><h2 style="margin-top:0">Viendo ahora</h2><p><small>Se actualiza sola cada 15 s. «Cortes» = veces que se ha parado a cargar después de empezar (y tiempo total cargando). Historial de 7 días; resumen en <a href="/admin/stats">Estadísticas</a>.</small></p>
-<div class="table-wrap"><table><tr><th>Dispositivo</th><th>Contenido</th><th>Servidor</th><th>Estado</th><th>Tiempo viendo</th><th>Cortes</th><th>Arranque</th><th>Ubicación</th></tr>
+<div class="table-wrap"><table><tr><th>Dispositivo</th><th>Contenido</th><th>Servidor</th><th>Estado</th><th>Tiempo viendo</th><th>Cortes</th><th>Arranque</th><th>Ubicación</th><th></th></tr>
 {table}</table></div></div>
 <div class="card"><h2 style="margin-top:0">Últimas sesiones</h2><div class="table-wrap"><table>
 <tr><th>Inicio</th><th>Dispositivo</th><th>Contenido</th><th>Duración</th><th>Cortes</th><th>Estado</th></tr>{hist}</table></div></div>
@@ -1263,7 +1315,11 @@ Sus canales no aparecen nunca en las listas de la app. Déjalo vacío para no us
 <div class="row"><div><label>Caduca (vacío = nunca)</label><input name="expires" type="date" value="{exp}"></div>
 <div><label>Notas (cliente, teléfono…)</label><input name="notes" value="{e(r['notes'])}"></div></div>
 <p><button type="submit">Guardar</button></p></form></div>
-{history}<div class="card"><form method="post" action="/admin/device/{r['id']}/delete" onsubmit="return confirm('¿Borrar este dispositivo? La TV mostrará un código nuevo.')">
+{history}<div class="card"><form method="post" action="/admin/device/{r['id']}/close" style="display:inline"
+ onsubmit="return confirm('¿Cerrar la app en este dispositivo? Se cerrará en unos segundos si está abierta.')">
+<button class="btn" type="submit">Cerrar la app</button></form>
+<small style="margin-left:8px">Se cierra en unos segundos si la app está abierta (versión 1.0.9 o posterior).</small></div>
+<div class="card"><form method="post" action="/admin/device/{r['id']}/delete" onsubmit="return confirm('¿Borrar este dispositivo? La TV mostrará un código nuevo.')">
 <button class="btn danger" type="submit">Borrar dispositivo</button></form></div>"""))
 
     def save_device(self, dev_id: str):

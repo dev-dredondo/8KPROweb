@@ -274,10 +274,14 @@
 1	log	app/src/main/java/tv/own/owntv/features/login/BrandPlaylists.kt	panel playlists not applied
 1	preference-key	app/src/main/java/tv/own/owntv/features/login/BrandPlaylists.kt	panel_to_source
 1	technical	app/src/main/java/tv/own/owntv/features/login/BrandPlaylists.kt	{}
+1	technical	app/src/main/java/tv/own/owntv/features/login/BrandRemote.kt	BrandRemote
+1	json	app/src/main/java/tv/own/owntv/features/login/BrandRemote.kt	close
+1	log	app/src/main/java/tv/own/owntv/features/login/BrandRemote.kt	unknown panel command
 1	empty	app/src/main/java/tv/own/owntv/features/login/LoginScreen.kt	\0
 1	technical	app/src/main/java/tv/own/owntv/features/login/LoginScreen.kt	· · ·
 3	empty	app/src/main/java/tv/own/owntv/features/login/LoginViewModel.kt	\0
 2	empty	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	\0
+1	url	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	${BrandConfig.panelUrl}/api/v1/command
 1	url	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	${BrandConfig.panelUrl}/api/v1/config
 1	url	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	${BrandConfig.panelUrl}/api/v1/register
 1	url	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	${BrandConfig.panelUrl}/api/v1/stats
@@ -285,8 +289,8 @@
 1	protocol	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	SHA-256
 1	protocol	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	TLS
 2	protocol	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	X-App-Version
-2	protocol	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	X-Device-Id
-2	protocol	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	X-Device-Token
+3	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	X-Device-Id
+3	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	X-Device-Token
 2	protocol	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	X-Hardware-Id
 2	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	active
 1	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	android
@@ -295,6 +299,7 @@
 1	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	backup
 1	log	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	client certificates are not used
 2	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	code
+2	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	command
 1	log	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	config failed: ${e.javaClass.simpleName}
 1	json	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	device_id
 1	protocol	app/src/main/java/tv/own/owntv/features/login/PanelClient.kt	disabled

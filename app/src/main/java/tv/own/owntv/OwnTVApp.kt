@@ -138,6 +138,8 @@ class OwnTVApp : Application(), SingletonImageLoader.Factory, androidx.work.Conf
         }
         // 8K PRO: tunneled playback on, accent #FFB95C, TMDB in Spanish (once per install) and the
         // brand's TMDB key whenever none is stored.
+        // 8K PRO: orders from the activation panel ("close the app").
+        tv.own.owntv.features.login.BrandRemote.init(this)
         tv.own.owntv.brand.BrandDefaults.apply(
             context = this,
             scope = appScope,

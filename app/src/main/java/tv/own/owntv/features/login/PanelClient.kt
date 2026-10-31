@@ -178,11 +178,33 @@ class PanelClient(
             .post(payload.toString().toRequestBody(JSON))
             .build()
         try {
-            client.newCall(request).execute().use { resp -> resp.code != 401 }
+            client.newCall(request).execute().use { resp ->
+                // The panel can ask the app to close ("Cerrar app" on the panel); see [BrandRemote].
+                if (resp.code == 200) runCatching { JSONObject(resp.body.string()).optString("command") }.getOrNull()
+                    ?.takeIf { it.isNotBlank() }?.let { BrandRemote.handle(it) }
+                resp.code != 401
+            }
         } catch (e: Exception) {
             Log.w(TAG, "stats failed: ${e.javaClass.simpleName}")
             true
         }
+    }
+
+    /**
+     * 8K PRO: whether the panel has an order for this device ("close"), asked every few seconds while
+     * the app is open. Null when there is none or the panel cannot be reached.
+     */
+    suspend fun command(identity: DeviceIdentity): String? = withContext(Dispatchers.IO) {
+        val request = Request.Builder()
+            .url("${BrandConfig.panelUrl}/api/v1/command")
+            .header("X-Device-Id", identity.deviceId)
+            .header("X-Device-Token", identity.token)
+            .build()
+        runCatching {
+            client.newCall(request).execute().use { resp ->
+                if (resp.code != 200) null else JSONObject(resp.body.string()).optString("command").takeIf { it.isNotBlank() }
+            }
+        }.getOrNull()
     }
 
     sealed interface RegisterResult {
