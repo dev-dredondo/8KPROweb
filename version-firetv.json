@@ -1,8 +1,8 @@
 {
-  "versionCode": 1010008,
-  "versionName": "1.0.8",
-  "apk": "https://raw.githubusercontent.com/dev-dredondo/8KPROweb/apk/8KPROweb_FireTV-1.0.8.apk",
-  "sha256": "902c820921f5a307f3e0858137e7cde056e4a34ed97a17a9459b308cd65c648f",
+  "versionCode": 1010009,
+  "versionName": "1.0.9",
+  "apk": "https://raw.githubusercontent.com/dev-dredondo/8KPROweb/apk/8KPROweb_FireTV-1.0.9.apk",
+  "sha256": "4905417d0259c3ff822875881e7c83ec713d82a597c69e5e0c9043a57e157f79",
   "size": 34085059,
-  "notes": "- Reproductor MPV si el aparato lo admite (más estable), con ExoPlayer de respaldo\n- Listas M3U: el panel puede añadir listas M3U (con su guía) como proveedores"
+  "notes": "- La TV en directo usa MPV primero si el aparato lo admite\n- Mejoras en el seguimiento de la reproducción"
 }
